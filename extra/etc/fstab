@@ -1,0 +1,8 @@
+#
+# See fstab(5).
+#
+# <file system>	<dir>	<type>	<options>		<dump>	<pass>
+PARTUUID=84376583-1a39-2f4c-9191-5fafd4549a47 /efi            vfat  rw,relatime,fmask=0022,dmask=0022,codepage=437,iocharset=iso8859-1,shortname=mixed,utf8,errors=remount-ro 0 0
+PARTUUID=fc01f226-3680-2944-b28c-09c2119fa80a /var/lib/docker ext4  rw,relatime                                                                                               0 0
+PARTUUID=04b5e784-d3b2-ae45-a8b7-b5d6c2cefbe6 /data           ext4  rw,relatime                                                                                               0 0
+tmpfs                                         /tmp            tmpfs defaults,nosuid,nodev                                                                                     0 0

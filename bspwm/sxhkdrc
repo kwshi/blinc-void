@@ -1,0 +1,26 @@
+super + Return
+  alacritty
+
+super + {1,2,3}
+  bspc desktop -f main{1,2,3}
+
+super + ctrl + {1,2,3}
+  bspc node -d main{1,2,3} --follow
+
+super + alt + {1,2,3}
+  bspc desktop -f tab{1,2,3}
+
+super + ctrl + alt + {1,2,3}
+  bspc node -d tab{1,2,3} --follow
+
+super + {d,a,s,h}
+  bspc node -f {north,west,south,east}
+
+super + space
+  rofi -show run
+
+super + r
+  pkill --signal SIGUSR1 sxhkd
+
+super + x
+  bspc node -c focused

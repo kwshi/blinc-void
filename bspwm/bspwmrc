@@ -1,0 +1,18 @@
+#!/bin/bash
+
+sxhkd -m -1 &
+
+redshift &
+
+alacritty &
+
+bspc monitor DisplayPort-1 -d main1,main2,main3
+bspc monitor HDMI-A-0 -d tab1,tab2,tab3
+
+for disp in main tab; do 
+  for pos in top bottom; do 
+    polybar -r $disp-$pos &
+  done
+done
+
+
