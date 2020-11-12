@@ -1,5 +1,12 @@
 #!/bin/bash
 
+bspc config border_width 2
+bspc config window_gap 4
+bspc config focused_border_color '#b8bb26'
+bspc config active_border_color '#79740e'
+bspc config normal_border_color '#32302f'
+bspc config pointer_follows_focus true
+
 sxhkd -m -1 &
 
 redshift &
