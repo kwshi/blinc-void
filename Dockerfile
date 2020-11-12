@@ -5,7 +5,7 @@ COPY ["xbps/xbps.conf", "/etc/xbps.d/"]
 RUN ["xbps-install", "-S"]
 
 # core tools
-RUN ["xbps-install", "-y", "base-system", "squashfs-tools-ng", "curl", "wget", "git", "iwd", "unzip", "exa", "bat", "docker", "ntp"]
+RUN ["xbps-install", "-y", "base-system", "squashfs-tools-ng", "curl", "wget", "git", "iwd", "unzip", "exa", "bat", "docker", "ntp", "rsync", "mercurial", "gcc", "clang", "make"]
 
 # core tools setup
 COPY ["rc.conf", "/etc/rc.conf"]
@@ -23,12 +23,6 @@ RUN ["ln", "-s", "/etc/sv/isc-ntpd"]
 
 RUN ["xbps-reconfigure", "-fa"]
 
-# user setup
-RUN ["chsh", "-s", "/bin/bash"]
-
-RUN ["useradd", "-mG", "wheel,docker,audio", "kshi"]
-RUN ["chsh", "-s", "/bin/bash", "kshi"]
-
 # editors
 RUN ["xbps-install", "-y", "neovim", "emacs", "vscode"]
 
@@ -40,8 +34,27 @@ RUN ["git", "clone", "https://github.com/morhetz/gruvbox", "gruvbox"]
 
 COPY ["nvim", "/etc/xdg/nvim"]
 
+# programming languages
+RUN ["xbps-install", "-y", "python3-ipython", "python3-numpy", "python3-sympy", "python3-scipy"]
+
+RUN ["xbps-install", "-y", "node"]
+RUN ["npm", "i", "-g", "typescript", "webpack", "webpack-dev-server", "parcel", "elm"]
+
+RUN ["xbps-install", "-y", "opam"]
+RUN ["opam", "init", "--disable-sandboxing", "-n", "--root=/usr/share/opam"]
+
+RUN ["xbps-install", "-y", "shellcheck"]
+
+RUN ["xbps-install", "-y", "texlive-full", "tectonic"]
+
+# user setup
+RUN ["chsh", "-s", "/bin/bash"]
+
+RUN ["useradd", "-mG", "wheel,docker,audio", "kshi"]
+RUN ["chsh", "-s", "/bin/bash", "kshi"]
+
 # graphical stuff
-RUN ["xbps-install", "-y", "xorg", "bspwm", "sxhkd", "redshift", "polybar", "dmenu", "rofi", "dunst", "lightdm", "alacritty", "firefox", "flatpak", "Signal-Desktop", "steam", "pulseaudio", "pavucontrol", "bluez", "xdg-user-dirs-update"]
+RUN ["xbps-install", "-y", "xorg", "bspwm", "sxhkd", "redshift", "polybar", "dmenu", "rofi", "dunst", "lightdm", "alacritty", "firefox", "flatpak", "Signal-Desktop", "steam", "pulseaudio", "pavucontrol", "bluez", "xdg-user-dirs-update", "peek", "sxiv", "vlc"]
 
 # fonts
 RUN ["xbps-install", "-y", "google-fonts-ttf"]
@@ -69,12 +82,12 @@ WORKDIR "/home/kshi"
 COPY --chown=kshi:kshi ["bspwm/bspwmrc", ".config/bspwm/"]
 COPY --chown=kshi:kshi ["bspwm/sxhkdrc", ".config/sxhkd/"]
 COPY --chown=kshi:kshi ["polybar", ".config/"]
+COPY --chown=kshi:kshi ["git/config", ".gitconfig"]
 
 RUN ["chmod", "+x", ".config/bspwm/bspwmrc"]
 
-RUN ["ln", "-s", "/data/signal", ".config/Signal"]
 RUN ["ln", "-s", "/run/initramfs/live/cfg", "live"]
-
+RUN ["ln", "-s", "/data/signal", ".config/Signal"]
 RUN ["ln", "-s", "/data/hacks"    ]
 RUN ["ln", "-s", "/data/documents"]
 
