@@ -8,3 +8,5 @@ vim.api.nvim_buf_set_option(0, 'expandtab', true)
 
 vim.api.nvim_set_option('termguicolors', true)
 vim.api.nvim_command('colorscheme gruvbox')
+
+vim.api.nvim_set_option('wildmode', 'longest')
