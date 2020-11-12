@@ -1,26 +1,35 @@
 super + Return
-  alacritty
-
-super + {1,2,3}
-  bspc desktop -f main{1,2,3}
-
-super + ctrl + {1,2,3}
-  bspc node -d main{1,2,3} --follow
-
-super + alt + {1,2,3}
-  bspc desktop -f tab{1,2,3}
-
-super + ctrl + alt + {1,2,3}
-  bspc node -d tab{1,2,3} --follow
-
-super + {d,a,s,h}
-  bspc node -f {north,west,south,east}
+  alacritty --live-config-reload
 
 super + space
   rofi -show run
 
-super + r
+super + {_,ctrl} + {_,alt} + {1,2,3}
+  bspc {desktop -f,node -d} {main,tab}{1,2,3} --follow
+
+super + {_,shift,ctrl} + {d,a,s,h,u,n,e,o,Up,Left,Down,Right}
+  bspc node -{f,s,n} \
+  {north,west,south,east,north,west,south,east,north,west,south,east}
+
+super + {_,shift} + Tab
+  bspc node -f {next,prev}.leaf
+
+super + backslash
   pkill --signal SIGUSR1 sxhkd
 
-super + x
-  bspc node -c focused
+super + q
+  bspc node -c
+
+super + {_,alt} + grave
+  setxkbmap -layout us {,-variant workman}
+
+super + t; {d,a,s,h,u,n,e,o,Up,Left,Down,Right}; {d,a,s,h,u,n,e,o,Up,Left,Down,Right}
+  bspc node focused -z \
+    {top,left,bottom,right,top,left,bottom,right,top,left,bottom,right} \
+    {0 -64,-64 0,0 64,64 0,0 -64,-64 0,0 64,64 0,0 -64,-64 0,0 64,64 0}
+
+super + {z,x,m,comma,period,slash}
+  bspc node @parent {-r -.03125,-r +.03125,-E,-r -.03125,-r +.03125,-E}
+
+super + {_,shift} + r
+  bspc node @parent -R {270,90}
