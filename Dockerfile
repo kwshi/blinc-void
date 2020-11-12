@@ -13,7 +13,7 @@ COPY ["sudoers", "/etc/sudoers.d/wheel"]
 COPY ["libc-locales", "/etc/default/libc-locales"]
 COPY ["docker", "/etc/"]
 COPY ["locale.conf", "/etc/"]
-COPY ["iwd.conf", "/etc/iwd/main.conf"]
+COPY ["iwd", "/etc/"]
 
 WORKDIR "/etc/runit/runsvdir/default"
 RUN ["ln", "-s", "/etc/sv/iwd"]
