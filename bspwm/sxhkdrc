@@ -28,7 +28,7 @@ super + t; {d,a,s,h,u,n,e,o,Up,Left,Down,Right}; {d,a,s,h,u,n,e,o,Up,Left,Down,R
     {top,left,bottom,right,top,left,bottom,right,top,left,bottom,right} \
     {0 -64,-64 0,0 64,64 0,0 -64,-64 0,0 64,64 0,0 -64,-64 0,0 64,64 0}
 
-super + {z,x,m,comma,period,slash}
+super + {x,m,z,comma,period,slash}
   bspc node @parent {-r -.03125,-r +.03125,-E,-r -.03125,-r +.03125,-E}
 
 super + {_,shift} + r
