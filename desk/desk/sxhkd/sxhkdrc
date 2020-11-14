@@ -10,17 +10,28 @@ super + ctrl + {_,alt} + {1,2,3}
 super + {_,alt} + {1,2,3}
   bspc desktop -f {main,tab}{1,2,3}
 
-super + {_,shift,ctrl} + {d,a,s,h,u,n,e,o,Up,Left,Down,Right}
-  bspc node -{f,s,n} \
+super + {q,r}
+  bspc desktop -f {prev,next}.local
+
+super + ctrl + {q,r}
+  bspc node -d {prev,next}.local --follow
+
+super + {shift,ctrl,ctrl + alt} + {d,a,s,h,u,n,e,o,Up,Left,Down,Right}
+  bspc {node -s,node -n,node -m} \
+  {north,west,south,east,north,west,south,east,north,west,south,east} \
+  --follow
+  
+super + {_,alt} + {d,a,s,h,u,n,e,o,Up,Left,Down,Right}
+  bspc {node -f,monitor -f} \
   {north,west,south,east,north,west,south,east,north,west,south,east}
 
 super + {_,shift} + Tab
-  bspc node -f {next,prev}.leaf
+  bspc node -f {next,prev}.leaf.local
 
 super + backslash
   pkill --signal SIGUSR1 sxhkd
 
-super + q
+super + c
   bspc node -c
 
 super + {_,alt} + grave
@@ -34,7 +45,7 @@ super + t; {d,a,s,h,u,n,e,o,Up,Left,Down,Right}; {d,a,s,h,u,n,e,o,Up,Left,Down,R
 super + {x,m,z,comma,period,slash}
   bspc node @parent {-r -.03125,-r +.03125,-E,-r -.03125,-r +.03125,-E}
 
-super + {_,shift} + r
+super + {_,shift} + w
   bspc node @parent -R {270,90}
 
 {XF86AudioRaiseVolume,XF86AudioLowerVolume,XF86AudioMute}
