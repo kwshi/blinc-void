@@ -49,4 +49,4 @@ super + {_,shift} + w
   bspc node @parent -R {270,90}
 
 {XF86AudioRaiseVolume,XF86AudioLowerVolume,XF86AudioMute}
-  pamixer {-i 5,-d 5,-m}
+  pamixer {-i 5,-d 5,-t}
