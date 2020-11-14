@@ -4,8 +4,11 @@ super + Return
 super + space
   rofi -show run
 
-super + {_,ctrl} + {_,alt} + {1,2,3}
-  bspc {desktop -f,node -d} {main,tab}{1,2,3} --follow
+super + ctrl + {_,alt} + {1,2,3}
+  bspc node -d {main,tab}{1,2,3} --follow
+
+super + {_,alt} + {1,2,3}
+  bspc desktop -f {main,tab}{1,2,3}
 
 super + {_,shift,ctrl} + {d,a,s,h,u,n,e,o,Up,Left,Down,Right}
   bspc node -{f,s,n} \
@@ -33,3 +36,6 @@ super + {x,m,z,comma,period,slash}
 
 super + {_,shift} + r
   bspc node @parent -R {270,90}
+
+{XF86AudioRaiseVolume,XF86AudioLowerVolume,XF86AudioMute}
+  pamixer {-i 5,-d 5,-m}

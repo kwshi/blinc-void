@@ -31,6 +31,7 @@ COPY ["util/xdg-user-dirs/user-dirs.defaults", "/etc/xdg/user-dirs.defaults"]
 
 FROM base AS util.misc
 RUN ["xbps-install", "-y", "wget", "squashfs-tools-ng", "zip", "exa", "bat", "fuse", "flatpak"]
+RUN ["flatpak", "remote-add", "flathub", "https://flathub.org/repo/flathub.flatpakrepo"]
 COPY ["util/misc/bat", "/etc/xdg/bat"]
 COPY ["util/misc/ssh", "/etc/ssh"    ]
 COPY ["util/misc/git", "/etc/xdg/git"]
@@ -102,7 +103,7 @@ FROM base AS desk.web
 RUN ["xbps-install", "-y", "firefox", "chromium"]
 
 FROM base AS desk.audio
-RUN ["xbps-install", "-y", "pulseaudio", "bluez", "pavucontrol"]
+RUN ["xbps-install", "-y", "pulseaudio", "bluez", "pavucontrol", "pamixer"]
 
 FROM base AS desk.misc
 RUN ["xbps-install", "-y", "scrot", "peek"]

@@ -109,18 +109,18 @@ format-muted-padding = 1
 format-volume = "<ramp-volume> [<bar-volume>] <label-volume>"
 format-muted = " [<bar-volume>] <label-muted>"
 
-label-muted = "%percentage%%" 
-label-volume = "%percentage%%" 
+label-muted = "%percentage:3%%" 
+label-volume = "%percentage:3%%" 
 
 ramp-volume-0 = ""
 ramp-volume-1 = ""
 ramp-volume-2 = ""
 
 # u2586
-bar-volume-width = 10
+bar-volume-width = 20
 bar-volume-empty = " "
 bar-volume-fill = "▆"
-bar-volume-indicator = " "
+bar-volume-indicator = "▆"
 
 [module/temperature]
 type = internal/temperature
