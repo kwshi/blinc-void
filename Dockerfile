@@ -119,10 +119,9 @@ USER "kshi"
 WORKDIR "/home/kshi"
 
 COPY --from=util.xdg-user-dirs ["/usr", "/usr"]
-COPY --from=util.xdg-user-dirs ["/etc", "/etc"]
+COPY --from=util.xdg-user-dirs ["/etc/xdg", "/etc/xdg"]
 RUN ["xdg-user-dirs-update"]
 
-RUN ["mkdir", ".config"]
 RUN ["ln", "-s", "/data/signal"           , ".config/Signal" ]
 RUN ["ln", "-s", "/etc/xdg/bspwm"         , ".config/bspwm"  ]
 RUN ["ln", "-s", "/etc/xdg/sxhkd"         , ".config/sxhkd"  ]
