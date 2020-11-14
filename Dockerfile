@@ -103,9 +103,11 @@ FROM base AS desk.audio
 RUN ["xbps-install", "-y", "pulseaudio", "bluez", "pavucontrol"]
 
 FROM base AS desk.misc
-RUN ["xbps-install", "-y", "scrot", "peek", "Signal-Desktop", "steam", "vlc", "spotifyd", "spotify-tui"]
+RUN ["xbps-install", "-y", "scrot", "peek"]
+RUN ["xbps-install", "-y", "Signal-Desktop", "steam", "vlc", "spotifyd", "spotify-tui", "solvespace"]
 
 FROM base AS desk.font
+RUN ["xbps-install", "-y", "fontconfig", "fontconfig-32bit"]
 RUN ["xbps-install", "-y", "google-fonts-ttf", "font-awesome5", "noto-fonts-cjk"]
 
 FROM base AS user.init
