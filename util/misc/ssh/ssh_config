@@ -1,0 +1,7 @@
+Host crux
+  User kshi
+  IdentityFile /data/ssh/keys/crux
+
+Host gh
+  User git
+  IdentityFile /data/ssh/keys/gh
