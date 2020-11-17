@@ -148,8 +148,8 @@ COPY --from=misc.npm   ["/usr/lib/node_modules" , "/usr/lib/node_modules" ]
 COPY --from=misc.steam ["/usr/share/fonts/steam", "/usr/share/fonts/steam"]
 
 WORKDIR "/usr/local/bin"
-RUN ["ln", "-s", "/usr/lib/node_modules/typescript/tsserver"]
-RUN ["ln", "-s", "/usr/lib/node_modules/typescript/tsc"     ]
+RUN ["ln", "-s", "/usr/lib/node_modules/typescript/bin/tsserver"]
+RUN ["ln", "-s", "/usr/lib/node_modules/typescript/bin/tsc"     ]
 RUN ["ln", "-sT", "/usr/lib/node_modules/typescript-language-server/lib/cli.js", "typescript-language-server"]
 RUN ["ln", "-sT", "/usr/lib/node_modules/pnpm/bin/pnpm.js", "pnpm"]
 RUN ["ln", "-sT", "/usr/lib/node_modules/pnpm/bin/pnpx.js", "pnpx"]
