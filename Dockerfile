@@ -169,6 +169,7 @@ RUN ["ln", "-st", "/etc/fonts/conf.d", "/usr/share/fontconfig/conf.avail/70-no-b
 
 RUN ["mkdir", "/efi", "/data", "/var/lib/docker"]
 COPY ["cfg/base/fstab"         , "/etc/fstab"                 ]
+COPY ["cfg/base/rc.local"      , "/etc/rc.local"              ]
 COPY ["cfg/base/rc.conf"       , "/etc/rc.conf"               ]
 COPY ["cfg/base/sudoers"       , "/etc/sudoers.d/wheel"       ]
 COPY ["cfg/base/libc-locales"  , "/etc/default/libc-locales"  ]
