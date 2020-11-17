@@ -58,10 +58,10 @@ RUN ["xbps-install", "-y", "scrot", "peek", "sxiv"]
 RUN ["xbps-install", "-y", "xournal", "xournalpp", "mupdf", "zathura-pdf-mupdf", "zathura", "zathura-ps"]
 RUN ["xbps-install", "-y", "Signal-Desktop", "gtk2fontsel", "solvespace", "puzzles"]
 RUN ["xbps-install", "-y", "vlc", "spotifyd", "spotify-tui"]
-RUN ["xbps-install", "-y", "remmina"]
+RUN ["xbps-install", "-y", "tigervnc", "remmina"]
 
 FROM desk.misc AS desk.art
-RUN ["xbps-install", "-y", "gimp", "blender", "krita", "musescore", "openshot", "shotcut", "obs"]
+RUN ["xbps-install", "-y", "inkscape", "gimp", "blender", "krita", "musescore", "openshot", "shotcut", "obs"]
 
 FROM desk.art AS desk.game
 RUN ["xbps-install", "-y", "steam", "libglvnd-32bit", "libdrm-32bit", "mesa-dri-32bit"]
