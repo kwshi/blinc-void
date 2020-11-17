@@ -5,7 +5,7 @@ RUN ["xbps-install", "-y", "base-system", "base-devel"]
 
 FROM base AS core.util
 RUN ["xbps-install", "-y", "xtools", "flatpak"]
-RUN ["xbps-install", "-y", "dbus", "fuse", "chrony", "cronutils"]
+RUN ["xbps-install", "-y", "dbus", "fuse", "chrony", "cronutils", "geoclue2"]
 RUN ["xbps-install", "-y", "docker", "squashfs-tools-ng"]
 RUN ["xbps-install", "-y", "git", "curl", "wget", "zip", "exa", "bat", "pandoc", "pass"]
 RUN ["xbps-install", "-y", "sl", "lolcat-c", "cowsay", "ponysay"]
