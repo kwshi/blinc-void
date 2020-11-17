@@ -146,6 +146,7 @@ FROM main.opt AS main.misc
 COPY --from=misc.nvim  ["/usr/local/share/nvim" , "/usr/local/share/nvim" ]
 COPY --from=misc.npm   ["/usr/lib/node_modules" , "/usr/lib/node_modules" ]
 COPY --from=misc.steam ["/usr/share/fonts/steam", "/usr/share/fonts/steam"]
+RUN ["fc-cache", "-fv"]
 
 WORKDIR "/usr/local/bin"
 RUN ["ln", "-s", "/usr/lib/node_modules/typescript/bin/tsserver"]
