@@ -23,3 +23,5 @@ sxhkd: keybinds for shutdown, fullscreen, float
 xournal configs
 
 ssd trim cron
+
+compositor (picom), xsetroot background
