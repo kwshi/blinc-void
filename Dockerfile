@@ -160,11 +160,12 @@ FROM main.misc AS main.cfg
 
 ADD ["https://flathub.org/repo/flathub.flatpakrepo", "/etc/flatpak/remotes.d/flathub.conf"]
 
-RUN ["ln", "-st", "/etc/runit/runsvdir/default", "/etc/sv/dbus"   ]
-RUN ["ln", "-st", "/etc/runit/runsvdir/default", "/etc/sv/docker" ]
-RUN ["ln", "-st", "/etc/runit/runsvdir/default", "/etc/sv/iwd"    ]
-RUN ["ln", "-st", "/etc/runit/runsvdir/default", "/etc/sv/lightdm"]
-RUN ["ln", "-st", "/etc/runit/runsvdir/default", "/etc/sv/chronyd"]
+RUN ["ln", "-st", "/etc/runit/runsvdir/default", "/etc/sv/dbus"      ]
+RUN ["ln", "-st", "/etc/runit/runsvdir/default", "/etc/sv/docker"    ]
+RUN ["ln", "-st", "/etc/runit/runsvdir/default", "/etc/sv/iwd"       ]
+RUN ["ln", "-st", "/etc/runit/runsvdir/default", "/etc/sv/lightdm"   ]
+RUN ["ln", "-st", "/etc/runit/runsvdir/default", "/etc/sv/chronyd"   ]
+RUN ["ln", "-st", "/etc/runit/runsvdir/default", "/etc/sv/bluetoothd"]
 RUN ["ln", "-s", "/usr/share/zoneinfo/America/Los_Angeles", "/etc/localtime"]
 RUN ["ln", "-st", "/etc/fonts/conf.d", "/usr/share/fontconfig/conf.avail/70-no-bitmaps.conf"]
 
