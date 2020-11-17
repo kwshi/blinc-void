@@ -1,0 +1,23 @@
+lxappearance
+
+steam
+
+flatpak software: zoom, discord, etc. 
+also zoom flatpak can't SSO, because zoom sucks
+
+default apps (browser), xdg-mime and xdg-open
+
+pulse remember settings
+
+polybar temperature warn icon
+other polybar stuff
+
+powerline
+
+jupyter notebook, misc. kernels
+
+post-install hooks, managing gummiboot entries
+
+sxhkd: keybinds for shutdown, fullscreen, float
+
+xournal configs
