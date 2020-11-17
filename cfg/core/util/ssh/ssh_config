@@ -1,7 +1,9 @@
 Host crux
+  Hostname crux.kshi.xyz
   User kshi
   IdentityFile /data/ssh/keys/crux
 
 Host gh
+  Hostname github.com
   User git
   IdentityFile /data/ssh/keys/gh

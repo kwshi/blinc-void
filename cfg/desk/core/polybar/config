@@ -1,9 +1,10 @@
 [section/base-top]
 font-0 = "Roboto Mono:size=10;2"
 font-1 = "Roboto Mono:size=10:weight=bold;2"
-font-2 = "DejaVu Sans Mono:size=10"
-font-3 = "Font Awesome 5 Free:size=9;2"
-font-4 = "Font Awesome 5 Free Solid:size=9;2"
+font-2 = "Font Awesome 5 Free:size=9;2"
+font-3 = "Font Awesome 5 Free Solid:size=9;2"
+font-4 = "DejaVu Sans Mono:size=10"
+font-5 = "Noto Sans Symbols2:size=10"
 
 background = #32302f
 foreground = #ebdbb2
@@ -19,14 +20,13 @@ font-1 = "Roboto Mono:size=10:weight=bold;2"
 font-2 = "Font Awesome 5 Free:size=9;2"
 font-3 = "Font Awesome 5 Free Solid:size=9;2"
 font-4 = "DejaVu Sans Mono:size=10"
+font-5 = "Noto Sans Symbols2:size=10"
 
 bottom = true
 
 background = #32302f
 foreground = #ebdbb2
 height = 24
-
-tray-position = right
 
 modules-left = wifi audio temperature cpu
 
@@ -37,6 +37,8 @@ monitor = DisplayPort-1
 [bar/main-bottom]
 inherit = section/base-bottom
 monitor = DisplayPort-1
+
+tray-position = right
 
 [bar/tab-top]
 inherit = section/base-top
@@ -77,7 +79,7 @@ type = internal/cpu
 format = "<label> <ramp-coreload>"
 format-background = #3c3836
 format-padding = 1
-label = "CPU %percentage%%"
+label = "CPU%percentage:3%%"
 
 ramp-coreload-spacing = 
 ramp-coreload-0 = ▁
@@ -147,6 +149,6 @@ interface = wlan0
 format-connected = "<ramp-signal> <label-connected>"
 format-connected-padding = 1
 format-connected-background = #3c3836
-label-connected = "%essid% %signal%% -  %upspeed% -  %downspeed% - %local_ip%"
+label-connected = "%essid% %signal:3%% - %upspeed:8% - %downspeed:8% - %local_ip%"
 
 ramp-signal-0 = ""
