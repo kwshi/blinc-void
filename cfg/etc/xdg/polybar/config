@@ -58,17 +58,21 @@ label-separator-background = #32302f
 label-focused-padding  = 1
 label-empty-padding    = 1
 label-occupied-padding = 1
+label-urgent-padding   = 1
 label-focused  = "%name%"
 label-empty    = "%name%"
 label-occupied = "%name%"
+label-urgent   = "%name%"
 label-focused-background  = #b8bb26
 label-focused-foreground  = #282828
 label-empty-background    = #1d2021
 label-occupied-background = #79740e
+label-urgent-background   = #b57614
 
 label-focused-font  = 2
 label-empty-font    = 2
 label-occupied-font = 2
+label-urgent-font   = 2
 
 [module/title]
 type = internal/xwindow
