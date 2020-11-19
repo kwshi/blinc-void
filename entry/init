@@ -2,4 +2,11 @@
 
 mkdir -p /efi /data /var/lib/docker
 
+cd /opt/void
+su void ./xbps-src binary-bootstrap
+
+passwd root
+
+passwd kshi
+
 exec /bin/bash
