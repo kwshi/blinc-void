@@ -7,7 +7,7 @@ RUN ["useradd", "-r", "void"]
 RUN ["useradd", "-m", "kshi"]
 
 FROM base AS core.util
-RUN ["xbps-install", "-y", "dbus", "docker", "fuse", "chrony", "cronutils", "geoclue2", "flatpak"]
+RUN ["xbps-install", "-y", "dbus", "docker", "docker-compose", "podman", "podman-compose", "buildah", "fuse", "chrony", "cronutils", "geoclue2", "flatpak"]
 RUN ["xbps-install", "-y", "xtools", "curl", "wget", "zip", "exa", "bat", "pass", "inotify-tools", "mupdf-tools", "squashfs-tools-ng", "lm_sensors", "nvme-cli"]
 RUN ["xbps-install", "-y", "sl", "lolcat-c", "cowsay", "ponysay", "fortune-mod", "fortune-mod-void"]
 
