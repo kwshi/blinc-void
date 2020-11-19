@@ -63,7 +63,7 @@ ENV OPAMROOTISOK="1"
 ENV OPAMROOT="."
 ENV OPAMYES="1"
 RUN ["chown", "root:wheel", "."]
-RUN ["chmod", "6665"      , "."]
+RUN ["chmod", "6775"      , "."]
 RUN ["xbps-install", "-y", "opam", "gmp-devel", "cblas-devel", "lapacke-devel", "openblas-devel", "zlib-devel"]
 RUN ["opam", "init", "--disable-sandboxing", "-ny"]
 RUN ["opam", "install", "dune", "utop", "odoc", "odig", "ocaml-lsp-server", "ppxlib"]
@@ -78,7 +78,7 @@ FROM base AS opt.poetry
 WORKDIR "/opt/poetry"
 ENV POETRY_HOME="."
 RUN ["chown", "root:wheel", "."]
-RUN ["chmod", "6665"      , "."]
+RUN ["chmod", "6775"      , "."]
 ADD ["https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py", "get-poetry.py"]
 RUN ["xbps-install", "-y", "python3"]
 RUN ["python", "get-poetry.py", "--yes", "--no-modify-path"]
@@ -87,7 +87,7 @@ RUN ["chmod", "+x", "bin/poetry"]
 FROM base AS opt.elm
 WORKDIR "/opt/elm"
 RUN ["chown", "root:wheel", "."]
-RUN ["chmod", "6665"      , "."]
+RUN ["chmod", "6775"      , "."]
 
 WORKDIR "bin"
 ADD ["https://github.com/elm/compiler/releases/download/0.19.1/binary-for-linux-64-bit.gz", "elm.gz"]
@@ -97,14 +97,14 @@ RUN ["chmod", "+x", "elm"]
 FROM base AS opt.deno
 WORKDIR "/opt/deno"
 RUN ["chown", "root:wheel", "."]
-RUN ["chmod", "6665"      , "."]
+RUN ["chmod", "6775"      , "."]
 ADD ["https://github.com/denoland/deno/releases/download/v1.5.3/deno-x86_64-unknown-linux-gnu.zip", "deno.zip"]
 RUN ["unzip", "-d", "bin", "deno.zip"]
 
 FROM base AS opt.nvim
 WORKDIR "/opt/nvim"
 RUN ["chown", "root:wheel", "."]
-RUN ["chmod", "6665"      , "."]
+RUN ["chmod", "6775"      , "."]
 ADD ["https://github.com/neovim/neovim/releases/download/nightly/nvim-linux64.tar.gz", "nvim.tar.gz"]
 RUN ["tar", "-x", "--strip", "1", "-f", "nvim.tar.gz"]
 RUN ["rm", "nvim.tar.gz"]
@@ -112,7 +112,7 @@ RUN ["rm", "nvim.tar.gz"]
 FROM base AS opt.tectonic
 WORKDIR "/opt/tectonic"
 RUN ["chown", "root:wheel", "."]
-RUN ["chmod", "6665"      , "."]
+RUN ["chmod", "6775"      , "."]
 COPY --from=rekka/tectonic ["/root/.cache/Tectonic", "cache"]
 
 FROM base AS opt.pip
@@ -121,7 +121,7 @@ ENV PIP_PREFIX="."
 ENV PIP_CACHE_DIR=".cache"
 ENV PIP_NO_WARN_SCRIPT_LOCATION="1"
 RUN ["chown", "root:wheel", "."]
-RUN ["chmod", "6665"      , "."]
+RUN ["chmod", "6775"      , "."]
 RUN ["xbps-install", "-y", "python3-pip"]
 RUN ["pip", "install", "ipython", "python-language-server", "black", "mypy"]
 RUN ["pip", "install", "numpy", "sympy", "scipy", "matplotlib"]
@@ -134,28 +134,29 @@ ENV NPM_CONFIG_PREFIX="."
 ENV NPM_CONFIG_GLOBAL="true"
 ENV NPM_CONFIG_PROGRESS="false"
 RUN ["chown", "root:wheel", "."]
-RUN ["chmod", "6665"      , "."]
+RUN ["chmod", "6775"      , "."]
 RUN ["xbps-install", "-y", "nodejs"]
 RUN ["npm", "i", "typescript", "typescript-language-server", "pnpm", "prettier"]
 
 FROM base AS opt.void
 WORKDIR "/opt/void"
 RUN ["chown", "void:wheel", "."]
-RUN ["chmod", "6665"      , "."]
+RUN ["chmod", "6775"      , "."]
 USER "void"
 RUN ["git", "clone", "https://github.com/void-linux/void-packages", "."]
 
 FROM base AS opt
 WORKDIR "/tmp/opt"
-COPY --from=opt.opam     ["/opt/opam"    , "opam"    ]
-COPY --from=opt.nvim     ["/opt/nvim"    , "nvim"    ]
-COPY --from=opt.deno     ["/opt/deno"    , "deno"    ]
-COPY --from=opt.poetry   ["/opt/poetry"  , "poetry"  ]
-COPY --from=opt.elm      ["/opt/elm"     , "elm"     ]
-COPY --from=opt.tectonic ["/opt/tectonic", "tectonic"]
-COPY --from=opt.pip      ["/opt/pip"     , "pip"     ]
-COPY --from=opt.npm      ["/opt/npm"     , "npm"     ]
-COPY --from=opt.void     ["/opt/void"    , "void"    ]
+COPY --chown=root:wheel --from=opt.opam     ["/opt/opam"    , "opam"    ]
+COPY --chown=root:wheel --from=opt.nvim     ["/opt/nvim"    , "nvim"    ]
+COPY --chown=root:wheel --from=opt.deno     ["/opt/deno"    , "deno"    ]
+COPY --chown=root:wheel --from=opt.poetry   ["/opt/poetry"  , "poetry"  ]
+COPY --chown=root:wheel --from=opt.elm      ["/opt/elm"     , "elm"     ]
+COPY --chown=root:wheel --from=opt.tectonic ["/opt/tectonic", "tectonic"]
+COPY --chown=root:wheel --from=opt.pip      ["/opt/pip"     , "pip"     ]
+COPY --chown=root:wheel --from=opt.npm      ["/opt/npm"     , "npm"     ]
+COPY --chown=void:wheel --from=opt.void     ["/opt/void"    , "void"    ]
+RUN ["chmod", "6775", "opam", "nvim", "deno", "poetry", "elm", "tectonic", "pip", "npm", "void"]
 
 WORKDIR "/tmp/bin"
 RUN ["ln", "-s", "/opt/nvim/bin/nvim"    ]
@@ -165,8 +166,8 @@ RUN ["ln", "-s", "/opt/elm/bin/elm"      ]
 
 FROM base AS misc.nvim
 WORKDIR "/tmp/nvim/site/pack/me/start"
-RUN ["chown", "void:wheel", "."]
-RUN ["chmod", "6665"      , "."]
+RUN ["chown", "root:wheel", "."]
+RUN ["chmod", "6775"      , "."]
 RUN ["git", "clone", "https://github.com/gruvbox-community/gruvbox"]
 RUN ["git", "clone", "https://github.com/neovim/nvim-lspconfig"    ]
 
@@ -183,9 +184,11 @@ ADD ["https://flathub.org/repo/flathub.flatpakrepo", "etc/flatpak/remotes.d/flat
 COPY ["cfg", "/tmp/root"]
 
 FROM base AS home.kshi
-USER "kshi"
 WORKDIR "/home/kshi"
-COPY ["cfg/home/kshi", "."]
+RUN ["chown", "kshi:kshi", "."]
+RUN ["chmod", "6700"     , "."]
+USER "kshi"
+COPY --chown=kshi:kshi ["cfg/home/kshi", "."]
 RUN ["xdg-user-dirs-update"]
 
 FROM desk AS main.opt
@@ -201,14 +204,14 @@ FROM main.misc AS main.cfg
 COPY --from=cfg ["/tmp/root", "/"]
 RUN ["xbps-reconfigure", "-f", "glibc-locales"]
 
-FROM main.cfg AS main.user
+FROM main.cfg AS main.home
+COPY --from=home.kshi ["/home/kshi", "/home/kshi"]
+
+FROM main.home AS main.user
 RUN ["groupadd", "-r", "autologin"]
 RUN ["usermod", "-s", "/bin/bash", "root"]
 RUN ["usermod", "-s", "/bin/bash", "void"]
 RUN ["usermod", "-s", "/bin/bash", "-aG", "wheel,docker,audio,video,autologin", "kshi"]
-
-FROM main.misc AS main.home
-COPY --from=home.kshi ["/home/kshi", "/home/kshi"]
 
 FROM main.home AS main
 
