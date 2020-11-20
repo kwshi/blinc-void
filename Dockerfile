@@ -1,7 +1,7 @@
 FROM voidlinux/voidlinux AS base
 COPY ["xbps", "/etc/xbps.d"]
 RUN ["xbps-install", "-S"]
-RUN ["xbps-install", "-y", "base-system", "base-devel", "xdg-user-dirs", "git"]
+RUN ["xbps-install", "-y", "base-system", "base-devel", "xdg-user-dirs", "git", "acl-progs"]
 
 RUN ["useradd", "-r", "void"]
 RUN ["useradd", "-m", "kshi"]
@@ -23,7 +23,7 @@ RUN ["xbps-install", "-y", "rust"]
 RUN ["xbps-install", "-y", "go", "gopls"]
 RUN ["xbps-install", "-y", "python3-pip"]
 RUN ["xbps-install", "-y", "nodejs", "yarn"]
-RUN ["xbps-install", "-y", "julia", "clojure", "kotlin-bin", "factor", "shellcheck", "pandoc"]
+RUN ["xbps-install", "-y", "julia", "clojure", "kotlin-bin", "factor", "shellcheck", "pandoc", "html-xml-utils"]
 
 FROM core.lang AS core.wifi
 RUN ["xbps-install", "-y", "iwd", "openresolv", "iw"]
@@ -64,6 +64,9 @@ ENV OPAMROOT="."
 ENV OPAMYES="1"
 RUN ["chown", "root:wheel", "."]
 RUN ["chmod", "6775"      , "."]
+RUN ["setfacl", "-dm", "u::rwx", "."]
+RUN ["setfacl", "-dm", "g::rwx", "."]
+RUN ["setfacl", "-dm", "o::rx", "."]
 RUN ["xbps-install", "-y", "opam", "gmp-devel", "cblas-devel", "lapacke-devel", "openblas-devel", "zlib-devel"]
 RUN ["opam", "init", "--disable-sandboxing", "-ny"]
 RUN ["opam", "install", "dune", "utop", "odoc", "odig", "ocaml-lsp-server", "ppxlib"]
@@ -182,14 +185,12 @@ FROM base AS cfg
 WORKDIR "/tmp/root"
 ADD ["https://flathub.org/repo/flathub.flatpakrepo", "etc/flatpak/remotes.d/flathub.conf"]
 COPY ["cfg", "/tmp/root"]
+RUN ["chmod", "0775", "/etc/xdg/bspwm/bspwmrc"]
 
 FROM base AS home.kshi
 WORKDIR "/home/kshi"
-RUN ["chown", "kshi:kshi", "."]
-RUN ["chmod", "6700"     , "."]
 USER "kshi"
 COPY --chown=kshi:kshi ["cfg/home/kshi", "."]
-RUN ["xdg-user-dirs-update"]
 
 FROM desk AS main.opt
 COPY --from=opt ["/tmp/opt", "/opt"          ]
@@ -205,15 +206,21 @@ COPY --from=cfg ["/tmp/root", "/"]
 RUN ["xbps-reconfigure", "-f", "glibc-locales"]
 
 FROM main.cfg AS main.home
-COPY --from=home.kshi ["/home/kshi", "/home/kshi"]
+WORKDIR "/home/kshi"
+RUN ["chown", "kshi:kshi", "."]
+RUN ["chmod", "6700"     , "."]
+USER "kshi"
+COPY --from=home.kshi ["/home/kshi", "."]
+RUN ["xdg-user-dirs-update"]
 
 FROM main.home AS main.user
+USER "root"
 RUN ["groupadd", "-r", "autologin"]
 RUN ["usermod", "-s", "/bin/bash", "root"]
 RUN ["usermod", "-s", "/bin/bash", "void"]
 RUN ["usermod", "-s", "/bin/bash", "-aG", "wheel,docker,audio,video,autologin", "kshi"]
 
-FROM main.home AS main
+FROM main.user AS main
 
 FROM main AS entry
 WORKDIR "/tmp/entry"
