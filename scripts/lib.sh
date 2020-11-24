@@ -1,6 +1,9 @@
+# shellcheck shell=sh
+
 log () {
   fmt="$1"
   shift
+  # shellcheck disable=SC2059
   printf "$fmt\n" "$@" >&2
 }
 
@@ -10,30 +13,31 @@ indent () {
   done
 }
 
+# shellcheck disable=SC2120
 help () {
-  if [ ! -z "$1" ]
+  if [ -n "$1" ]
   then
     log '\n%b %b' \
       "$(printf_err_header 'usage error:')" \
       "$(echo "$1" | fmt_vars)"
   fi
-  if [ ! -z "$USAGE" ]
+  if [ -n "$USAGE" ]
   then
     log '\n%b %b' \
       "$(printf_header 'usage:')" \
       "$(echo "$USAGE" | fmt_usage)"
   fi
-  if [ ! -z "$DESCRIPTION" ]
+  if [ -n "$DESCRIPTION" ]
   then
     log '\n%b' "$(echo "$DESCRIPTION" | fmt_desc)"
   fi
-  if [ ! -z "$OPTIONS" ]
+  if [ -n "$OPTIONS" ]
   then
     log '\n%b\n%b' \
       "$(printf_header 'options:')" \
       "$(echo "$OPTIONS" | fmt_options)"
   fi
-  if [ ! -z "$EXAMPLES" ]
+  if [ -n "$EXAMPLES" ]
   then
     log '\n%b\n%b' \
       "$(printf_header 'examples:')" \
@@ -44,7 +48,8 @@ help () {
 }
 
 with_buildah_from () {
-  ctr="$(buildah from "$from")"
+  ctr="$(buildah from "$1")"
+  # shellcheck disable=2064
   trap "buildah rm '$ctr'" EXIT
   echo "$ctr"
 }
@@ -53,8 +58,12 @@ parse_common_opts () {
   while getopts 'hn:' f
   do
     case "$f" in
-      'n') opt_name="$OPTARG";;
-      'h'|'?') help;;
+      'n') 
+        # shellcheck disable=SC2034
+        opt_name="$OPTARG";;
+      'h'|'?') 
+        # shellcheck disable=SC2119
+        help;;
     esac
   done
   echo "$((OPTIND - 1))"
@@ -92,6 +101,7 @@ fmt_str () {
 }
 
 fmt_desc () {
+  # shellcheck disable=SC2016
   sed -e 's/`\([^`]\+\)`/\\033[0;2;94m`\\033[22m\1\\033[2m`\\033[m/g' \
     | fmt_vars | fmt_opt
 }
@@ -105,7 +115,9 @@ fmt_examples () {
     | indent | fmt_cmd | fmt_opt | fmt_vars | fmt_str
 }
 
+# shellcheck disable=SC2034
 COMMON_OPTIONS_USAGE='[-n <name> | -h]'
+# shellcheck disable=SC2034
 COMMON_OPTIONS_HELP="$(cat << EOF
 -n <name>
   Name the resulting image as \033[3;36m<name>\033[m.  If omitted or empty, the resulting image will not be named.
