@@ -47,13 +47,6 @@ help () {
   exit 1
 }
 
-with_buildah_from () {
-  ctr="$(buildah from "$1")"
-  # shellcheck disable=2064
-  trap "buildah rm '$ctr'" EXIT
-  echo "$ctr"
-}
-
 parse_common_opts () {
   while getopts 'hn:' f
   do

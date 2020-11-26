@@ -18,10 +18,16 @@ EOF
 
 OPTIONS="$COMMON_OPTIONS_HELP"
 
+shift "$(parse_common_opts "$@")"
+
 rootfs="$1"
 if [ -z "$rootfs" ]; then help '<rootfs> argument missing/empty'; fi
 
-ctr="$(with_buildah_from 'scratch')"
+ctr="$(buildah from 'scratch')"
+# shellcheck disable=SC2064
+trap "buildah rm '$ctr'" EXIT
+
+log 'container is "%s"' "$ctr"
 
 buildah add "$ctr" "$rootfs"
 buildah run "$ctr" xbps-install -Suy \

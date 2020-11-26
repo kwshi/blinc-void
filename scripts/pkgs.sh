@@ -1,6 +1,6 @@
 #!/bin/sh -e
 
-. 'scripts/lib.sh'
+. "$(dirname "$(realpath "$0")")/lib.sh"
 
 USAGE="$0 $COMMON_OPTIONS_USAGE <from> <pkg-list>..."
 
@@ -28,7 +28,9 @@ if [ -z "$from" ]; then help '<from-image> argument missing/empty'; fi
 shift
 if [ $# -eq 0 ]; then help 'no <pkg-list> arguments provided'; fi
 
-ctr="$(with_buildah_from "$from")"
+ctr="$(buildah from "$from")"
+# shellcheck disable=SC2064
+trap "buildah rm '$ctr'" EXIT
 
 for list in "$@"
 do xargs -a "$list" -- buildah run "$ctr" -- xbps-install -y
