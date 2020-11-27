@@ -23,9 +23,16 @@ main () {
   done
   shift $((OPTIND - 1))
 
-  if [ -z "$1" ]; then help 'no <!command> specified' >&2; exit 1; fi
+  if [ -z "$1" ] 
+  then 
+    help 'usage error: no <!command> specified' >&2 
+    exit 2
+  fi
 
-  if [ -n "$opt_name" ]; then log "using output image name \"$opt_name\""; fi
+  if [ -n "$opt_name" ] 
+  then
+    log "using output image name \"$opt_name\""
+  fi
 
   cmd="$1"
   shift 1
@@ -33,7 +40,9 @@ main () {
     'help') help; exit 0;;
     'base') cmd_base "$@";;
     'pkgs') cmd_pkgs "$@";;
-    *) help "invalid command \"$1\""; exit 1;;
+    *) 
+      help "usage error: invalid command \"$1\""
+      exit 2;;
   esac
 }
 
@@ -68,17 +77,17 @@ commit () {
 cmd_base () {
   if [ -z "${1+_}" ]
   then 
-    help 'no <rootfs> given' >&2
-    exit 1
+    help 'usage error: no <rootfs> given' >&2
+    exit 2
   fi
   if [ ! -e "$1" ] 
   then 
-    help "rootfs \"$1\" does not exist" >&2
+    help "error: rootfs \"$1\" does not exist" >&2
     exit 1
   fi
   if [ ! -r "$1" ]
   then
-    help "rootfs \"$1\" is not readable (check permissions?)" >&2
+    help "error: rootfs \"$1\" is not readable (check permissions?)" >&2
     exit 1
   fi
   rootfs="$1"
@@ -106,22 +115,30 @@ cmd_base () {
 }
 
 cmd_pkgs () {
-  if [ -z "${1+_}" ]; then help 'no <from> image specified' >&2; exit 1; fi
+  if [ -z "${1+_}" ]
+  then 
+    help 'usage error: no <from> image specified' >&2
+    exit 2
+  fi
   from="$1"
 
   shift
-  if [ $# -eq 0 ]; then help 'no <pkg-list> files given' >&2; exit 1; fi
+  if [ $# -eq 0 ] 
+  then
+    help 'usage error: no <pkg-list> files given' >&2
+    exit 2
+  fi
 
   for list in "$@"
   do 
     if [ ! -e "$list" ]
     then
-      help "file \"$list\" does not exist"
+      help "error: file \"$list\" does not exist"
       exit 1
     fi
     if [ ! -r "$list" ] 
     then
-      help "file \"$list\" is not readable (check permissions?)"
+      help "error: file \"$list\" is not readable (check permissions?)"
       exit 1
     fi
   done
