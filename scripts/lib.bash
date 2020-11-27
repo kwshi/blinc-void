@@ -1,4 +1,4 @@
-#!/bin/sh -e
+#!/bin/bash -e
 # vim:textwidth=60 fo-=t
 
 prefix () {
@@ -8,7 +8,7 @@ prefix () {
 
 log () {
   printf '%b %b\n' "$(prefix)" \
-    "$(echo "$@" | fmt_msg)" \
+    "$(fmt_msg <<< "$1")" \
     >&2
 }
 
@@ -51,7 +51,7 @@ cleanup () {
   if [ "$1" != 'EXIT' ]
   then log "received signal \`$1\`, trying to exit gracefully..."
   fi
-  log 'beginning clean up...'
+  log 'cleaning up...'
   log '  removing container...'
   log "    done: \"$(buildah rm "$ctr")\""
   log 'all cleaned up; exiting now.'
@@ -139,11 +139,12 @@ cmd_pkgs () {
   do 
     log "adding packages from \"$list\"..."
 
-    pkgs="$(cat "$list")"
-    log "packages to add: $pkgs"
+    readarray -t pkgs < "$list"
+    log "packages to add: $(sed -e 's/[^ ]\+/"&"/g' <<< "${pkgs[*]}")"
 
-    set -f
-    buildah run "$ctr" -- xbps-install -y $pkgs >&2
+    # TODO: ctrl-c doesn't seem to work, may be an issue
+    # with buildah
+    buildah run "$ctr" -- xbps-install -y "${pkgs[@]}" >&2
     log "done adding packages from \"$list\""
   done
 
@@ -151,14 +152,14 @@ cmd_pkgs () {
 }
 
 sed_quote () {
-  pat="$2\\([^$3]\\+\\)$3"
-  rep="\033[$1;2m$2\033[22m\\\\1\033[21;2m$3\033[m"
-  echo "s/$pat/$rep/g"
+  printf 's/%s/%s/g' \
+    "$2\\([^$3]\\+\\)$3" \
+    "\\\\033[$1;2m$2\\\\033[22m\\1\\\\033[21;2m$3\\\\033[m"
 }
 sed_opt="$(
-  pat='\(^\| \)-\([A-Za-z0-9]\)\([^A-Za-z0-9]\|$\)'
-  rep='\\1\033[1;2m-\033[22;1m\\2\033[21m\\3'
-  echo "s/$pat/$rep/g"
+printf 's/%s/%s/g' \
+  '\(^\| \)-\([A-Za-z0-9]\+\)\([^A-Za-z]\|$\)' \
+  '\1\\033[1;2m-\\033[22;1m\2\\033[21m\3'
 )"
 sed_var="$(sed_quote '96;3' '<' '>')"
 sed_strs="$(sed_quote '96' "'" "'")"
@@ -169,7 +170,7 @@ sed_punct='s/[][()|]\|\.\.\./\\033[2m&\\033[22m/g'
 sed_head='s/^[A-Za-z ]\+:/\\033[0;1;92m&\\033[m/'
 sed_err='s/^[A-Za-z ]\+:/\\033[0;1;91m&\\033[m/'
 
-fmt_misc () {
+function fmt_misc {
   sed -e "$sed_cmd" -e "$sed_opt" -e "$sed_var" \
     -e "$sed_code" -e "$sed_strs" -e "$sed_strd"
 }
@@ -226,7 +227,7 @@ EOF
 
 help () {
   if [ -n "$1" ]
-  then printf '%b' "$(echo "usage error: $1" | fmt_err)"
+  then printf '%b\n' "$(fmt_err <<< "$1")"
   fi
   printf '%b\n' "$help"
 }
