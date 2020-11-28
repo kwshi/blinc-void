@@ -1,18 +1,46 @@
 #!/bin/bash -e
 # vim:textwidth=60 fo-=t
 
-prefix () {
-  printf '\033[0;2m[\033[0;32m%s\033[0;2m | \033[0;34m%s\033[0;2m]\033[m\n' \
-    "$prog" "$(date '+%F %T')"
-}
-
-log () {
+function log {
   printf '%b %b\n' "$(prefix)" \
     "$(fmt_msg <<< "$1")" \
     >&2
 }
 
-main () {
+function help {
+  if [ -n "$1" ]
+  then printf '%b\n' "$(fmt_err <<< "$1")"
+  fi
+  printf '%b\n\n' "$help"
+}
+
+function err {
+  help "error: $1" >&2
+  exit 1
+}
+
+function err_usage {
+  help "usage error: $1" >&2
+  exit 2
+}
+
+function assert_nonempty {
+  if [ -z "$2" ]
+  then err_usage "argument <$1> is empty or missing"
+  fi
+}
+
+function assert_readable {
+  assert_nonempty "$1" "$2"
+  if [ ! -e "$2" ] 
+  then err "$1 file ${2@Q} does not exist"
+  fi
+  if [ ! -r "$2" ]
+  then err "$1 file ${2@Q} is not readable (check permissions?)"
+  fi
+}
+
+function main {
   while getopts 'hn:' f
   do
     case "$f" in
@@ -23,16 +51,7 @@ main () {
   done
   shift $((OPTIND - 1))
 
-  if [ -z "$1" ] 
-  then 
-    help 'usage error: no <!command> specified' >&2 
-    exit 2
-  fi
-
-  if [ -n "$opt_name" ] 
-  then
-    log "using output image name \"$opt_name\""
-  fi
+  assert_nonempty '!command' "$1"
 
   cmd="$1"
   shift 1
@@ -40,13 +59,12 @@ main () {
     'help') help; exit 0;;
     'base') cmd_base "$@";;
     'pkgs') cmd_pkgs "$@";;
-    *) 
-      help "usage error: invalid command \"$1\""
-      exit 2;;
+    'prog') cmd_prog "$@";;
+    *) err_usage "invalid command ${1@Q}";;
   esac
 }
 
-cleanup () {
+function cleanup {
   status=$?
   trap '' 'EXIT'
   case "$1" in
@@ -58,54 +76,51 @@ cleanup () {
   esac
   echo >&2
   if [ "$1" != 'EXIT' ]
-  then log "received signal \`$1\`, trying to exit gracefully..."
+  then 
+    prefix_clr='33'
+    log "received signal ${1@Q}, trying to exit gracefully..."
+  elif [ "$status" -ne 0 ]
+  then
+    prefix_clr='31'
+    log "intermediate build command failed (code ${status@Q}), trying to exit gracefully..."
   fi
   log 'cleaning up...'
   log '  removing container...'
-  log "    done: \"$(buildah rm "$ctr")\""
+  rmc="$(buildah rm "$ctr")"
+  log "    done: ${rmc@Q}"
   log 'all cleaned up; exiting now.'
   exit "$status"
 }
 
-commit () {
+function commit {
   log 'committing image...'
   img="$(buildah commit "$ctr" "$opt_name")"
-  log "done committing image: \"$img\"" "${opt_name:+ (name \"$opt_name\")}"
+  log "done committing image: ${img@Q}" "${opt_name:+ (name ${opt_name@Q})}"
   echo "$img"
 }
 
-cmd_base () {
-  if [ -z "${1+_}" ]
-  then 
-    help 'usage error: no <rootfs> given' >&2
-    exit 2
-  fi
-  if [ ! -e "$1" ] 
-  then 
-    help "error: rootfs \"$1\" does not exist" >&2
-    exit 1
-  fi
-  if [ ! -r "$1" ]
-  then
-    help "error: rootfs \"$1\" is not readable (check permissions?)" >&2
-    exit 1
-  fi
+traps="$(cat << EOF
+trap 'cleanup EXIT' 'EXIT'
+trap 'cleanup HUP'  'HUP'
+trap 'cleanup INT'  'INT'
+trap 'cleanup QUIT' 'QUIT'
+trap 'cleanup TERM' 'TERM'
+EOF
+)"
+
+function cmd_base {
+  assert_readable 'rootfs' "$1"
   rootfs="$1"
 
-  log "using rootfs \"$rootfs\""
+  log "using rootfs ${rootfs@Q}"
 
   log 'initializing container...'
   ctr="$(buildah from 'scratch')"
-  trap 'cleanup EXIT' 'EXIT'
-  trap 'cleanup HUP'  'HUP'
-  trap 'cleanup INT'  'INT'
-  trap 'cleanup QUIT' 'QUIT'
-  trap 'cleanup TERM' 'TERM'
-  log "done initializing container: \"$ctr\""
+  log "done initializing container: ${ctr@Q}"
 
   log 'adding rootfs...'
   add="$(buildah add "$ctr" "$rootfs")"
-  log "done adding rootfs: \"$add\""
+  log "done adding rootfs: ${add@Q}"
 
   log 'updating packages...'
   buildah run "$ctr" -- xbps-install -Suy >&2
@@ -114,68 +129,87 @@ cmd_base () {
   commit
 }
 
-cmd_pkgs () {
-  if [ -z "${1+_}" ]
-  then 
-    help 'usage error: no <from> image specified' >&2
-    exit 2
-  fi
+function cmd_pkgs {
+  assert_nonempty 'from' "$1"
   from="$1"
 
   shift
   if [ $# -eq 0 ] 
-  then
-    help 'usage error: no <pkg-list> files given' >&2
-    exit 2
+  then usage_err "no <pkg-list> arguments given"
   fi
 
   for list in "$@"
-  do 
-    if [ ! -e "$list" ]
-    then
-      help "error: file \"$list\" does not exist"
-      exit 1
-    fi
-    if [ ! -r "$list" ] 
-    then
-      help "error: file \"$list\" is not readable (check permissions?)"
-      exit 1
-    fi
+  do assert_readable 'pkg-list' "$list"
   done
 
   log 'initializing container...'
   ctr="$(buildah from "$from")"
-  trap 'cleanup EXIT' 'EXIT'
-  trap 'cleanup HUP'  'HUP'
-  trap 'cleanup INT'  'INT'
-  trap 'cleanup QUIT' 'QUIT'
-  trap 'cleanup TERM' 'TERM'
-  log "done initializing container: \"$ctr\""
+  eval "$traps"
+  log "done initializing container: ${ctr@Q}"
 
   for list in "$@"
   do 
-    log "adding packages from \"$list\"..."
+    log "adding packages from ${list@Q}..."
 
     readarray -t pkgs < "$list"
-    log "packages to add: $(sed -e 's/[^ ]\+/"&"/g' <<< "${pkgs[*]}")"
+    log "packages to add: ${pkgs[*]@Q}"
 
     # TODO: ctrl-c doesn't seem to work, may be an issue
     # with buildah
     buildah run "$ctr" -- xbps-install -y "${pkgs[@]}" >&2
-    log "done adding packages from \"$list\""
+    log "done adding packages from ${list@Q}"
   done
 
   commit
 }
 
-sed_quote () {
-  printf 's/%s/%s/g' \
-    "$2\\([^$3]\\+\\)$3" \
-    "\\\\033[$1;2m$2\\\\033[22m\\1\\\\033[21;2m$3\\\\033[m"
+function cmd_prog {
+  assert_nonempty 'from' "$1"
+  from="$1"
+
+  assert_readable 'prog' "$2"
+  # not naming this `prog` because that's used to refer to
+  # the current script in help messages
+  file="$2"
+
+  log 'initializing container...'
+  ctr="$(buildah from "$from")"
+  trap 'cleanup EXIT' 'EXIT'
+  trap 'cleanup INT'  'INT'
+  trap 'cleanup HUP'  'HUP'
+  trap 'cleanup QUIT' 'QUIT'
+  trap 'cleanup TERM' 'TERM'
+  log "done initializing container: ${ctr@Q}"
+
+  log "copying prog file ${file@Q} to container's '/tmp'..."
+  copy="$(buildah copy "$ctr" "$file" "/tmp")"
+  log "done copying prog file: ${copy@Q}"
+
+  path="/tmp/$(basename "$file")"
+  log 'setting prog file permissions...'
+  buildah run "$ctr" -- chmod 0500 "$path"
+  log 'done setting prog file permissions'
+
+  log 'executing prog file...'
+  buildah run "$ctr" -- "$path"
+  log 'done executing prog file'
+
+  log 'removing prog file...'
+  buildah run "$ctr" -- rm "$path"
+  log 'done removing prog file'
+
+  commit
 }
+
+function sed_quote {
+  printf 's/%s/%s/g' \
+    "\\(^\|[^0-9A-Za-z]\\)$2\\([^$3]\\+\\)$3" \
+    "\\1\\\\033[$1;2m$2\\\\033[22m\\2\\\\033[21;2m$3\\\\033[m"
+}
+
 sed_opt="$(
 printf 's/%s/%s/g' \
-  '\(^\| \)-\([A-Za-z0-9]\+\)\([^A-Za-z]\|$\)' \
+  '\(^\|[ m]\)-\([A-Za-z0-9]\+\)\([^A-Za-z]\|$\)' \
   '\1\\033[1;2m-\\033[22;1m\2\\033[21m\3'
 )"
 sed_var="$(sed_quote '96;3' '<' '>')"
@@ -184,7 +218,7 @@ sed_strd="$(sed_quote '96' '"' '"')"
 sed_code="$(sed_quote '95' '`' '`')"
 sed_cmd='s|!\([0-9A-Za-z./_-]\+\)|\\033[1m\1\\033[21m|g'
 sed_punct='s/[][()|]\|\.\.\./\\033[2m&\\033[22m/g'
-sed_head='s/^[A-Za-z ]\+:/\\033[0;1;92m&\\033[m/'
+sed_head='s/^[A-Za-z ]\+:/\\033[0;1;94m&\\033[m/'
 sed_err='s/^[A-Za-z ]\+:/\\033[0;1;91m&\\033[m/'
 
 function fmt_misc {
@@ -192,19 +226,25 @@ function fmt_misc {
     -e "$sed_code" -e "$sed_strs" -e "$sed_strd"
 }
 
-fmt_msg () {
+function fmt_msg {
   sed -e "$sed_punct" | fmt_misc
 }
 
-fmt_err () {
+function fmt_err {
   sed -e "$sed_err" | fmt_misc
 }
 
-fmt_help () {
+function fmt_help {
   sed -e "$sed_punct" -e "$sed_head" | fmt_misc
 }
 
+prefix () {
+  printf '\033[0;1;2m[\033[0;1;%sm%s\033[0;1;2m\033[0;2m]\033[m' \
+    "$prefix_clr" "$prog"
+}
+
 prog="${0##*/}"
+prefix_clr='32'
 help="$(fmt_help << EOF
 usage: !$prog [-n <name> | -h] <!command> [<args>...]
 
@@ -222,6 +262,14 @@ commands:
     on packages listed in each <pkg-list> file.  Each
     <pkg-list> file should be formatted as a
     whitespace-delimited list of package names.
+
+  !prog <from> <prog>
+    Starting with base image <from>, copy the provided
+    <prog> file (e.g., a shell script) to the image's "/tmp"
+    directory, mark it as executable, and execute it as
+    root.  The working directory from which <prog> is
+    executed is determined by the configuration of the
+    <from> image.
 
   !help
     Show this help message (same as -h).
@@ -241,12 +289,5 @@ examples:
   !$prog -n 'core' !pkgs 'xbps' 'edit' 'lang'
 EOF
 )"
-
-help () {
-  if [ -n "$1" ]
-  then printf '%b\n' "$(fmt_err <<< "$1")"
-  fi
-  printf '%b\n' "$help"
-}
 
 main "$@"
