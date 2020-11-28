@@ -151,7 +151,7 @@ function cmd_pkgs {
   do 
     log "adding packages from ${list@Q}..."
 
-    readarray -t pkgs < <(grep -v '^$' "$list")
+    readarray -t pkgs < <(sed -e 'sed/ *//g' -e '/^$/d' "$list")
     log "packages to add: ${pkgs[*]@Q}"
 
     # TODO: ctrl-c doesn't seem to work, may be an issue
