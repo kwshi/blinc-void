@@ -57,7 +57,7 @@ function main {
   shift 1
   case "$cmd" in
     'help') help; exit 0;;
-    'base') cmd_base "$@";;
+    'root') cmd_root "$@";;
     'pkgs') cmd_pkgs "$@";;
     'prog') cmd_prog "$@";;
     *) err_usage "invalid command ${1@Q}";;
@@ -108,7 +108,7 @@ trap 'cleanup TERM' 'TERM'
 EOF
 )"
 
-function cmd_base {
+function cmd_root {
   assert_readable 'rootfs' "$1"
   rootfs="$1"
 
@@ -151,7 +151,7 @@ function cmd_pkgs {
   do 
     log "adding packages from ${list@Q}..."
 
-    readarray -t pkgs < "$list"
+    readarray -t pkgs < <(grep -v '^$' "$list")
     log "packages to add: ${pkgs[*]@Q}"
 
     # TODO: ctrl-c doesn't seem to work, may be an issue
@@ -252,10 +252,10 @@ Builds a Void container image according to <!command> and
 prints the resulting image ID to stdout.
 
 commands:
-  !base <rootfs>
+  !root <rootfs>
     Unpack the Void <rootfs> archive into a new image from
     scratch and runs \`xbps-install -Suy\` to update its
-    base packages.
+    default packages.
   
   !pkgs <from> <pkg-list>...
     Starting with base image <from>, run \`xbps-install -y\`
