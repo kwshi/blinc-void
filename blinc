@@ -1,4 +1,4 @@
-#!/bin/bash -e
+#!/bin/bash -eu
 # vim:textwidth=60 fo-=t
 
 function log {
@@ -24,33 +24,69 @@ function err_usage {
   exit 2
 }
 
+function assert_defined {
+  if [ -z "$2" ]
+  then err_usage "argument <$1> is missing"
+  fi
+}
+
 function assert_nonempty {
   if [ -z "$2" ]
-  then err_usage "argument <$1> is empty or missing"
+  then err_usage "argument <$1> cannot be empty"
+  fi
+}
+
+function assert_exists {
+  assert_nonempty "$1" "$2"
+  if [ ! -e "$2" ]
+  then err "$1 file ${2@Q} does not exist"
   fi
 }
 
 function assert_readable {
-  assert_nonempty "$1" "$2"
-  if [ ! -e "$2" ] 
-  then err "$1 file ${2@Q} does not exist"
-  fi
+  assert_exists "$1" "$2"
   if [ ! -r "$2" ]
   then err "$1 file ${2@Q} is not readable (check permissions?)"
   fi
 }
 
+function assert_writable {
+  assert_nonempty "$1" "$2"
+  # https://unix.stackexchange.com/questions/480656/how-can-i-check-if-a-file-can-be-created-or-truncated-overwritten-in-bash
+  dir="$(dirname "$2")"
+  if [ -e "$2" ]
+  then
+    if [ ! -w "$2" ]
+    then err "$1 file ${2@Q} is not writable (check permissions?)"
+    fi
+  else
+    if [ ! -e "$dir" ]
+    then err "$1 file's parent directory ${dir@Q} doesn't exist"
+    elif [ ! -d "$dir" ]
+    then err "$1 file's parent path ${dir@Q} isn't a directory"
+    fi
+    if touch "$2"
+    then rm "$2"
+    else err "$1 file ${2@Q} cannot be created (check permissions?)"
+    fi
+  fi
+}
+
 function main {
-  while getopts 'hn:' f
+  while getopts 'n:o:h' f
   do
     case "$f" in
       'n') opt_name="$OPTARG";;
+      'o')
+        opt_out="$OPTARG"
+        assert_writable 'out' "$opt_out";;
       'h') help; exit 0;;
       '?') help >&2; exit 1;;
     esac
   done
   shift $((OPTIND - 1))
 
+  assert_defined '!command' "${1+_}"
   assert_nonempty '!command' "$1"
 
   cmd="$1"
@@ -76,7 +112,7 @@ function cleanup {
   esac
   echo >&2
   if [ "$1" != 'EXIT' ]
-  then 
+  then
     prefix_clr='33'
     log "received signal ${1@Q}, trying to exit gracefully..."
   elif [ "$status" -ne 0 ]
@@ -96,7 +132,10 @@ function commit {
   log 'committing image...'
   img="$(buildah commit "$ctr" "$opt_name")"
   log "done committing image: ${img@Q}" "${opt_name:+ (name ${opt_name@Q})}"
-  echo "$img"
+  if [ -n "$opt_out" ]
+  then echo "$img" > "$opt_out"
+  else echo "$img"
+  fi
 }
 
 traps="$(cat << EOF
@@ -109,6 +148,7 @@ EOF
 )"
 
 function cmd_root {
+  assert_defined 'rootfs' "${1+_}"
   assert_readable 'rootfs' "$1"
   rootfs="$1"
 
@@ -130,11 +170,12 @@ function cmd_root {
 }
 
 function cmd_pkgs {
+  assert_defined 'from' "${1+_}"
   assert_nonempty 'from' "$1"
   from="$1"
 
   shift
-  if [ $# -eq 0 ] 
+  if [ $# -eq 0 ]
   then usage_err "no <pkg-list> arguments given"
   fi
 
@@ -148,10 +189,10 @@ function cmd_pkgs {
   log "done initializing container: ${ctr@Q}"
 
   for list in "$@"
-  do 
+  do
     log "adding packages from ${list@Q}..."
 
-    readarray -t pkgs < <(sed -e 'sed/ *//g' -e '/^$/d' "$list")
+    readarray -t pkgs < <(sed -e 's/ *//g' -e '/^$/d' "$list")
     log "packages to add: ${pkgs[*]@Q}"
 
     # TODO: ctrl-c doesn't seem to work, may be an issue
@@ -164,9 +205,11 @@ function cmd_pkgs {
 }
 
 function cmd_prog {
+  assert_defined 'from' "${1+_}"
   assert_nonempty 'from' "$1"
   from="$1"
 
+  assert_defined 'prog' "${2+_}"
   assert_readable 'prog' "$2"
   # not naming this `prog` because that's used to refer to
   # the current script in help messages
@@ -209,7 +252,7 @@ function sed_quote {
 
 sed_opt="$(
 printf 's/%s/%s/g' \
-  '\(^\|[ m]\)-\([A-Za-z0-9]\+\)\([^A-Za-z]\|$\)' \
+  '\(^\|[^0-9A-Za-z]\|m\)-\([0-9A-Za-z]\+\)\([^A-Za-z]\|$\)' \
   '\1\\033[1;2m-\\033[22;1m\2\\033[21m\3'
 )"
 sed_var="$(sed_quote '96;3' '<' '>')"
@@ -246,17 +289,18 @@ prefix () {
 prog="${0##*/}"
 prefix_clr='32'
 help="$(fmt_help << EOF
-usage: !$prog [-n <name> | -h] <!command> [<args>...]
+usage: !$prog [-n <name> | -o <out> | -h] <!command> [<args>...]
 
 Builds a Void container image according to <!command> and
-prints the resulting image ID to stdout.
+prints the resulting image ID to stdout (or, if -o <out> is
+given, the file <out>).
 
 commands:
   !root <rootfs>
     Unpack the Void <rootfs> archive into a new image from
     scratch and runs \`xbps-install -Suy\` to update its
     default packages.
-  
+
   !pkgs <from> <pkg-list>...
     Starting with base image <from>, run \`xbps-install -y\`
     on packages listed in each <pkg-list> file.  Each
@@ -279,13 +323,16 @@ options:
      Name the resulting image as <name>.  If
      omitted or empty, the resulting image will not be
      named.
+  -o <out>
+     Write the resulting image ID to file <out> instead of
+     stdout.
   -h
      Show this help message.
 
 examples:
   !$prog           !base 'void-x86_64-ROOTFS-20191109.tar.xz'
   !$prog -n 'musl' !base 'void-x86_64-musl-ROOTFS-20191109.tar.xz'
-  
+
   !$prog -n 'core' !pkgs 'xbps' 'edit' 'lang'
 EOF
 )"
