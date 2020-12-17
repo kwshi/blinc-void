@@ -130,7 +130,10 @@ function cleanup {
 
 function commit {
   log 'committing image...'
-  img="$(buildah commit "$ctr" "$opt_name")"
+  if [ -n "${opt_name:+_}" ]
+  then img="$(buildah commit "$ctr" "$opt_name")"
+  else img="$(buildah commit "$ctr")"
+  fi
   log "done committing image: ${img@Q}" "${opt_name:+ (name ${opt_name@Q})}"
   if [ -n "$opt_out" ]
   then echo "$img" > "$opt_out"

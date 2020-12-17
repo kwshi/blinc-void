@@ -24,10 +24,16 @@ python3-pip
 nodejs
 yarn
 
+zig
+
 julia
 clojure
 kotlin-bin
 shellcheck
+
+elvish
+nushell
+zsh
 
 pandoc
 html-xml-utils

@@ -1,5 +1,6 @@
 xorg
 lightdm
+hsetroot
 picom
 bspwm
 sxhkd
