@@ -19,6 +19,7 @@ bat
 glow
 hyperfine
 pass
+hugo
 
 github-cli
 hub
