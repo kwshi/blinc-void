@@ -40,6 +40,23 @@ blinc/void.pkgs-cli: src/pkgs-cli.Containerfile blinc/void.base
 blinc/void.pkgs-desk: src/pkgs-desk.Containerfile blinc/void.pkgs-cli
 	podman build -t '$@' -f '$<' '.'
 
+.PHONY: blinc/void.opt.opam
+blinc/void.opt.opam: src/opt/opam.Containerfile blinc/void.base
+	podman build -t '$@' -f '$<' '.'
+
+.PHONY: blinc/void.opt.%
+blinc/void.opt.%: src/opt/%.Containerfile blinc/void.base
+	podman build -t '$@' -f '$<' '.'
+
+.PHONY: blinc/void.opt
+blinc/void.opt: \
+	src/opt.Containerfile \
+	blinc/void.pkgs-desk \
+	blinc/void.opt.pip \
+	blinc/void.opt.poetry \
+	blinc/void.opt.npm \
+	blinc/void.opt.opam
+
 .PHONY: blinc/void.cfg
-blinc/void.cfg: src/cfg.Containerfile blinc/void.pkgs-desk
+blinc/void.cfg: src/cfg.Containerfile blinc/void.pkgs-desk blinc/void.opt
 	podman build -t '$@' -f '$<' '.'
