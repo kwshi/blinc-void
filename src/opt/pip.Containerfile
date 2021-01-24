@@ -1,7 +1,7 @@
 # vi: ft=dockerfile
 FROM "blinc/void.base"
 
-RUN ["xbps-install", "-y", "python3-pip"]
+RUN ["xbps-install", "-y", "python3-pip", "python3-devel"]
 
 WORKDIR "/opt/blinc/pip"
 RUN ["chown", "pip:wheel", "."]
