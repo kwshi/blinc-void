@@ -40,4 +40,6 @@ blinc/void.pkgs-cli: src/pkgs-cli.Containerfile blinc/void.base
 blinc/void.pkgs-desk: src/pkgs-desk.Containerfile blinc/void.pkgs-cli
 	podman build -t '$@' -f '$<' '.'
 
-.PHONY: blinc-void.cfg
+.PHONY: blinc/void.cfg
+blinc/void.cfg: src/cfg.Containerfile blinc/void.pkgs-desk
+	podman build -t '$@' -f '$<' '.'

@@ -48,7 +48,7 @@ RUN xbps-install -y \
 
 # media players
 RUN xbps-install -y \
-  spotify{d,-tui} \
+  spotifyd spotify-tui \
   vlc mplayer mpv
 
 # art & modeling
