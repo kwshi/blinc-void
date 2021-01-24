@@ -32,12 +32,12 @@ blinc/void.rootfs: src/rootfs.Containerfile download/$(void_rootfs_filename)
 blinc/void.base: src/base.Containerfile blinc/void.rootfs
 	podman build -t '$@' -f '$<' '.'
 
-.PHONY: blinc/void.pkgs.cli
+.PHONY: blinc/void.pkgs-cli
 blinc/void.pkgs-cli: src/pkgs-cli.Containerfile blinc/void.base
 	podman build -t '$@' -f '$<' '.'
 
 .PHONY: blinc/void.pkgs-desk
-blinc/void.pkgs-desk: blinc/void.pkgs-desk src/pkgs-desk.Containerfile
-	podman build -t '$@' -f 'pkgs-desk.Containerfile' 'src'
+blinc/void.pkgs-desk: src/pkgs-desk.Containerfile blinc/void.pkgs-cli
+	podman build -t '$@' -f '$<' '.'
 
 .PHONY: blinc-void.cfg
