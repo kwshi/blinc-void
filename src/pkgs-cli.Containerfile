@@ -10,11 +10,12 @@ RUN xbps-install -y \
   chrony \
   cronutils \
   dbus \
-  fuse \
+  fuse fuse-overlayfs \
   geoclue2 \
   xdg-user-dirs \
   acl-progs \
-  iwd openresolv
+  iwd openresolv \
+  bubblewrap
 
 # servers
 RUN xbps-install -y \
@@ -72,11 +73,16 @@ RUN xbps-install -y \
   gopls \
   shellcheck \
   ghc-doc hoogle \
-  python3-language-server
+  python3-language-server black
 
 # extra libraries
 RUN xbps-install -y \
-  gmp lapacke cblas openblas \
+  gmp gmp-devel \
+  lapacke lapacke-devel \
+  cblas cblas-devel \
+  openblas openblas-devel \
+  zlib zlib-devel \
+  libressl libressl-devel \
   catch2 cgal
 
 # python libraries
