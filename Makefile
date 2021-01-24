@@ -6,6 +6,9 @@ export VOID_VERSION     := 20191109
 void_signify_key := sigs/void-release-$(VOID_VERSION).pub
 void_rootfs_filename := void-x86_64-ROOTFS-$(VOID_VERSION).tar.xz
 
+podman_build = podman build -t 'blinc/void.$(notdir $@)' -f '$<' '.'
+podman_build_tee = $(podman_build) | tee '$@'
+
 download:
 	mkdir -p 'download'
 
@@ -23,40 +26,31 @@ download/$(void_rootfs_filename): $(void_signify_key) | download
 	  '$(void_rootfs_filename)' \
 	&& rm -rf '/tmp/blinc-void'
 
-.PHONY: blinc/void.rootfs
-blinc/void.rootfs: src/rootfs.Containerfile download/$(void_rootfs_filename)
-	podman build -t '$@' -f '$<' '.' \
-		--build-arg 'void_rootfs_filename=$(void_rootfs_filename)'
+log/rootfs: src/rootfs.Containerfile download/$(void_rootfs_filename)
+	$(podman_build) \
+		--build-arg 'void_rootfs_filename=$(void_rootfs_filename)' \
+		| tee '$@'
 
-.PHONY: blinc/void.base
-blinc/void.base: src/base.Containerfile blinc/void.rootfs
-	podman build -t '$@' -f '$<' '.'
+log/base: src/base.Containerfile log/rootfs
+	$(podman_build_tee)
 
-.PHONY: blinc/void.pkgs-cli
-blinc/void.pkgs-cli: src/pkgs-cli.Containerfile blinc/void.base
-	podman build -t '$@' -f '$<' '.'
+log/pkgs-cli: src/pkgs-cli.Containerfile log/base
+	$(podman_build_tee)
 
-.PHONY: blinc/void.pkgs-desk
-blinc/void.pkgs-desk: src/pkgs-desk.Containerfile blinc/void.pkgs-cli
-	podman build -t '$@' -f '$<' '.'
+log/pkgs-desk: src/pkgs-desk.Containerfile log/pkgs-cli
+	$(podman_build_tee)
 
-.PHONY: blinc/void.opt.opam
-blinc/void.opt.opam: src/opt/opam.Containerfile blinc/void.base
-	podman build -t '$@' -f '$<' '.'
+log/opt.%: src/opt/%.Containerfile log/base
+	$(podman_build_tee)
 
-.PHONY: blinc/void.opt.%
-blinc/void.opt.%: src/opt/%.Containerfile blinc/void.base
-	podman build -t '$@' -f '$<' '.'
-
-.PHONY: blinc/void.opt
-blinc/void.opt: \
+log/opt: \
 	src/opt.Containerfile \
 	blinc/void.pkgs-desk \
 	blinc/void.opt.pip \
 	blinc/void.opt.poetry \
 	blinc/void.opt.npm \
 	blinc/void.opt.opam
+	$(podman_build_tee)
 
-.PHONY: blinc/void.cfg
-blinc/void.cfg: src/cfg.Containerfile blinc/void.pkgs-desk blinc/void.opt
-	podman build -t '$@' -f '$<' '.'
+log/cfg: src/cfg.Containerfile blinc/void.pkgs-desk blinc/void.opt
+	$(podman_build_tee)
