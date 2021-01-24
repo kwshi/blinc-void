@@ -2,10 +2,10 @@
 FROM "blinc/void.base"
 
 WORKDIR "/usr/share/blinc"
-RUN ["git", "clone", "https://github.com/kwshi/dotfiles"]
-RUN ["chown", "-R", "root:wheel", "dotfiles"]
-RUN ["chmod", "-R", "0774", "dotfiles"]
-RUN ["chmod", "g+s", "dotfiles"]
+RUN ["git", "clone", "https://github.com/kwshi/blinc-void", "."]
+RUN ["chown", "-R", "root:wheel", "."]
+RUN ["chmod", "-R", "g+rw", "."]
+RUN ["chmod", "4775", "."]
 
 WORKDIR "dotfiles"
 RUN ["ln", "-sT", "cli/bash", "/etc/bash"]
@@ -30,6 +30,8 @@ RUN ["ln", "-sT", "misc/locale.conf", "/etc/locale.conf"]
 RUN ["ln", "-sT", "misc/rc.local", "/etc/rc.local"]
 RUN ["ln", "-sT", "misc/rc.conf", "/etc/rc.conf"]
 RUN ["ln", "-sT", "misc/fstab", "/etc/fstab"]
+RUN ["ln", "-sT", "misc/sudoers", "/etc/sudoers.d"]
+RUN ["ln", "-sT", "misc/user-dirs", "/etc/xdg/user-dirs.defaults"]
 
 # TODO localtime
 RUN ["ln", "-sT", "/usr/share/zoneinfo/America/Los_Angeles", "/etc/localtime"]
