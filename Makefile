@@ -1,3 +1,5 @@
+SHELL := /bin/bash
+
 export VOID_RELEASE_URL := https://alpha.us.repo.voidlinux.org/live/current
 export VOID_VERSION     := 20191109
 

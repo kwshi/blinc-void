@@ -3,7 +3,6 @@ cronutils
 fuse
 chrony
 geoclue2
-flatpak
 
 docker
 docker-compose 
@@ -13,10 +12,20 @@ buildah
 
 curl 
 wget
+jq
 zip
 exa
 bat
+glow
+hyperfine
 pass
+hugo
+
+github-cli
+hub
+ghi
+git-cal
+grip
 
 inotify-tools
 mupdf-tools
