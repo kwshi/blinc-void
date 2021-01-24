@@ -1,31 +1,41 @@
 export VOID_RELEASE_URL := https://alpha.us.repo.voidlinux.org/live/current
 export VOID_VERSION     := 20191109
-export VOID_SIGNIFY_KEY := sigs/void-release-$(VOID_VERSION).pub
 
-export void_rootfs_filename := void-x86_64-ROOTFS-$(VOID_VERSION).tar.xz
+void_signify_key := sigs/void-release-$(VOID_VERSION).pub
+void_rootfs_filename := void-x86_64-ROOTFS-$(VOID_VERSION).tar.xz
 
-build:
-	mkdir 'build'
+download:
+	mkdir -p 'download'
 
-build/download: | build
-	mkdir 'build/download'
+download/$(void_rootfs_filename): $(void_signify_key) | download
+	mkdir -p '/tmp/blinc-void' \
+	&& cd '/tmp/blinc-void' \
+	&& curl -fLo '$(void_rootfs_filename)' \
+	  '$(VOID_RELEASE_URL)/$(void_rootfs_filename)' \
+	&& curl -fLo 'sha256.sig' \
+	  '$(VOID_RELEASE_URL)/sha256.sig' \
+	&& signify -Cp '$(CURDIR)/$(void_signify_key)' \
+	  -x 'sha256.sig' \
+	  '$(void_rootfs_filename)' \
+	&& mv -t '$(CURDIR)/download' \
+	  '$(void_rootfs_filename)' \
+	&& rm -rf '/tmp/blinc-void'
 
-build/phase: | build
-	mkdir 'build/phase'
+.PHONY: blinc/void.rootfs
+blinc/void.rootfs: src/rootfs.Containerfile download/$(void_rootfs_filename)
+	podman build -t '$@' -f '$<' '.' \
+		--build-arg 'void_rootfs_filename=$(void_rootfs_filename)'
 
-build/phase/core: | build/phase
-	mkdir 'build/phase/core'
+.PHONY: blinc/void.base
+blinc/void.base: src/base.Containerfile blinc/void.rootfs
+	podman build -t '$@' -f '$<' '.'
 
-build/download/sha256.sig: | build/download
-	curl -fLo 'build/download/sha256.sig' '$(VOID_RELEASE_URL)/sha256.sig'
+.PHONY: blinc/void.pkgs.cli
+blinc/void.pkgs-cli: src/pkgs-cli.Containerfile blinc/void.base
+	podman build -t '$@' -f '$<' '.'
 
-build/download/$(void_rootfs_filename): build/download/sha256.sig | $(VOID_SIGNIFY_KEY)
-	cd 'build/download' \
-		&& curl -fLO '$(VOID_RELEASE_URL)/$(void_rootfs_filename)' \
-		&& signify -C -p '$(VOID_SIGNIFY_KEY)' -x 'sha256.sig' '$(void_rootfs_filename)'
+.PHONY: blinc/void.pkgs-desk
+blinc/void.pkgs-desk: blinc/void.pkgs-desk src/pkgs-desk.Containerfile
+	podman build -t '$@' -f 'pkgs-desk.Containerfile' 'src'
 
-build/phase/base: script/base.sh build/download/$(void_rootfs_filename) | build/phase
-	'$<' 'build/download/$(void_rootfs_filename)'
-
-build/phase/core/util: script/core/util.sh build/phase/base | build/phase/core
-	'$<'
+.PHONY: blinc-void.cfg
