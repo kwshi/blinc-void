@@ -2,6 +2,7 @@
 FROM "blinc/void.base"
 
 RUN ["xbps-install", "-y", "python3-pip", "python3-devel"]
+RUN ["xbps-install", "-y", "gmp-devel", "mpfr-devel", "libmpc-devel"]
 
 WORKDIR "/opt/blinc/pip"
 RUN ["chown", "pip:wheel", "."]

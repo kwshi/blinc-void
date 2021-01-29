@@ -77,7 +77,9 @@ RUN xbps-install -y \
 
 # extra libraries
 RUN xbps-install -y \
+  mpfr mpfr-devel \
   gmp gmp-devel \
+  libmpc libmpc-devel \
   lapacke lapacke-devel \
   cblas cblas-devel \
   openblas openblas-devel \

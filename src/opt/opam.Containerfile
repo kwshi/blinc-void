@@ -11,6 +11,10 @@ RUN xbps-install -y \
   "libressl" "libressl-devel" \
   "bubblewrap"
 
+WORKDIR "/opt/blinc/opam"
+RUN ["chown", "opam:wheel", "."]
+RUN ["chmod", "4775", "."]
+
 USER "opam"
 ENV "OPAMYES"="1"
 
@@ -31,6 +35,6 @@ RUN ["opam", "install", "obus"]
 RUN ["opam", "install", "pgocaml", "pgocaml_ppx"]
 RUN ["opam", "install", "parmap"]
 
-# temporary fix for opam
+# temporary fix for cohttp
 RUN ["opam", "pin", "add", "cohttp.3.0.0", "--dev-repo"]
 RUN ["opam", "install", "cohttp", "cohttp-lwt", "cohttp-lwt-unix-ssl"]

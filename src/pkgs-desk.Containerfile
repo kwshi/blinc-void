@@ -8,7 +8,8 @@ RUN xbps-install -y \
   pulseaudio bluez alsa-plugins-pulseaudio \
   caffeine-ng \
   mesa-vaapi mesa-vdpau mesa-vulkan-radeon \
-  fontconfig fontconfig-32bit
+  fontconfig fontconfig-32bit \
+  barrier
 
 # tools
 RUN xbps-install -y \
@@ -75,6 +76,11 @@ RUN xbps-install -y \
   steam \
   libglvnd-32bit libdrm-32bit mesa-dri-32bit \
   vulkan-loader-32bit mesa-vulkan-radeon-32bit
+
+# virtualization
+RUN xbps-install -y \
+  qemu qemu-ga qemu-user-static qemuconf virtme \
+  libvirt virt-manager virt-manager-tools
 
 # misc
 RUN xbps-install -y \

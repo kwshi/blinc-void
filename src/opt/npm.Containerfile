@@ -3,6 +3,10 @@ FROM "blinc/void.base"
 
 RUN ["xbps-install", "-y", "nodejs"]
 
+WORKDIR "/opt/blinc/npm"
+RUN ["chown", "npm:wheel", "."]
+RUN ["chmod", "4775", "."]
+
 USER "npm"
 ENV "NPM_CONFIG_PREFIX"="/opt/blinc/npm"
 ENV "NPM_CONFIG_GLOBAL"="1"

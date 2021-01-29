@@ -1,5 +1,7 @@
 # vi: ft=dockerfile
-FROM "blinc/void.base"
+FROM "blinc/void.opt"
+
+RUN ["flatpak", "remote-add", "flathub", "https://flathub.org/repo/flathub.flatpakrepo"]
 
 WORKDIR "/usr/share/blinc"
 RUN ["git", "clone", "https://github.com/kwshi/blinc-void", "."]
@@ -8,7 +10,8 @@ RUN ["chmod", "-R", "g+rw", "."]
 RUN ["chmod", "4775", "."]
 
 WORKDIR "dotfiles"
-RUN ["ln", "-sT", "cli/bash", "/etc/bash"]
+RUN ["rmdir", "/etc/bash/bashrc.d"]
+RUN ["ln", "-sT", "cli/bash", "/etc/bash/bashrc.d"]
 RUN ["ln", "-sT", "cli/profile", "/etc/profile.d"]
 RUN ["ln", "-sT", "cli/iwd", "/etc/iwd"]
 RUN ["ln", "-sT", "cli/docker", "/etc/docker"]
@@ -47,7 +50,14 @@ RUN ["ln", "-s", "/etc/sv/chronyd"]
 
 RUN ["mkdir", "-p", "/data", "/efi"]
 
+# kshi
+
+RUN ["useradd", "-m", "kshi"]
+RUN ["usermod", "-aG", "wheel,docker,audio,video,autologin", "kshi"]
+
 WORKDIR "/home/kshi"
+USER "kshi"
+RUN ["xdg-user-dirs-update"]
 RUN ["mkdir", "-p", ".cache", ".config", ".mozilla", ".ssh", ".local/share"]
 RUN ["ln", "-s", "/data/documents"]
 RUN ["ln", "-s", "/data/hacks"]
@@ -73,21 +83,6 @@ RUN ["ln", "-sT", "/opt/blinc/tectonic", ".cache/Tectonic"]
 #FROM main.misc AS main.cfg
 #COPY --from=cfg ["/tmp/root", "/"]
 #RUN ["xbps-reconfigure", "-f", "glibc-locales"]
-#
-#FROM main.cfg AS main.home
-#WORKDIR "/home/kshi"
-#RUN ["chown", "kshi:kshi", "."]
-#RUN ["chmod", "6700"     , "."]
-#USER "kshi"
-#COPY --from=home.kshi ["/home/kshi", "."]
-#RUN ["xdg-user-dirs-update"]
-#
-#FROM main.home AS main.user
-#USER "root"
-#RUN ["groupadd", "-r", "autologin"]
-#RUN ["usermod", "-s", "/bin/bash", "root"]
-#RUN ["usermod", "-s", "/bin/bash", "void"]
-#RUN ["usermod", "-s", "/bin/bash", "-aG", "wheel,docker,audio,video,autologin", "kshi"]
 #
 #FROM main.user AS main
 #
