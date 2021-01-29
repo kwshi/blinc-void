@@ -1,4 +1,4 @@
-SHELL := /bin/bash
+SHELL := /bin/bash -o pipefail
 
 export VOID_RELEASE_URL := https://alpha.us.repo.voidlinux.org/live/current
 export VOID_VERSION     := 20191109
@@ -45,12 +45,17 @@ log/opt.%: src/opt/%.Containerfile log/base
 
 log/opt: \
 	src/opt.Containerfile \
-	blinc/void.pkgs-desk \
-	blinc/void.opt.pip \
-	blinc/void.opt.poetry \
-	blinc/void.opt.npm \
-	blinc/void.opt.opam
+	log/pkgs-desk \
+	log/opt.pip \
+	log/opt.poetry \
+	log/opt.npm \
+	log/opt.vpkgs \
+	log/opt.deno \
+	log/opt.nvim \
+	log/opt.elm \
+	log/opt.heroku \
+	log/opt.opam
 	$(podman_build_tee)
 
-log/cfg: src/cfg.Containerfile blinc/void.pkgs-desk blinc/void.opt
+log/cfg: src/cfg.Containerfile log/opt
 	$(podman_build_tee)
