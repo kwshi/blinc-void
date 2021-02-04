@@ -13,12 +13,14 @@ RUN xbps-install -y \
 
 WORKDIR "/opt/blinc/opam"
 RUN ["chown", "opam:wheel", "."]
-RUN ["chmod", "4775", "."]
+RUN ["chmod", "2775", "."]
 
 USER "opam"
 ENV "OPAMYES"="1"
 
-RUN ["opam", "init", "-n"]
+RUN ["opam", "init", "-n", "--disable-sandboxing"]
+RUN ["chown", "-R", "opam:wheel", "."]
+RUN ["chmod", "g+s", ".", ".opam"]
 
 RUN ["opam", "install", "dune", "utop"]
 RUN ["opam", "install", "odoc", "odig"]

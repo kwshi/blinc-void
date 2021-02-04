@@ -5,7 +5,7 @@ RUN ["xbps-install", "-y", "nodejs"]
 
 WORKDIR "/opt/blinc/npm"
 RUN ["chown", "npm:wheel", "."]
-RUN ["chmod", "4775", "."]
+RUN ["chmod", "2775", "."]
 
 USER "npm"
 ENV "NPM_CONFIG_PREFIX"="/opt/blinc/npm"

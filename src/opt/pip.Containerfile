@@ -6,7 +6,7 @@ RUN ["xbps-install", "-y", "gmp-devel", "mpfr-devel", "libmpc-devel"]
 
 WORKDIR "/opt/blinc/pip"
 RUN ["chown", "pip:wheel", "."]
-RUN ["chmod", "4775", "."]
+RUN ["chmod", "2775", "."]
 
 USER "pip"
 ENV "PIP_PREFIX"="."

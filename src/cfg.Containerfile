@@ -7,73 +7,82 @@ WORKDIR "/usr/share/blinc"
 RUN ["git", "clone", "https://github.com/kwshi/blinc-void", "."]
 RUN ["chown", "-R", "root:wheel", "."]
 RUN ["chmod", "-R", "g+rw", "."]
-RUN ["chmod", "4775", "."]
+RUN ["chmod", "2775", "."]
 
-WORKDIR "dotfiles"
-RUN ["rmdir", "/etc/bash/bashrc.d"]
-RUN ["ln", "-sT", "cli/bash", "/etc/bash/bashrc.d"]
-RUN ["ln", "-sT", "cli/profile", "/etc/profile.d"]
-RUN ["ln", "-sT", "cli/iwd", "/etc/iwd"]
-RUN ["ln", "-sT", "cli/docker", "/etc/docker"]
-RUN ["ln", "-sT", "cli/containers", "/etc/containers"]
-RUN ["ln", "-sT", "cli/ssh", "/etc/ssh"]
-RUN ["ln", "-sT", "cli/github", "/etc/xdg/github"]
-RUN ["ln", "-sT", "cli/bat", "/etc/xdg/bat"]
-RUN ["ln", "-sT", "cli/git", "/etc/xdg/git"]
+WORKDIR "/etc"
+RUN ["mkdir", "docker"]
+WORKDIR "/etc/xdg"
+RUN ["mkdir", "git", "github", "bat"]
 
-RUN ["ln", "-sT", "desk/x11", "/etc/X11"]
-RUN ["ln", "-sT", "desk/lightdm", "/etc/lightdm"]
-RUN ["ln", "-sT", "desk/fonts", "/etc/fonts"]
-RUN ["ln", "-sT", "desk/alacritty", "/etc/xdg/alacritty"]
-RUN ["ln", "-sT", "desk/bspwm", "/etc/xdg/bspwm"]
-RUN ["ln", "-sT", "desk/sxhkd", "/etc/xdg/sxhkd"]
+WORKDIR "/usr/share/blinc/dotfiles/cli"
+RUN ["stow", "-t", "/etc/bash", "bash"]
+RUN ["stow", "-t", "/etc/profile.d", "profile"]
+RUN ["stow", "-t", "/etc/iwd", "iwd"]
+RUN ["stow", "-t", "/etc", "npm"]
 
-RUN ["ln", "-sT", "misc/libc-locales", "/etc/default/libc-locales"]
-RUN ["ln", "-sT", "misc/locale.conf", "/etc/locale.conf"]
-RUN ["ln", "-sT", "misc/rc.local", "/etc/rc.local"]
-RUN ["ln", "-sT", "misc/rc.conf", "/etc/rc.conf"]
-RUN ["ln", "-sT", "misc/fstab", "/etc/fstab"]
-RUN ["ln", "-sT", "misc/sudoers", "/etc/sudoers.d"]
-RUN ["ln", "-sT", "misc/user-dirs", "/etc/xdg/user-dirs.defaults"]
+WORKDIR "/etc"
+RUN ["rm", "-rf", "containers", "ssh/ssh_config", "lightdm/lightdm.conf", "pulse/daemon.conf"]
+RUN ln -sft . \
+  /usr/share/blinc/dotfiles/misc/locale.conf \
+  /usr/share/blinc/dotfiles/misc/rc.local \
+  /usr/share/blinc/dotfiles/misc/rc.conf \
+  /usr/share/blinc/dotfiles/misc/fstab \
+  /usr/share/blinc/dotfiles/cli/containers
+RUN ["ln", "-sfT", "/usr/share/blinc/dotfiles/misc/libc-locales", "default/libc-locales"]
+RUN ["stow", "-d", "/usr/share/blinc/dotfiles/misc", "-t", "sudoers.d", "sudoers"]
+RUN ["stow", "-d", "/usr/share/blinc/dotfiles/cli", "-t", "ssh", "ssh"]
+RUN ["stow", "-d", "/usr/share/blinc/dotfiles/desk", "-t", "X11", "x11"]
+RUN ["stow", "-d", "/usr/share/blinc/dotfiles/desk", "-t", "lightdm", "lightdm"]
+RUN ["stow", "-d", "/usr/share/blinc/dotfiles/desk", "-t", "pulse", "pulse"]
+RUN ["ln", "-sT", "/usr/share/zoneinfo/America/Los_Angeles", "localtime"]
 
-# TODO localtime
-RUN ["ln", "-sT", "/usr/share/zoneinfo/America/Los_Angeles", "/etc/localtime"]
+WORKDIR "xdg"
+RUN ["rmdir", "git", "github", "bat"]
+RUN ln -st '.' \
+  /usr/share/blinc/dotfiles/cli/git \
+  /usr/share/blinc/dotfiles/cli/github \
+  /usr/share/blinc/dotfiles/cli/bat \
+  /usr/share/blinc/dotfiles/desk/alacritty \
+  /usr/share/blinc/dotfiles/desk/bspwm \
+  /usr/share/blinc/dotfiles/desk/sxhkd \
+  /usr/share/blinc/dotfiles/desk/xournal
+RUN ["ln", "-sfT", "/usr/share/blinc/dotfiles/misc/user-dirs", "user-dirs.defaults"]
+
+RUN ["ln", "-sT", "/data/containers/root", "/var/lib/containers"]
 
 WORKDIR "/etc/runit/runsvdir/default"
 
-RUN ["ln", "-s", "/etc/sv/dbus"]
-RUN ["ln", "-s", "/etc/sv/docker"]
-RUN ["ln", "-s", "/etc/sv/iwd"]
-RUN ["ln", "-s", "/etc/sv/lightdm"]
-RUN ["ln", "-s", "/etc/sv/bluetoothd"]
-RUN ["ln", "-s", "/etc/sv/chronyd"]
+RUN ln -st . \
+  /etc/sv/dbus \
+  /etc/sv/docker \
+  /etc/sv/iwd \
+  /etc/sv/lightdm \
+  /etc/sv/bluetoothd \
+  /etc/sv/chronyd
 
-RUN ["mkdir", "-p", "/data", "/efi"]
+RUN ["mkdir", "/data", "/efi"]
 
-# kshi
-
+RUN ["groupadd", "-r", "autologin"]
 RUN ["useradd", "-m", "kshi"]
 RUN ["usermod", "-aG", "wheel,docker,audio,video,autologin", "kshi"]
 
 WORKDIR "/home/kshi"
 USER "kshi"
-RUN ["xdg-user-dirs-update"]
-RUN ["mkdir", "-p", ".cache", ".config", ".mozilla", ".ssh", ".local/share"]
-RUN ["ln", "-s", "/data/documents"]
-RUN ["ln", "-s", "/data/hacks"]
-RUN ["ln", "-sT", "/data/firefox", ".mozilla/firefox"]
+RUN ["mkdir", "-p", ".cache", ".config/github", ".mozilla", ".ssh", ".local/share"]
+RUN ["ln", "-st", ".", "/data/documents", "/data/hacks", "/data/movies"]
+RUN ["ln", "-sT", "/data/browser/firefox", ".mozilla/firefox"]
+RUN ["ln", "-sT", "/data/browser/chromium", ".config/chromium"]
 RUN ["ln", "-sT", "/data/zoom", ".zoom"]
 RUN ["ln", "-sT", "/data/github/hosts.yml", ".config/github/hosts.yml"]
 RUN ["ln", "-sT", "/data/games/klei", ".klei"]
 RUN ["ln", "-sT", "/data/games/multimc", ".multimc"]
 RUN ["ln", "-sT", "/data/games/steam/home", ".steam"]
 RUN ["ln", "-sT", "/data/games/steam/share", ".local/share/Steam"]
-RUN ["ln", "-sT", "/data/containers", ".local/share/containers"]
+RUN ["ln", "-sT", "/data/containers/rootless", ".local/share/containers"]
 RUN ["ln", "-sT", "/data/signal", ".config/Signal"]
 RUN ["ln", "-sT", "/data/slack", ".config/Slack"]
-
 RUN ["ln", "-sT", "/opt/blinc/tectonic", ".cache/Tectonic"]
-
+RUN ["xdg-user-dirs-update"]
 
 #FROM main.opt AS main.misc
 #COPY --from=misc.nvim  ["/tmp/nvim" , "/usr/local/share/nvim" ]

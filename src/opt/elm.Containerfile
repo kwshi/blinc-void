@@ -3,7 +3,7 @@ FROM "blinc/void.base"
 
 WORKDIR "/opt/blinc/elm"
 RUN ["chown", "root:wheel", "."]
-RUN ["chmod", "4755"      , "."]
+RUN ["chmod", "2755"      , "."]
 
 WORKDIR "bin"
 ENV "ELM_URL"="https://github.com/elm/compiler/releases/download/0.19.1"

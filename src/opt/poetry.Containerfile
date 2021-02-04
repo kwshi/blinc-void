@@ -3,8 +3,11 @@ FROM "blinc/void.base"
 
 RUN ["xbps-install", "-y", "python3"]
 
-USER "poetry"
 WORKDIR "/opt/blinc/poetry"
+RUN ["chmod", "2775", "."]
+RUN ["chown", "poetry:wheel", "."]
+
+USER "poetry"
 ENV "POETRY_URL"="https://raw.githubusercontent.com/python-poetry/poetry/master"
 ENV "POETRY_ACCEPT"="1"
 ADD --chown="poetry":"poetry" ["$POETRY_URL/get-poetry.py", "."]

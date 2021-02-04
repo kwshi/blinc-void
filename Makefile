@@ -6,15 +6,24 @@ export VOID_VERSION     := 20191109
 void_signify_key := sigs/void-release-$(VOID_VERSION).pub
 void_rootfs_filename := void-x86_64-ROOTFS-$(VOID_VERSION).tar.xz
 
+tmpdir := /tmp/blinc-void
+
 podman_build = podman build -t 'blinc/void.$(notdir $@)' -f '$<' '.'
-podman_build_tee = $(podman_build) | tee '$@'
+podman_build_tee = $(podman_build) \
+									 | tee '$(tmpdir)/$@' \
+									 && cp --no-preserve 'mode' '$(tmpdir)/$@' '$@'
 
 download:
 	mkdir -p 'download'
 
-download/$(void_rootfs_filename): $(void_signify_key) | download
-	mkdir -p '/tmp/blinc-void' \
-	&& cd '/tmp/blinc-void' \
+log:
+	mkdir -p 'log'
+
+$(tmpdir)/%:
+	mkdir -p '$@'
+
+download/$(void_rootfs_filename): $(void_signify_key) | download $(tmpdir)/download
+	cd '$(tmpdir)/download' \
 	&& curl -fLo '$(void_rootfs_filename)' \
 	  '$(VOID_RELEASE_URL)/$(void_rootfs_filename)' \
 	&& curl -fLo 'sha256.sig' \
@@ -22,14 +31,14 @@ download/$(void_rootfs_filename): $(void_signify_key) | download
 	&& signify -Cp '$(CURDIR)/$(void_signify_key)' \
 	  -x 'sha256.sig' \
 	  '$(void_rootfs_filename)' \
-	&& mv -t '$(CURDIR)/download' \
-	  '$(void_rootfs_filename)' \
-	&& rm -rf '/tmp/blinc-void'
+	&& cp --no-preserve 'mode' '$(CURDIR)/download' \
+	  '$(void_rootfs_filename)'
 
-log/rootfs: src/rootfs.Containerfile download/$(void_rootfs_filename)
+log/rootfs: src/rootfs.Containerfile download/$(void_rootfs_filename) | log $(tmpdir)/log
 	$(podman_build) \
 		--build-arg 'void_rootfs_filename=$(void_rootfs_filename)' \
-		| tee '$@'
+		| tee '$(tmpdir)/$@' \
+		&& cp --no-preserve 'mode' '$(tmpdir)/$@' '$@'
 
 log/base: src/base.Containerfile log/rootfs
 	$(podman_build_tee)
@@ -54,6 +63,7 @@ log/opt: \
 	log/opt.nvim \
 	log/opt.elm \
 	log/opt.heroku \
+	log/opt.talon \
 	log/opt.opam
 	$(podman_build_tee)
 
