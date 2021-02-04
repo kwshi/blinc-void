@@ -1,2 +1,2 @@
-export OPAMROOT='/opt/opam'
+export OPAMROOT='/opt/blinc/opam/.opam'
 eval $(opam env)

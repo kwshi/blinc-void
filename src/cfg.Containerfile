@@ -69,6 +69,7 @@ RUN ["usermod", "-aG", "wheel,docker,audio,video,autologin", "kshi"]
 WORKDIR "/home/kshi"
 USER "kshi"
 RUN ["mkdir", "-p", ".cache", ".config/github", ".mozilla", ".ssh", ".local/share"]
+RUN ["rm", ".bashrc", ".bash_profile"]
 RUN ["ln", "-st", ".", "/data/documents", "/data/hacks", "/data/movies"]
 RUN ["ln", "-sT", "/data/browser/firefox", ".mozilla/firefox"]
 RUN ["ln", "-sT", "/data/browser/chromium", ".config/chromium"]
