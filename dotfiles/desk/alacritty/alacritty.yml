@@ -3,6 +3,8 @@ env:
 
 draw_bold_text_with_bright_colors: true
 
+live_reload_config: true
+
 colors:
   primary:
     # hard contrast: background = '#1d2021'
