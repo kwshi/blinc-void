@@ -4,6 +4,8 @@ FROM "blinc/void.rootfs"
 COPY ["src/xbps", "/etc/xbps.d"]
 RUN ["chmod", "2774", "/etc/xbps.d"]
 
+COPY ["src/dracut", "/etc/dracut.conf.d"]
+
 RUN ["ln", "-s", "lib", "/usr/lib64"]
 
 RUN ["xbps-install", "-Suy", "xbps", "base-files"]
