@@ -38,6 +38,7 @@ RUN ln -st '.' \
   /usr/share/blinc/dotfiles/cli/pip \
   /usr/share/blinc/dotfiles/cli/nvim \
   /usr/share/blinc/dotfiles/desk/alacritty \
+  /usr/share/blinc/dotfiles/desk/polybar \
   /usr/share/blinc/dotfiles/desk/bspwm \
   /usr/share/blinc/dotfiles/desk/sxhkd \
   /usr/share/blinc/dotfiles/desk/xournal
