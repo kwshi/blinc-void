@@ -1,5 +1,5 @@
 super + Return
-  alacritty --live-config-reload
+  alacritty
 
 super + space
   rofi -show run
