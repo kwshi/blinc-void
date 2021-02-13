@@ -17,7 +17,7 @@ RUN xbps-install -y \
   xsel hsetroot xclip xdotool \
   scrot peek \
   fswebcam cheese \
-  sxiv \
+  sxiv vimiv \
   pavucontrol pamixer ponymix paprefs pasystray \
   lxappearance \
   alacritty st \
@@ -30,7 +30,8 @@ RUN xbps-install -y \
   vscode \
   intellij-idea-community-edition \
   pycharm-community \
-  gxi
+  gxi \
+  gummi
 
 # documents
 RUN xbps-install -y \
@@ -49,7 +50,7 @@ RUN xbps-install -y \
 
 # media players
 RUN xbps-install -y \
-  spotifyd spotify-tui \
+  spotifyd spotify-tui spotify-adblock-linux \
   vlc mplayer mpv
 
 # art & modeling
@@ -61,7 +62,10 @@ RUN xbps-install -y \
 
 # messengers
 RUN xbps-install -y \
-  Signal-Desktop
+  Signal-Desktop \
+  element-desktop \
+  telegram-desktop
+
 
 # fonts
 RUN xbps-install -y \

@@ -1,1 +1,1 @@
-export PATH="/opt/npm/bin:$PATH"
+export PATH="/opt/blinc/npm/bin:$PATH"

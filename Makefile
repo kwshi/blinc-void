@@ -31,7 +31,7 @@ download/$(void_rootfs_filename): $(void_signify_key) | download $(tmpdir)/downl
 	&& signify -Cp '$(CURDIR)/$(void_signify_key)' \
 	  -x 'sha256.sig' \
 	  '$(void_rootfs_filename)' \
-	&& cp --no-preserve 'mode' '$(CURDIR)/download' \
+	&& cp --no-preserve 'mode' -t '$(CURDIR)/download' \
 	  '$(void_rootfs_filename)'
 
 log/rootfs: src/rootfs.Containerfile download/$(void_rootfs_filename) | log $(tmpdir)/log
@@ -64,8 +64,9 @@ log/opt: \
 	log/opt.elm \
 	log/opt.heroku \
 	log/opt.talon \
-	log/opt.opam
+	log/opt.opam \
+	log/opt.cadmus
 	$(podman_build_tee)
 
-log/cfg: src/cfg.Containerfile log/opt
+log/cfg: src/cfg.Containerfile log/opt dotfiles
 	$(podman_build_tee)

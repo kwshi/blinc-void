@@ -30,7 +30,10 @@ RUN xbps-install -y \
   inotify-tools \
   mupdf-tools \
   squashfs-tools-ng \
-  pandoc html-xml-utils mmark glow hugo
+  fzf ripgrep the_silver_searcher \
+  irssi weechat \
+  pandoc html-xml-utils mmark glow hugo \
+  nix dpkg apt pacman
 
 # void-specific stuff
 RUN xbps-install -y \
@@ -51,12 +54,11 @@ RUN xbps-install -y \
   clang \
   tectonic \
   opam \
-  ghc \
+  ghc stack cabal-install \
   rust \
   go \
-  python3-pip \
+  python3-pip python3-tkinter \
   nodejs \
-  zig \
   julia \
   clojure \
   kotlin-bin \
@@ -86,19 +88,6 @@ RUN xbps-install -y \
   zlib zlib-devel \
   libressl libressl-devel \
   catch2 cgal
-
-# python libraries
-RUN xbps-install -y \
-  python3-devel \
-  python3-numpy \
-  python3-matplotlib \
-  python3-scipy \
-  python3-sympy \
-  python3-ipython \
-  python3-tkinter \
-  python3-bokeh \
-  python3-pandas \
-  python3-mpmath
 
 # texlive kinda sucks
 #RUN xbps-install -y \

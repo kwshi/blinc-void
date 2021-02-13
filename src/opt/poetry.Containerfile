@@ -12,6 +12,7 @@ ENV "POETRY_URL"="https://raw.githubusercontent.com/python-poetry/poetry/master"
 ENV "POETRY_ACCEPT"="1"
 ADD --chown="poetry":"poetry" ["$POETRY_URL/get-poetry.py", "."]
 RUN ["python3", "get-poetry.py"]
+RUN ["chmod", "g+rwx", ".poetry/bin/poetry"]
 
 RUN ["mkdir", "global"]
 WORKDIR "global"
