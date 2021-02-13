@@ -108,7 +108,7 @@ RUN ["ln", "-sT", "/data/signal", ".config/Signal"]
 RUN ["ln", "-sT", "/data/slack", ".config/Slack"]
 RUN ["ln", "-sT", "/opt/blinc/tectonic", ".cache/Tectonic"]
 RUN ["ln", "-sT", "/usr/share/blinc", "blinc"]
-RUN ["ln", "-st", ".config", "/etc/xdg/bspwm", "/etc/xdg/sxhkd"]
+RUN ["ln", "-st", ".config", "/etc/xdg/bspwm", "/etc/xdg/sxhkd", "/etc/xdg/polybar"]
 RUN ["xdg-user-dirs-update"]
 
 USER "root"
