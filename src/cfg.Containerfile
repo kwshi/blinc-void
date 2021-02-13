@@ -42,6 +42,7 @@ RUN ln -st '.' \
   /usr/share/blinc/dotfiles/desk/sxhkd \
   /usr/share/blinc/dotfiles/desk/xournal
 RUN ["ln", "-sfT", "/usr/share/blinc/dotfiles/misc/user-dirs", "user-dirs.defaults"]
+RUN ["chmod", "+x", "bspwm/bspwmrc"]
 
 RUN ["ln", "-sT", "/data/containers/root", "/var/lib/containers"]
 
