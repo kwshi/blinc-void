@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -eu
 
 bspc config border_width 2
 bspc config window_gap 4
@@ -13,8 +13,8 @@ redshift &
 
 alacritty &
 
-bspc monitor DisplayPort-1 -d main1 main2 main3
-bspc monitor HDMI-A-0 -d tab1 tab2 tab3
+bspc monitor DisplayPort-1 -d main{1..5}
+bspc monitor HDMI-A-0 -d tab{1..5}
 
 bspc rule -a zathura state=tiling
 
