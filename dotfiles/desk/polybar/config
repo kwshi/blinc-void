@@ -6,7 +6,7 @@ font-3 = "Font Awesome 5 Free Solid:size=9;2"
 font-4 = "DejaVu Sans Mono:size=10"
 font-5 = "Noto Sans Symbols2:size=10"
 
-background = #32302f
+background = #00000000
 foreground = #ebdbb2
 height = 24
 
@@ -26,7 +26,7 @@ font-5 = "Noto Sans Symbols2:size=10"
 
 bottom = true
 
-background = #32302f
+background = #00000000
 foreground = #ebdbb2
 height = 24
 
@@ -85,7 +85,6 @@ format-padding = 1
 [module/cpu]
 type = internal/cpu
 format = "<label> <ramp-coreload>"
-format-background = #3c3836
 format-padding = 1
 label = "CPU%percentage:3%%"
 
@@ -103,7 +102,6 @@ ramp-coreload-7 = █
 type = internal/date
 
 format-padding = 1
-format-background = #3c3836
 label = "%date% %time%"
 date = "%F (Week %V, %a)"
 time = "%T"
@@ -112,8 +110,6 @@ time = "%T"
 type = internal/pulseaudio
 
 
-format-volume-background = #3c3836
-format-muted-background = #3c3836
 format-volume-padding = 1
 format-muted-padding = 1
 format-volume = "<ramp-volume> [<bar-volume>] <label-volume>"
@@ -137,7 +133,6 @@ type = internal/temperature
 
 units = true
 format = "<ramp> <label>"
-format-background = #3c3836
 format-padding = 1
 label = "%temperature-c%"
 
