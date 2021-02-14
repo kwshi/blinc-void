@@ -30,7 +30,8 @@ background = #00000000
 foreground = #ebdbb2
 height = 24
 
-modules-left = wifi audio temperature cpu
+modules-left = eth wifi temperature cpu
+modules-center = audio
 
 wm-restack = bspwm
 
@@ -151,7 +152,18 @@ interface = wlan0
 
 format-connected = "<ramp-signal> <label-connected>"
 format-connected-padding = 1
-format-connected-background = #3c3836
-label-connected = "%essid% %signal:3%% - %upspeed:8% - %downspeed:8% - %local_ip%"
+label-connected = "[%local_ip%] %essid% %signal:3%% - %upspeed:8% - %downspeed:8%"
 
 ramp-signal-0 = ""
+
+[module/eth]
+type = internal/network
+interface = enp6s0
+
+format-connected = "<ramp-signal> <label-connected>"
+format-connected-padding = 1
+label-connected = "[%local_ip%] - %upspeed:8% - %downspeed:8%"
+
+ramp-signal-0 = ""
+
+
