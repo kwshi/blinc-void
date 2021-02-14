@@ -91,7 +91,7 @@ RUN ["chmod", "-R", "g+rw", "."]
 
 WORKDIR "/usr/share/fonts"
 ADD ["https://support.steampowered.com/downloads/1974-YFKL-4947/SteamFonts.zip", "steam.zip"]
-RUN ["unzip", "steam.zip"]
+RUN ["unzip", "-d", "steam", "steam.zip"]
 
 WORKDIR "/usr/share/blinc/dotfiles/cli"
 RUN ["stow", "-t", "/etc/bash", "bash"]
