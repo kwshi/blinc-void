@@ -35,7 +35,7 @@ super + c
   bspc node -c
 
 super + {_,alt} + grave
-  setxkbmap -layout us {,-variant workman}
+  setxkbmap -layout us {_,-variant workman}
 
 super + t; {d,a,s,h,u,n,e,o,Up,Left,Down,Right}; {d,a,s,h,u,n,e,o,Up,Left,Down,Right}
   bspc node focused -z \
