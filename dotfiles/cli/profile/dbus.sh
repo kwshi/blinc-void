@@ -4,6 +4,10 @@ read -r DBUS_MACHINE_ID < '/var/lib/dbus/machine-id'
 if [ -z "${HOME-}" -o -z "${DISPLAY-}" ]; then return; fi
 DBUS_SESSION_ENV="$HOME/.dbus/session-bus/$DBUS_MACHINE_ID-${DISPLAY#:}"
 
+if [ ! -r "$DBUS_SESSION_ENV" ]; then
+  dbus-launch --autolaunch "$DBUS_MACHINE_ID"
+fi
+
 . "$DBUS_SESSION_ENV"
 export \
   DBUS_MACHINE_ID \

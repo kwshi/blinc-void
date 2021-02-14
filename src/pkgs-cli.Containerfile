@@ -33,7 +33,8 @@ RUN xbps-install -y \
   fzf ripgrep the_silver_searcher \
   irssi weechat \
   pandoc html-xml-utils mmark glow hugo \
-  nix dpkg apt pacman
+  nix dpkg apt pacman \
+  lsof
 
 # void-specific stuff
 RUN xbps-install -y \
