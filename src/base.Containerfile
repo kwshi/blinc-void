@@ -18,4 +18,5 @@ RUN ["useradd", "-rb", "/opt/blinc", "-G", "wheel", "npm"]
 RUN ["useradd", "-rb", "/opt/blinc", "-G", "wheel", "pip"]
 RUN ["useradd", "-rb", "/opt/blinc", "-G", "wheel", "poetry"]
 
+RUN ["usermod", "-s", "/bin/bash", "root"]
 CMD ["/bin/bash"]
