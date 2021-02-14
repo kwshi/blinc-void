@@ -6,3 +6,7 @@
   insteadOf = https://github.com/
   insteadOf = http://github.com/
   insteadOf = git://github.com/
+  insteadOf = github.com:
+
+[pull]
+  ff = only
