@@ -47,6 +47,9 @@ RUN ["chmod", "+x", "bspwm/bspwmrc"]
 
 RUN ["ln", "-sT", "/data/containers/root", "/var/lib/containers"]
 
+WORKDIR "/etc/fonts"
+RUN ["ln", "-st", ".", "/usr/share/fontconfig/conf.avail/70-no-bitmaps.conf"]
+
 WORKDIR "/etc/runit/runsvdir/default"
 
 RUN ln -st . \
