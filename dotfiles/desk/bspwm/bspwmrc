@@ -11,7 +11,7 @@ sct 3000
 
 sxhkd -m -1 &
 
-picom &
+picom --experimental-backends &
 
 alacritty &
 
