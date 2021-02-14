@@ -14,4 +14,4 @@ RUN echo "XBPS_ALLOW_RESTRICTED"="yes" >> etc/conf
 RUN ["./xbps-src", "pkg", "zoom"]
 #RUN ["./xbps-src", "pkg", "discord"]
 RUN ["./xbps-src", "pkg", "slack-desktop"]
-#RUN ["./xbps-src", "pkg", "spotify"]
+RUN ["./xbps-src", "pkg", "spotify"]

@@ -51,6 +51,7 @@ RUN xbps-install -y \
 # media players
 RUN xbps-install -y \
   spotifyd spotify-tui spotify-adblock-linux \
+  playerctl \
   vlc mplayer mpv
 
 # art & modeling

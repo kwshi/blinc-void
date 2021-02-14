@@ -4,8 +4,9 @@ FROM "blinc/void.pkgs-desk"
 COPY --from="blinc/void.opt.vpkgs"   ["/opt/blinc", "/opt/blinc"]
 RUN xbps-install -yR /opt/blinc/vpkgs/hostdir/binpkgs/nonfree \
   zoom \
-  slack-desktop
-# omitted: discord, spotify (build breaking)
+  slack-desktop \
+  spotify
+# omitted: discord
 
 COPY --from="blinc/void.opt.opam"   ["/opt/blinc", "/opt/blinc"]
 COPY --from="blinc/void.opt.pip"    ["/opt/blinc", "/opt/blinc"]

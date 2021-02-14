@@ -33,10 +33,11 @@ RUN ["chown", "root:root", "sudoers.d/wheel"]
 WORKDIR "/etc/xdg"
 RUN ln -st '.' \
   /usr/share/blinc/dotfiles/cli/git \
-  /usr/share/blinc/dotfiles/cli/github \
+  /usr/share/blinc/dotfiles/cli/gh \
   /usr/share/blinc/dotfiles/cli/bat \
   /usr/share/blinc/dotfiles/cli/pip \
   /usr/share/blinc/dotfiles/cli/nvim \
+  /usr/share/blinc/dotfiles/desk/spotifyd \
   /usr/share/blinc/dotfiles/desk/alacritty \
   /usr/share/blinc/dotfiles/desk/picom \
   /usr/share/blinc/dotfiles/desk/polybar \
@@ -102,22 +103,27 @@ RUN ["stow", "-t", "/etc", "npm"]
 
 WORKDIR "/home/kshi"
 USER "kshi"
-RUN ["mkdir", "-p", ".cache", ".config/github", ".mozilla", ".ssh", ".local/share"]
+RUN ["mkdir", "-p", ".cache", ".config/gh", ".mozilla", ".ssh", ".local/share"]
 RUN ["rm", ".bashrc", ".bash_profile"]
-RUN ["ln", "-st", ".", "/data/documents", "/data/hacks", "/data/movies"]
+RUN ["ln", "-st", ".", "/data/documents", "/data/hacks", "/data/movies", "/usr/share/blinc"]
+
 RUN ["ln", "-sT", "/data/browser/firefox", ".mozilla/firefox"]
 RUN ["ln", "-sT", "/data/browser/chromium", ".config/chromium"]
+
 RUN ["ln", "-sT", "/data/zoom", ".zoom"]
-RUN ["ln", "-sT", "/data/github/hosts.yml", ".config/github/hosts.yml"]
 RUN ["ln", "-sT", "/data/games/klei", ".klei"]
 RUN ["ln", "-sT", "/data/games/multimc", ".multimc"]
 RUN ["ln", "-sT", "/data/games/steam/home", ".steam"]
 RUN ["ln", "-sT", "/data/games/steam/share", ".local/share/Steam"]
 RUN ["ln", "-sT", "/data/containers/rootless", ".local/share/containers"]
+RUN ["ln", "-sT", "/opt/blinc/tectonic", ".cache/Tectonic"]
+
+RUN ["ln", "-sT", "/data/github/hosts.yml", ".config/gh/hosts.yml"]
+RUN ["ln", "-sT", "/data/spotify/daemon", ".config/spotifyd"]
+RUN ["ln", "-sT", "/data/spotify/tui", ".config/spotify-tui"]
+RUN ["ln", "-sT", "/data/spotify/desktop", ".config/spotify"]
 RUN ["ln", "-sT", "/data/signal", ".config/Signal"]
 RUN ["ln", "-sT", "/data/slack", ".config/Slack"]
-RUN ["ln", "-sT", "/opt/blinc/tectonic", ".cache/Tectonic"]
-RUN ["ln", "-sT", "/usr/share/blinc", "blinc"]
 RUN ["ln", "-st", ".config", "/etc/xdg/bspwm", "/etc/xdg/sxhkd", "/etc/xdg/polybar", "/etc/xdg/git"]
 RUN ["xdg-user-dirs-update"]
 
