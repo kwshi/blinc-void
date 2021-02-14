@@ -14,6 +14,8 @@ separator = " "
 modules-left = bspwm title
 modules-right = date
 
+wm-restack = bspwm
+
 [section/base-bottom]
 font-0 = "Roboto Mono:size=10;2"
 font-1 = "Roboto Mono:size=10:weight=bold;2"
@@ -29,6 +31,8 @@ foreground = #ebdbb2
 height = 24
 
 modules-left = wifi audio temperature cpu
+
+wm-restack = bspwm
 
 [bar/main-top]
 inherit = section/base-top
