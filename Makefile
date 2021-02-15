@@ -65,6 +65,7 @@ log/opt: \
 	log/opt.heroku \
 	log/opt.talon \
 	log/opt.opam \
+	log/opt.noisetorch \
 	log/opt.cadmus
 	$(podman_build_tee)
 
