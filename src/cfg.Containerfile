@@ -77,6 +77,7 @@ RUN ln -st . \
   /opt/blinc/poetry/.poetry/bin/poetry \
   /opt/blinc/talon/talon \
   /opt/blinc/cadmus/cadmus/cadmus \
+  /opt/blinc/noisetorch/bin/noisetorch \
   /opt/blinc/heroku/bin/heroku
 
 WORKDIR "/usr/local/share/nvim/site"
