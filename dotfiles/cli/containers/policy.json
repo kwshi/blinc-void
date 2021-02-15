@@ -1,8 +1,16 @@
 {
-    "default": [
+  "default": [
+    {
+      "type": "insecureAcceptAnything"
+    }
+  ],
+  "transports": {
+    "dir": {
+      "": [
         {
-            "type": "insecureAcceptAnything"
+          "type": "insecureAcceptAnything"
         }
-    ],
-    "transports": null
+      ]
+    }
+  }
 }
