@@ -59,7 +59,7 @@ RUN xbps-install -y \
   inkscape gimp krita darktable \
   blender solvespace \
   musescore lilypond \
-  openshot shotcut obs synfigstudio
+  openshot shotcut obs recordmydesktop synfigstudio
 
 # messengers
 RUN xbps-install -y \
