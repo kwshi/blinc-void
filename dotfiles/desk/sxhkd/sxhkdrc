@@ -4,11 +4,11 @@ super + Return
 super + space
   rofi -show run
 
-super + ctrl + {_,alt} + {1,2,3}
-  bspc node -d {main,tab}{1,2,3} --follow
+super + ctrl + {_,alt} + {1,2,3,4,5}
+  bspc node -d {main,tab}{1,2,3,4,5} --follow
 
-super + {_,alt} + {1,2,3}
-  bspc desktop -f {main,tab}{1,2,3}
+super + {_,alt} + {1,2,3,4,5}
+  bspc desktop -f {main,tab}{1,2,3,4,5}
 
 super + {q,r}
   bspc desktop -f {prev,next}.local
