@@ -3,7 +3,7 @@ FROM "blinc/void.pkgs-cli"
 
 # core
 RUN xbps-install -y \
-  xorg lightdm bspwm sxhkd picom \
+  xorg lightdm bspwm sxhkd picom autorandr \
   polybar dunst rofi dmenu stalonetray \
   pulseaudio bluez alsa-plugins-pulseaudio \
   caffeine-ng \
