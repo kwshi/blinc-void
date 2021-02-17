@@ -29,7 +29,7 @@ RUN xbps-install -y \
   github-cli grip git-cal ghi hub \
   inotify-tools \
   mupdf-tools \
-  squashfs-tools-ng \
+  squashfs-tools squashfs-tools-ng \
   fzf ripgrep the_silver_searcher \
   irssi weechat \
   pandoc html-xml-utils mmark glow hugo \
