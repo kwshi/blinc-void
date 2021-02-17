@@ -7,7 +7,7 @@ bspc config active_border_color '#79740e'
 bspc config normal_border_color '#1d2021'
 
 hsetroot -add '#32302f' -add '#689d6a' -gradient 0
-sct 3000
+sct 4000
 
 sxhkd -m -1 &
 
