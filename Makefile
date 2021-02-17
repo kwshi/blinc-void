@@ -66,6 +66,7 @@ log/opt: \
 	log/opt.talon \
 	log/opt.opam \
 	log/opt.noisetorch \
+	log/opt.breaktimer \
 	log/opt.cadmus
 	$(podman_build_tee)
 
