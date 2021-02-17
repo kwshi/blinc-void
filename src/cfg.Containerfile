@@ -130,9 +130,6 @@ RUN ["xdg-user-dirs-update"]
 
 USER "root"
 
-RUN echo 'Setting password for `root`' && passwd
-RUN echo 'Setting password for `kshi`' && passwd kshi
-
 
 #FROM main.opt AS main.misc
 #COPY --from=misc.nvim  ["/tmp/nvim" , "/usr/local/share/nvim" ]
