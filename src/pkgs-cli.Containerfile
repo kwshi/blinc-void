@@ -35,6 +35,7 @@ RUN xbps-install -y \
   pandoc html-xml-utils mmark glow hugo \
   nix dpkg apt pacman \
   ffmpeg gifsicle gifski synfig \
+  signify \
   lsof
 
 # void-specific stuff
