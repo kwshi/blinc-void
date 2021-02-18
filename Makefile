@@ -108,10 +108,9 @@ $(build)/prep/kernel: $(build)/prep/mnt
 	&& mksquashfs "$$mnt" '$@' \
 
 /efi/loader/entries/%.conf: install/boot.conf
-	stamp="$$(date '%+4Y%m%d-%H%M%S')" \
 	&& sed \
 		-e ':a' -e '/\\$$/N; s/\\\n\s*//; ta' \
-		-e "s/{STAMP}/$$stamp/g" \
+		-e 's/{STAMP}/$*/g' \
 		-e 's/{KERNEL}/$(file < $(build)/prep/kernel)/g' \
 	| tee '$@'
 
