@@ -10,7 +10,7 @@ RUN ["ln", "-s", "lib", "/usr/lib64"]
 
 RUN ["xbps-install", "-Suy", "xbps", "base-files"]
 RUN ["xbps-install", "-uy"]
-RUN ["xbps-install", "-y", "base-system", "base-devel", "curl", "git", "stow"]
+RUN ["xbps-install", "-y", "base-system", "base-devel", "curl", "wget", "git", "stow"]
 
 RUN ["useradd", "-rb", "/opt/blinc", "-G", "wheel", "vpkgs"]
 RUN ["useradd", "-rb", "/opt/blinc", "-G", "wheel", "opam"]
