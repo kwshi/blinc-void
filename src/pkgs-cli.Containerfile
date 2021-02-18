@@ -36,6 +36,7 @@ RUN xbps-install -y \
   nix dpkg apt pacman \
   ffmpeg gifsicle gifski synfig \
   signify \
+  efivar efibootmgr gummiboot \
   lsof
 
 # void-specific stuff

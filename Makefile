@@ -7,6 +7,8 @@ void_signify_key := sigs/void-release-$(VOID_VERSION).pub
 void_rootfs_filename := void-x86_64-ROOTFS-$(VOID_VERSION).tar.xz
 
 tmp := /tmp/blinc-void
+live := /run/initramfs/live
+boot := /efi/loader/entries
 build := build
 
 podman_build = podman build -t 'blinc/void.$(notdir $@)' -f '$<' '.'
@@ -22,10 +24,10 @@ $(build)/log:
 
 $(build)/download:
 	mkdir -p '$@'
-	
-$(build)/img:
-	mkdir -p '$@'
 
+$(build)/prep:
+	mkdir -p '$@'
+	
 $(tmp)/%:
 	mkdir -p '$@'
 
@@ -82,13 +84,40 @@ $(build)/log/opt: \
 $(build)/log/cfg: src/cfg.Containerfile $(build)/log/opt dotfiles
 	$(podman_build_tee)
 
-$(build)/img/%.img: $(build)/log/cfg | $(build)/img
-	ctr=$$(buildah from 'blinc/void.cfg') \
-	&& echo "$$ctr" \
-	&& mnt=$$(buildah mount "$$ctr") \
-	&& echo "$$mnt" \
+$(build)/prep/ctr: $(build)/log/cfg | $(build)/prep
+	buildah from 'blinc/void.cfg' | tee '$@'
+
+$(build)/prep/mnt: $(build)/prep/ctr
+	buildah mount "$$(cat '$<')" | tee '$@'
+
+mnt = $(file < $(build)/prep/mnt)
+ker = $(file < $(build)/prep/kernel)
+
+$(build)/prep/kernel: $(build)/prep/mnt
+	paths=('$(mnt)/lib/modules/'*) \
+	&& for p in "$${paths[@]}"; do basename "$$p"; done) \
+	| sort -V | tail -n 1 > '$@'
+
+/run/initramfs/live/%.img: $(build)/prep/mnt
+	read -r mnt < '$<' \
 	&& cp '/etc/hostname' "$$mnt/etc/hostname" \
-	&& sed -i -e $(call copy_shadow,kshi) -e $(call copy_shadow,root) "$$mnt/etc/shadow" \
+	&& sed -i \
+		-e $(call copy_shadow,kshi) \
+		-e $(call copy_shadow,root) \
+		"$$mnt/etc/shadow" \
 	&& mksquashfs "$$mnt" '$@' \
-	&& buildah umount "$$ctr" \
-	&& buildah rm "$$ctr"
+
+
+/efi/loader/entries/%.conf: $(build)/prep/mnt
+	stamp="$$(date '%+4Y%m%d-%H%M%S')" \
+	&& ( \
+		echo 'title void-$(notdir $*)' \
+		&& echo "linux /linux/void/vmlinuz-$(ker)" \
+		&& echo "initrd /linux/void/initramfs-$(ker).img" \
+		&& echo "options root=live:PARTUUID=d8bd7246-d2da-104a-ad38-bc0e016d04f0 rw rd.live.dir=/img rd.live.squashimg=$(notdir $*).img" \
+	) | tee '$@'
+
+/efi/linux/void/%: $(build)/prep/mnt
+	rm -rf '$@' && cp -t '$@' \
+		'$(mnt)/boot/vmlinuz-$(ker)' \
+		'$(mnt)/boot/initramfs-$(ker).img'
