@@ -95,7 +95,7 @@ ker = $(file < $(build)/prep/kernel)
 
 $(build)/prep/kernel: $(build)/prep/mnt
 	paths=('$(mnt)/lib/modules/'*) \
-	&& for p in "$${paths[@]}"; do basename "$$p"; done) \
+	&& for p in "$${paths[@]}"; do basename "$$p"; done \
 	| sort -V | tail -n 1 > '$@'
 
 /run/initramfs/live/%.img: $(build)/prep/mnt
@@ -107,15 +107,13 @@ $(build)/prep/kernel: $(build)/prep/mnt
 		"$$mnt/etc/shadow" \
 	&& mksquashfs "$$mnt" '$@' \
 
-
-/efi/loader/entries/%.conf: $(build)/prep/mnt
+/efi/loader/entries/%.conf: install/boot.conf
 	stamp="$$(date '%+4Y%m%d-%H%M%S')" \
-	&& ( \
-		echo 'title void-$(notdir $*)' \
-		&& echo "linux /linux/void/vmlinuz-$(ker)" \
-		&& echo "initrd /linux/void/initramfs-$(ker).img" \
-		&& echo "options root=live:PARTUUID=d8bd7246-d2da-104a-ad38-bc0e016d04f0 rw rd.live.dir=/img rd.live.squashimg=$(notdir $*).img" \
-	) | tee '$@'
+	&& sed \
+		-e ':a' -e '/\\$$/N; s/\\\n\s*//; ta' \
+		-e "s/{STAMP}/$$stamp/g" \
+		-e 's/{KERNEL}/$(file < $(build)/prep/kernel)/g' \
+	| tee '$@'
 
 /efi/linux/void/%: $(build)/prep/mnt
 	rm -rf '$@' && cp -t '$@' \
