@@ -108,10 +108,11 @@ $(build)/prep/kernel: $(build)/prep/mnt
 	&& mksquashfs "$$mnt" '$@' \
 
 /efi/loader/entries/%.conf: install/boot.conf
-	&& sed \
+	sed \
 		-e ':a' -e '/\\$$/N; s/\\\n\s*//; ta' \
 		-e 's/{STAMP}/$*/g' \
 		-e 's/{KERNEL}/$(file < $(build)/prep/kernel)/g' \
+		'$<'
 	| tee '$@'
 
 /efi/linux/void/%: $(build)/prep/mnt
