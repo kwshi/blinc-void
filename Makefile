@@ -6,24 +6,31 @@ export VOID_VERSION     := 20191109
 void_signify_key := sigs/void-release-$(VOID_VERSION).pub
 void_rootfs_filename := void-x86_64-ROOTFS-$(VOID_VERSION).tar.xz
 
-tmpdir := /tmp/blinc-void
+tmp := /tmp/blinc-void
+build := build
 
 podman_build = podman build -t 'blinc/void.$(notdir $@)' -f '$<' '.'
-podman_build_tee = $(podman_build) \
-									 | tee '$(tmpdir)/$@' \
-									 && cp --no-preserve 'mode' '$(tmpdir)/$@' '$@'
+podman_build_tee = \
+	$(podman_build) \
+	| tee '$(tmp)/log/$(notdir $@)' \
+	&& cp --no-preserve 'mode' '$(tmp)/log/$(notdir $@)' '$@'
 
-download:
-	mkdir -p 'download'
+copy_shadow = s/'^$1:.*$$'/"$$(grep '^$1:' '/etc/shadow' | sed 's/[\/&]/\\&/g')"/g
 
-log:
-	mkdir -p 'log'
-
-$(tmpdir)/%:
+$(build)/log:
 	mkdir -p '$@'
 
-download/$(void_rootfs_filename): $(void_signify_key) | download $(tmpdir)/download
-	cd '$(tmpdir)/download' \
+$(build)/download:
+	mkdir -p '$@'
+	
+$(build)/img:
+	mkdir -p '$@'
+
+$(tmp)/%:
+	mkdir -p '$@'
+
+$(build)/download/$(void_rootfs_filename): $(void_signify_key) | $(build)/download $(tmp)/download
+	cd '$(tmp)/download' \
 	&& curl -fLo '$(void_rootfs_filename)' \
 	  '$(VOID_RELEASE_URL)/$(void_rootfs_filename)' \
 	&& curl -fLo 'sha256.sig' \
@@ -31,44 +38,57 @@ download/$(void_rootfs_filename): $(void_signify_key) | download $(tmpdir)/downl
 	&& signify -Cp '$(CURDIR)/$(void_signify_key)' \
 	  -x 'sha256.sig' \
 	  '$(void_rootfs_filename)' \
-	&& cp --no-preserve 'mode' -t '$(CURDIR)/download' \
+	&& cp --no-preserve 'mode' -t '$(CURDIR)/$(build)/download' \
 	  '$(void_rootfs_filename)'
 
-log/rootfs: src/rootfs.Containerfile download/$(void_rootfs_filename) | log $(tmpdir)/log
+$(build)/log/rootfs: src/rootfs.Containerfile \
+	$(build)/download/$(void_rootfs_filename) \
+	| $(build)/log $(tmp)/log
 	$(podman_build) \
 		--build-arg 'void_rootfs_filename=$(void_rootfs_filename)' \
-		| tee '$(tmpdir)/$@' \
-		&& cp --no-preserve 'mode' '$(tmpdir)/$@' '$@'
+		| tee '$(tmp)/log/$(notdir $@)' \
+		&& cp --no-preserve 'mode' '$(tmp)/log/$(notdir $@)' '$@'
 
-log/base: src/base.Containerfile log/rootfs
+$(build)/log/base: src/base.Containerfile $(build)/log/rootfs
 	$(podman_build_tee)
 
-log/pkgs-cli: src/pkgs-cli.Containerfile log/base
+$(build)/log/pkgs-cli: src/pkgs-cli.Containerfile $(build)/log/base
 	$(podman_build_tee)
 
-log/pkgs-desk: src/pkgs-desk.Containerfile log/pkgs-cli
+$(build)/log/pkgs-desk: src/pkgs-desk.Containerfile $(build)/log/pkgs-cli
 	$(podman_build_tee)
 
-log/opt.%: src/opt/%.Containerfile log/base
+$(build)/log/opt.%: src/opt/%.Containerfile $(build)/log/base
 	$(podman_build_tee)
 
-log/opt: \
+$(build)/log/opt: \
 	src/opt.Containerfile \
-	log/pkgs-desk \
-	log/opt.pip \
-	log/opt.poetry \
-	log/opt.npm \
-	log/opt.vpkgs \
-	log/opt.deno \
-	log/opt.nvim \
-	log/opt.elm \
-	log/opt.heroku \
-	log/opt.talon \
-	log/opt.opam \
-	log/opt.noisetorch \
-	log/opt.breaktimer \
-	log/opt.cadmus
+	$(build)/log/pkgs-desk \
+	$(build)/log/opt.pip \
+	$(build)/log/opt.poetry \
+	$(build)/log/opt.npm \
+	$(build)/log/opt.vpkgs \
+	$(build)/log/opt.deno \
+	$(build)/log/opt.nvim \
+	$(build)/log/opt.elm \
+	$(build)/log/opt.heroku \
+	$(build)/log/opt.talon \
+	$(build)/log/opt.opam \
+	$(build)/log/opt.noisetorch \
+	$(build)/log/opt.breaktimer \
+	$(build)/log/opt.cadmus
 	$(podman_build_tee)
 
-log/cfg: src/cfg.Containerfile log/opt dotfiles
+$(build)/log/cfg: src/cfg.Containerfile $(build)/log/opt dotfiles
 	$(podman_build_tee)
+
+$(build)/img/%.img: $(build)/log/cfg | $(build)/img
+	ctr=$$(buildah from 'blinc/void.cfg') \
+	&& echo "$$ctr" \
+	&& mnt=$$(buildah mount "$$ctr") \
+	&& echo "$$mnt" \
+	&& cp '/etc/hostname' "$$mnt/etc/hostname" \
+	&& sed -i -e $(call copy_shadow,kshi) -e $(call copy_shadow,root) "$$mnt/etc/shadow" \
+	&& mksquashfs "$$mnt" '$@' \
+	&& buildah umount "$$ctr" \
+	&& buildah rm "$$ctr"
