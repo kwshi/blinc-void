@@ -19,7 +19,7 @@ alacritty &
 bspc monitor DisplayPort-1 -d main{1..5}
 bspc monitor HDMI-A-0 -d tab{1..5}
 
-bspc rule -a zathura state=tiling
+bspc rule -a Zathura state=tiled
 
 for disp in main tab; do 
   for pos in top bottom; do 
