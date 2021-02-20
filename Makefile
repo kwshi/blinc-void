@@ -31,6 +31,9 @@ $(build)/prep:
 $(tmp)/%:
 	mkdir -p '$@'
 
+/efi/linux/void:
+	mkdir -p '$@'
+
 $(build)/download/$(void_rootfs_filename): $(void_signify_key) | $(build)/download $(tmp)/download
 	cd '$(tmp)/download' \
 	&& curl -fLo '$(void_rootfs_filename)' \
@@ -115,7 +118,7 @@ $(build)/prep/kernel: $(build)/prep/mnt
 		'$<' \
 	| tee '$@'
 
-/efi/linux/void/%: $(build)/prep/mnt
-	rm -rf '$@' && cp -t '$@' \
+/efi/linux/void/%: $(build)/prep/mnt | /efi/linux/void
+	rm -rf '$@' && mkdir '$@' && cp -t '$@' \
 		'$(mnt)/boot/vmlinuz-$(ker)' \
 		'$(mnt)/boot/initramfs-$(ker).img'
