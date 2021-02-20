@@ -22,6 +22,7 @@ RUN ln -sft . \
   /usr/share/blinc/dotfiles/misc/fstab \
   /usr/share/blinc/dotfiles/cli/containers
 RUN ["ln", "-sfT", "/usr/share/blinc/dotfiles/misc/libc-locales", "default/libc-locales"]
+RUN ["ln", "-sfT", "/usr/share/blinc/dotfiles/misc/limits.conf", "security/limits.conf"]
 RUN ["stow", "-d", "/usr/share/blinc/dotfiles/misc", "-t", "sudoers.d", "sudoers"]
 RUN ["stow", "-d", "/usr/share/blinc/dotfiles/cli", "-t", "ssh", "ssh"]
 RUN ["stow", "-d", "/usr/share/blinc/dotfiles/desk", "-t", "X11", "x11"]
