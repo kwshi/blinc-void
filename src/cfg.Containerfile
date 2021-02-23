@@ -14,17 +14,22 @@ RUN ["chmod", "2775", "."]
 
 WORKDIR "/etc"
 RUN ["mkdir", "docker"]
-RUN ["rm", "-rf", "containers", "ssh/ssh_config", "lightdm/lightdm.conf", "pulse/daemon.conf"]
+RUN rm -rf \
+  containers \
+  lightdm/lightdm.conf \
+  pulse/daemon.conf
 RUN ln -sft . \
   /usr/share/blinc/dotfiles/misc/locale.conf \
   /usr/share/blinc/dotfiles/misc/rc.local \
   /usr/share/blinc/dotfiles/misc/rc.conf \
   /usr/share/blinc/dotfiles/misc/fstab \
   /usr/share/blinc/dotfiles/cli/containers
+RUN ln -sft ssh \
+  /usr/share/blinc/dotfiles/cli/ssh/ssh_config \
+  /usr/share/blinc/dotfiles/cli/ssh/ssh_known_hosts
 RUN ["ln", "-sfT", "/usr/share/blinc/dotfiles/misc/libc-locales", "default/libc-locales"]
 RUN ["ln", "-sfT", "/usr/share/blinc/dotfiles/misc/limits.conf", "security/limits.conf"]
 RUN ["stow", "-d", "/usr/share/blinc/dotfiles/misc", "-t", "sudoers.d", "sudoers"]
-RUN ["stow", "-d", "/usr/share/blinc/dotfiles/cli", "-t", "ssh", "ssh"]
 RUN ["stow", "-d", "/usr/share/blinc/dotfiles/desk", "-t", "X11", "x11"]
 RUN ["stow", "-d", "/usr/share/blinc/dotfiles/desk", "-t", "lightdm", "lightdm"]
 RUN ["stow", "-d", "/usr/share/blinc/dotfiles/desk", "-t", "pulse", "pulse"]
