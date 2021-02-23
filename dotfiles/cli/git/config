@@ -9,5 +9,8 @@
   insteadOf = git@github.com:
   insteadOf = github.com:
 
+[url "https://github.com/rust-lang/crates.io-index"]
+  insteadOf = https://github.com/rust-lang/crates.io-index
+
 [pull]
   ff = only
