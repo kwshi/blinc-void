@@ -9,6 +9,7 @@
   insteadOf = git@github.com:
   insteadOf = github.com:
 
+# https://github.com/rust-lang/cargo/issues/8172 
 [url "https://github.com/rust-lang/crates.io-index"]
   insteadOf = https://github.com/rust-lang/crates.io-index
 
