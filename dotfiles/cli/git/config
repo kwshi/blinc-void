@@ -2,10 +2,11 @@
   name = Kye Shi
   email = shi.kye@gmail.com
 
-[url "git@gh:"]
+[url "gh:"]
   insteadOf = https://github.com/
   insteadOf = http://github.com/
   insteadOf = git://github.com/
+  insteadOf = git@github.com:
   insteadOf = github.com:
 
 [pull]
