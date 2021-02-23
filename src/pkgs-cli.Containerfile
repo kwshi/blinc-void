@@ -59,7 +59,7 @@ RUN xbps-install -y \
   tectonic \
   opam \
   ghc stack cabal-install \
-  rust \
+  cargo rust \
   go \
   python3-pip python3-tkinter \
   nodejs \
