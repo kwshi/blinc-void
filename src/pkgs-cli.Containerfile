@@ -37,7 +37,7 @@ RUN xbps-install -y \
   ffmpeg gifsicle gifski synfig \
   signify \
   efivar efibootmgr gummiboot \
-  lsof
+  lsof htop transmission
 
 # void-specific stuff
 RUN xbps-install -y \
