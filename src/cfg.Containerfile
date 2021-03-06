@@ -22,6 +22,7 @@ RUN ln -sft . \
   /usr/share/blinc/dotfiles/misc/locale.conf \
   /usr/share/blinc/dotfiles/misc/rc.local \
   /usr/share/blinc/dotfiles/misc/rc.conf \
+  /usr/share/blinc/dotfiles/misc/sysctl.conf \
   /usr/share/blinc/dotfiles/misc/fstab \
   /usr/share/blinc/dotfiles/cli/containers
 RUN ln -sft ssh \
