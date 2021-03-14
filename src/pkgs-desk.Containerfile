@@ -22,7 +22,8 @@ RUN xbps-install -y \
   lxappearance \
   alacritty st \
   tigervnc remmina \
-  gtk2fontsel
+  gtk2fontsel \
+  fstl
 
 # editors
 RUN xbps-install -y \
