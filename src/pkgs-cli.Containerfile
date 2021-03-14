@@ -25,7 +25,7 @@ RUN xbps-install -y \
 # tools
 RUN xbps-install -y \
   docker docker-compose podman podman-compose buildah \
-  wget jq pgcli zip exa bat hyperfine \
+  wget jq pgcli redis zip exa bat hyperfine \
   github-cli grip git-cal ghi hub \
   inotify-tools \
   mupdf-tools \
