@@ -61,7 +61,7 @@ RUN xbps-install -y \
   ghc stack cabal-install \
   cargo rust \
   go \
-  python3-pip python3-tkinter \
+  python3-pip python3-tkinter python3-setuptools \
   nodejs \
   julia \
   clojure \
