@@ -1,6 +1,12 @@
+local default = function(val, def)
+  if val == nil then return def
+  else return val
+  end
+end
+
 local on_attach = function(opts)
-  opts.fmt = opts.fmt or true
-  opts.incr = opts.incr or false
+  opts.fmt = default(opts.fmt, true)
+  opts.incr = default(opts.incr, false)
 
   return function(client, buf)
     local set_key = function(k, v) 
@@ -35,4 +41,6 @@ require 'lspconfig'.elmls.setup {
   on_attach = on_attach { incr = true }
 }
 
-
+require 'lspconfig'.pyls.setup {
+ on_attach = on_attach {}
+}

@@ -11,6 +11,6 @@ RUN ["chmod", "2775", "."]
 USER "pip"
 ENV "PIP_PREFIX"="/opt/blinc/pip"
 RUN ["pip", "install", "ipython"]
-RUN ["pip", "install", "black"]
+RUN ["pip", "install", "python-language-server", "black", "pyls-black"]
 RUN ["pip", "install", "numpy", "scipy", "sympy", "gmpy2", "mpmath"]
 RUN ["pip", "install", "pandas", "bokeh"]

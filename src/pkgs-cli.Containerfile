@@ -79,8 +79,7 @@ RUN xbps-install -y \
   clang clang-analyzer clang-tools-extra valgrind ccls \
   gopls \
   shellcheck \
-  ghc-doc hoogle \
-  python3-language-server black
+  ghc-doc hoogle
 
 # extra libraries
 RUN xbps-install -y \
