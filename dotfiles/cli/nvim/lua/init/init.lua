@@ -33,6 +33,10 @@ require 'lspconfig'.tsserver.setup {
   on_attach = on_attach { fmt = false }
 }
 
+require 'lspconfig'.ocamllsp.setup {
+  on_attach = on_attach {}
+}
+
 require 'lspconfig'.svelte.setup {
   on_attach = on_attach {}
 }
