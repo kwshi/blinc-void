@@ -17,6 +17,8 @@ set wildmode=list:longest
 
 nnoremap <silent> <leader><leader> :lua vim.lsp.buf.hover()<CR>
 
+"au BufWritePre *.py Black
+
 silent! colorscheme gruvbox
 
 let g:prettier#autoformat = 1

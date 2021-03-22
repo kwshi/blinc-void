@@ -29,22 +29,16 @@ local on_attach = function(opts)
   end
 end
 
+local default_args = { on_attach = on_attach {} }
+
 require 'lspconfig'.tsserver.setup {
   on_attach = on_attach { fmt = false }
 }
-
-require 'lspconfig'.ocamllsp.setup {
-  on_attach = on_attach {}
-}
-
-require 'lspconfig'.svelte.setup {
-  on_attach = on_attach {}
-}
-
 require 'lspconfig'.elmls.setup {
   on_attach = on_attach { incr = true }
 }
 
-require 'lspconfig'.pyls.setup {
- on_attach = on_attach {}
-}
+require 'lspconfig'.ocamllsp.setup(default_args)
+require 'lspconfig'.svelte.setup(default_args)
+require 'lspconfig'.pyls.setup(default_args)
+require 'lspconfig'.gopls.setup(default_args)
