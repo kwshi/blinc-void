@@ -28,6 +28,7 @@ RUN xbps-install -y \
   wget jq pgcli redis zip exa bat hyperfine \
   redo \
   github-cli grip git-cal ghi hub \
+  gitlab-runner \
   inotify-tools \
   mupdf-tools \
   squashfs-tools squashfs-tools-ng \
