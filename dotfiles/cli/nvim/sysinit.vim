@@ -1,6 +1,7 @@
 call plug#begin("/usr/local/share/nvim/site/vim-plug")
 
 Plug 'gruvbox-community/gruvbox'
+Plug 'junegunn/fzf'
 Plug 'junegunn/fzf.vim'
 Plug 'neovim/nvim-lspconfig'
 
@@ -15,7 +16,9 @@ set tabstop=2
 set signcolumn=number 
 set wildmode=list:longest
 
-nnoremap <silent> <leader><leader> :lua vim.lsp.buf.hover()<CR>
+let mapleader = ' '
+nnoremap <space> <nop>
+nnoremap <silent> <leader>F :Files<cr>
 
 "au BufWritePre *.py Black
 
@@ -23,6 +26,7 @@ silent! colorscheme gruvbox
 
 let g:prettier#autoformat = 1
 let g:prettier#autoformat_require_pragma = 0
+
 
 lua require 'init'
 

@@ -15,7 +15,8 @@ local on_attach = function(opts)
         silent = true,
       })
     end
-    set_key('K', '<Cmd>lua vim.lsp.buf.hover()<CR>') 
+    set_key('<leader><leader>', '<Cmd>lua vim.lsp.buf.hover()<CR>') 
+    set_key('<leader>d', '<Cmd>lua vim.lsp.buf.definition()<CR>') 
     if opts.fmt then
       vim.api.nvim_exec('au BufWritePre <buffer> lua vim.lsp.buf.formatting_sync(nil, 1000)', false)
     end
