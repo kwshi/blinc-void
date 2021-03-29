@@ -61,7 +61,7 @@ RUN xbps-install -y \
   tectonic \
   opam \
   ghc stack cabal-install \
-  cargo rust \
+  cargo rust rustup rust-analyzer rust-doc \
   go \
   python3-pip python3-tkinter python3-setuptools \
   nodejs \
