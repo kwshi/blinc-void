@@ -66,6 +66,9 @@ $(build)/log/pkgs-desk: src/pkgs-desk.Containerfile $(build)/log/pkgs-cli
 $(build)/log/opt.%: src/opt/%.Containerfile $(build)/log/base
 	$(podman_build_tee)
 
+$(build)/log/skel.%: src/home/%.Containerfile $(build)/log/base
+	$(podman_build_tee)
+
 $(build)/log/opt: \
 	src/opt.Containerfile \
 	$(build)/log/pkgs-desk \
@@ -79,6 +82,7 @@ $(build)/log/opt: \
 	$(build)/log/opt.heroku \
 	$(build)/log/opt.talon \
 	$(build)/log/opt.opam \
+	$(build)/log/opt.rust \
 	$(build)/log/opt.noisetorch \
 	$(build)/log/opt.breaktimer \
 	$(build)/log/opt.cadmus

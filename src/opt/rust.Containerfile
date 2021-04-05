@@ -4,8 +4,9 @@ FROM blinc/void.base
 RUN ["xbps-install", "-y", "rustup"]
 
 WORKDIR "/opt/blinc/rust"
-ENV "RUSTUP_HOME"="."
-ENV "CARGO_HOME"="."
+ENV "RUSTUP_HOME"="rustup"
+ENV "CARGO_HOME"="cargo"
+RUN ["rustup-init", "-y"]
 
-RUN ["rustup", "toolchain", "install", "nightly"]
-RUN ["rustup", "default", "nightly"]
+RUN ["cargo/bin/rustup", "toolchain", "install", "nightly", "beta"]
+RUN ["cargo/bin/rustup", "default", "beta"]
