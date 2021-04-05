@@ -1,7 +1,7 @@
 SHELL := /bin/bash -o pipefail
 
 export VOID_RELEASE_URL := https://alpha.us.repo.voidlinux.org/live/current
-export VOID_VERSION     := 20191109
+export VOID_VERSION     := 20210218
 
 void_signify_key := sigs/void-release-$(VOID_VERSION).pub
 void_rootfs_filename := void-x86_64-ROOTFS-$(VOID_VERSION).tar.xz
@@ -38,10 +38,10 @@ $(build)/download/$(void_rootfs_filename): $(void_signify_key) | $(build)/downlo
 	cd '$(tmp)/download' \
 	&& curl -fLo '$(void_rootfs_filename)' \
 	  '$(VOID_RELEASE_URL)/$(void_rootfs_filename)' \
-	&& curl -fLo 'sha256.sig' \
-	  '$(VOID_RELEASE_URL)/sha256.sig' \
+	&& curl -fLo 'sha256sum.sig' \
+	  '$(VOID_RELEASE_URL)/sha256sum.sig' \
 	&& signify -Cp '$(CURDIR)/$(void_signify_key)' \
-	  -x 'sha256.sig' \
+	  -x 'sha256sum.sig' \
 	  '$(void_rootfs_filename)' \
 	&& cp --no-preserve 'mode' -t '$(CURDIR)/$(build)/download' \
 	  '$(void_rootfs_filename)'
