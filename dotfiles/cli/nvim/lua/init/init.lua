@@ -1,5 +1,5 @@
 local lsp = require 'lspconfig'
-local comp = require 'completion'
+--local comp = require 'completion'
 
 local default = function(val, def)
   if val == nil then return def
@@ -7,7 +7,7 @@ local default = function(val, def)
   end
 end
 
-local on_attach = function(opts)
+local make_on_attach = function(opts)
   opts.fmt = default(opts.fmt, true)
   opts.incr = default(opts.incr, false)
 
@@ -32,22 +32,38 @@ local on_attach = function(opts)
       end
     end
 
-    comp.on_attach()
+    --comp.on_attach()
 
   end
 end
 
-local default_args = { on_attach = on_attach {} }
+local default_args = { on_attach = make_on_attach {} }
 
 lsp.tsserver.setup {
-  on_attach = on_attach { fmt = false }
+  on_attach = make_on_attach { fmt = false }
 }
 lsp.elmls.setup {
-  on_attach = on_attach { incr = true }
+  on_attach = make_on_attach { incr = true }
 }
 
 lsp.ocamllsp.setup(default_args)
 lsp.svelte.setup(default_args)
 lsp.pyls.setup(default_args)
 lsp.gopls.setup(default_args)
-lsp.rust_analyzer.setup(default_args)
+lsp.rust_analyzer.setup {
+  on_attach = make_on_attach {},
+  settings = {
+    ["rust-analyzer"] = {
+      --assist = {
+      --  importMergeBehavior = "last",
+      --  importPrefix = "by_self",
+      --},
+      --cargo = {
+      --  loadOutDirsFromCheck = true
+      --},
+      procMacro = {
+        enable = true
+      },
+    }
+  }
+}
