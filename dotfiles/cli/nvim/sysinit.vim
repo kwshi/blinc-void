@@ -16,6 +16,8 @@ Plug 'glts/vim-textobj-comment'
 
 Plug 'cespare/vim-toml'
 
+Plug 'JuliaEditorSupport/julia-vim'
+
 call plug#end()
 
 set number termguicolors expandtab autochdir
