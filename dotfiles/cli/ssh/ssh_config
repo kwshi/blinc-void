@@ -12,3 +12,8 @@ Host gl
   Hostname gitlab.com
   User git
   IdentityFile /data/ssh/keys/gitlab
+
+Host jerie
+  Hostname cloud.jerie.wang
+  User hyperschedule-data
+  IdentityFile /data/ssh/keys/jerie
