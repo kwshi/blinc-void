@@ -37,7 +37,6 @@ RUN ["opam", "install", "obus"]
 RUN ["opam", "install", "pgocaml", "pgocaml_ppx"]
 RUN ["opam", "install", "parmap"]
 
-# temporary fix for cohttp
-RUN ["opam", "pin", "add", "ssl", "0.5.9"]
-RUN ["opam", "pin", "add", "cohttp.3.0.0", "--dev-repo"]
-RUN ["opam", "install", "cohttp", "cohttp-lwt", "cohttp-lwt-unix-ssl"]
+# cohttp broken :(
+#RUN ["opam", "pin", "add", "ssl", "0.5.9"]
+#RUN ["opam", "install", "cohttp", "cohttp-lwt", "cohttp-lwt-unix-ssl"]
