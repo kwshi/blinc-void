@@ -126,3 +126,8 @@ $(build)/prep/kernel: $(build)/prep/mnt
 	rm -rf '$@' && mkdir '$@' && cp -t '$@' \
 		'$(mnt)/boot/vmlinuz-$(ker)' \
 		'$(mnt)/boot/initramfs-$(ker).img'
+
+.PHONY: clean
+clean:
+	buildah umount '$(file < $(build)/prep/ctr)' \
+		&& rm -rf '$(build)/prep' '$(build)/log'
