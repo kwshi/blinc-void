@@ -114,15 +114,15 @@ $(build)/prep/kernel: $(build)/prep/mnt
 		"$$mnt/etc/shadow" \
 	&& mksquashfs "$$mnt" '$@' \
 
-/efi/loader/entries/%.conf: install/boot.conf
+/efi/loader/entries/%.conf: $(build/prep/kernel) install/boot.conf
 	sed \
 		-e ':a' -e '/\\$$/N; s/\\\n\s*//; ta' \
 		-e 's/{STAMP}/$*/g' \
-		-e 's/{KERNEL}/$(file < $(build)/prep/kernel)/g' \
+		-e 's/{KERNEL}/$(ker)/g' \
 		'$<' \
 	| tee '$@'
 
-/efi/linux/void/%: $(build)/prep/mnt | /efi/linux/void
+/efi/linux/void/%: $(build)/prep/mnt $(build)/prep/kernel | /efi/linux/void
 	rm -rf '$@' && mkdir '$@' && cp -t '$@' \
 		'$(mnt)/boot/vmlinuz-$(ker)' \
 		'$(mnt)/boot/initramfs-$(ker).img'
