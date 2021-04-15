@@ -105,7 +105,7 @@ $(build)/prep/kernel: $(build)/prep/mnt
 	&& for p in "$${paths[@]}"; do basename "$$p"; done \
 	| sort -V | tail -n 1 > '$@'
 
-/run/initramfs/live/%.img: $(build)/prep/mnt
+/run/initramfs/live/void-%.img: $(build)/prep/mnt
 	read -r mnt < '$<' \
 	&& cp '/etc/hostname' "$$mnt/etc/hostname" \
 	&& sed -i \
@@ -114,7 +114,7 @@ $(build)/prep/kernel: $(build)/prep/mnt
 		"$$mnt/etc/shadow" \
 	&& mksquashfs "$$mnt" '$@' \
 
-/efi/loader/entries/%.conf: $(build/prep/kernel) install/boot.conf
+/efi/loader/entries/void-%.conf: $(build/prep/kernel) install/boot.conf
 	sed \
 		-e ':a' -e '/\\$$/N; s/\\\n\s*//; ta' \
 		-e 's/{STAMP}/$*/g' \
@@ -129,5 +129,5 @@ $(build)/prep/kernel: $(build)/prep/mnt
 
 .PHONY: clean
 clean:
-	buildah umount '$(file < $(build)/prep/ctr)' \
-		&& rm -rf '$(build)/prep' '$(build)/log'
+	buildah umount '$(file < $(build)/prep/ctr)' || true
+	rm -rf '$(build)/prep' '$(build)/log'
