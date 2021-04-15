@@ -26,7 +26,7 @@ RUN xbps-install -y \
 RUN xbps-install -y \
   docker docker-compose podman podman-compose buildah \
   wget jq pgcli redis zip exa bat hyperfine \
-  redo \
+  redo just \
   github-cli grip git-cal ghi hub \
   gitlab-runner \
   inotify-tools \
