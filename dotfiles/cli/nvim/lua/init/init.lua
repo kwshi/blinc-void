@@ -1,5 +1,4 @@
 local lsp = require 'lspconfig'
---local comp = require 'completion'
 
 local default = function(val, def)
   if val == nil then return def
@@ -31,8 +30,6 @@ local make_on_attach = function(opts)
         client.config.flags.allow_incremental_sync = true
       end
     end
-
-    --comp.on_attach()
 
   end
 end
