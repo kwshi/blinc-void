@@ -1,6 +1,19 @@
 [user]
   name = Kye Shi
   email = shi.kye@gmail.com
+  signingKey = f1ee07d5!
+
+[pull]
+  ff = only
+
+[init]
+  defaultBranch = main
+
+[commit]
+  gpgsign = true
+
+[gpg]
+  program = gpg2
 
 [url "gh:"]
   insteadOf = https://github.com/
@@ -19,9 +32,3 @@
 # https://github.com/rust-lang/cargo/issues/8172 
 [url "https://github.com/rust-lang/crates.io-index"]
   insteadOf = https://github.com/rust-lang/crates.io-index
-
-[pull]
-  ff = only
-
-[init]
-	defaultBranch = main
