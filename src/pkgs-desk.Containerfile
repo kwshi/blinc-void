@@ -13,12 +13,14 @@ RUN xbps-install -y \
 
 # tools
 RUN xbps-install -y \
+  pinentry-gtk \
   redshift redshift-gtk sct \
   xsel hsetroot xclip xdotool \
-  scrot peek \
+  scrot maim peek \
   fswebcam cheese \
   sxiv vimiv \
   pavucontrol pamixer ponymix paprefs pasystray \
+  wmctrl \
   lxappearance \
   alacritty st \
   tigervnc remmina \

@@ -20,13 +20,14 @@ RUN xbps-install -y \
 # servers
 RUN xbps-install -y \
   nginx lighttpd \
-  postgresql sqlite sqlite-devel
+  postgresql sqlite sqlite-devel postgresql-client
 
 # tools
 RUN xbps-install -y \
   docker docker-compose podman podman-compose buildah \
   wget jq pgcli redis zip exa bat hyperfine \
   redo just \
+  yj \
   github-cli grip git-cal ghi hub \
   gitlab-runner \
   inotify-tools \
@@ -34,6 +35,7 @@ RUN xbps-install -y \
   squashfs-tools squashfs-tools-ng \
   fzf ripgrep the_silver_searcher \
   irssi weechat \
+  pass pass-otp pass-import pass-update browserpass passff-host \
   pandoc html-xml-utils mmark glow hugo \
   nix dpkg apt pacman \
   ffmpeg gifsicle gifski synfig \
@@ -61,7 +63,7 @@ RUN xbps-install -y \
   tectonic \
   opam \
   ghc stack cabal-install \
-  cargo rust rustup rust-analyzer rust-doc \
+  rustup rust-analyzer rust-doc \
   go \
   python3-pip python3-tkinter python3-setuptools \
   nodejs \
