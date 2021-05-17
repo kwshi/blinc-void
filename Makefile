@@ -131,3 +131,5 @@ $(build)/prep/kernel: $(build)/prep/mnt
 clean:
 	buildah umount '$(file < $(build)/prep/ctr)' || true
 	rm -rf '$(build)/prep' '$(build)/log'
+
+# https://www.reddit.com/r/voidlinux/comments/aefcn5/how_to_increase_open_files_limit/
