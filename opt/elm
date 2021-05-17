@@ -1,0 +1,8 @@
+# vi: ft=bash
+local ver='0.19.1'
+local sha256='e44af52bb27f725a973478e589d990a6428e115fe1bb14f03833134d6c0f155c'
+local url="https://github.com/elm/compiler/releases/download/$ver/binary-for-linux-64-bit.gz"
+
+buildah add -q "$1" "$(fetch_opt 'elm' "$ver" 'elm.gz' "$sha256" "$url")"
+buildah run "$1" gunzip 'elm.gz'
+buildah run "$1" chmod +x 'elm'

@@ -1,0 +1,6 @@
+# vi: ft=bash
+local url='https://talonvoice.com/dl/latest/talon-linux.tar.xz'
+
+buildah add -q "$1" "$url"
+buildah run "$1" tar -xf 'talon-linux.tar.xz'
+buildah run "$1" rm 'talon-linux.tar.xz'

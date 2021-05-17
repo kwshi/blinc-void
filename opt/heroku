@@ -1,0 +1,6 @@
+# vi: ft=bash
+local url='https://cli-assets.heroku.com/heroku-linux-x64.tar.gz'
+
+buildah add -q "$1" "$url"
+buildah run "$1" tar -xzf 'heroku-linux-x64.tar.gz'
+buildah run "$1" rm 'heroku-linux-x64.tar.gz'
