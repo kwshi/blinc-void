@@ -1,0 +1,46 @@
+# Template file for 'tandem'
+pkgname=tandem
+version=1.6.419
+revision=1
+archs="x86_64"
+depends="gtk+3 libnotify nss libXScrnSaver libXtst at-spi2-core libuuid libappindicator libsecret"
+short_desc="Virtual office for remote teams"
+maintainer="Kye Shi <shi.kye@gmail.com>"
+license="custom:Proprietary"
+homepage="https://tandem.chat"
+distfiles="https://downloads.tandem.chat/linux/deb/x64"
+checksum="6a65e932fb177344334b58d1640cc25416d0f2b24b20c0424c8748d005a696a3"
+restricted="yes"
+repository="nonfree"
+nopie="yes"
+
+do_extract() {
+	ar -x "$XBPS_SRCDISTDIR/$pkgname-$version/tandem.deb"
+	bsdtar -xf 'data.tar.xz'
+}
+
+do_install() {
+	local icon_path
+	local node_modules="$DESTDIR/usr/lib/tandem/resources/app.asar.unpacked/node_modules"
+
+	# library & misc. distribution files
+	vmkdir 'usr/lib/tandem'
+	vcopy 'opt/Tandem/*' 'usr/lib/tandem'
+	vinstall 'usr/share/applications/tandem.desktop' 644 'usr/share/applications'
+	vinstall 'usr/share/doc/tandem/changelog.gz' 644 'usr/share/doc/tandem'
+
+	# remove cross-architecture libs that break the `strip` phase
+	for mod in 'ref-napi' 'ffi-napi'; do
+		rm -rf "$node_modules/$mod/prebuilds/"{darwin-x64,linux-arm64,win32-ia32,win32-x64}
+	done
+
+	# symlink binary
+	vmkdir 'usr/bin'
+	ln -sf '../lib/tandem/tandem' "$DESTDIR/usr/bin/tandem"
+
+	# install icons
+	for size in 16 32 48 64 128 256 512 1024; do
+		icon_path="usr/share/icons/hicolor/${size}x${size}/apps"
+		vinstall "$icon_path/tandem.png" 644 "$icon_path"
+	done
+}
