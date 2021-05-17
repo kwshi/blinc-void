@@ -1,0 +1,6 @@
+# virtualization
+qemu qemu-ga qemu-user-static qemuconf virtme
+libvirt virt-manager virt-manager-tools
+
+# misc
+flatpak

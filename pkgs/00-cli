@@ -1,0 +1,53 @@
+# hardware monitors
+nvme-cli lm_sensors
+
+# common system daemons/libs/tools
+chrony
+cronutils
+dbus
+fuse fuse-overlayfs
+geoclue2
+xdg-user-dirs
+acl-progs
+iwd openresolv
+bubblewrap
+
+# servers
+nginx lighttpd
+postgresql sqlite sqlite-devel 
+
+# container stuff
+docker docker-compose podman podman-compose buildah
+
+# tools
+bash-completion
+jq pgcli 
+postgresql-client
+redis zip exa bat hyperfine
+redo just
+yj
+github-cli grip git-cal ghi hub
+gitlab-runner
+inotify-tools
+mupdf-tools
+squashfs-tools squashfs-tools-ng
+fzf ripgrep the_silver_searcher
+irssi weechat
+pass pass-otp pass-import pass-update browserpass passff-host
+pandoc html-xml-utils mmark glow hugo
+nix dpkg apt pacman
+ffmpeg gifski synfig
+signify
+efivar efibootmgr gummiboot
+lsof htop transmission
+
+# void-specific stuff
+xtools vpm vpsm
+void-release-keys void-docs void-docs-browse
+
+# toys
+sl lolcat-c cowsay ponysay
+fortune-mod fortune-mod-void
+
+# editors
+neovim emacs xi-editor

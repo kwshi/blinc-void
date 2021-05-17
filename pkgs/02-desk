@@ -1,0 +1,26 @@
+# core
+xorg lightdm bspwm sxhkd 
+
+# daemons/services
+barrier
+picom
+polybar
+stalonetray
+dunst
+autorandr 
+redshift 
+redshift-gtk 
+caffeine-ng
+pinentry-gtk
+
+# tools
+rofi dmenu sct
+scrot maim peek
+fswebcam cheese
+
+# graphics
+mesa-vaapi mesa-vdpau mesa-vulkan-radeon
+
+# audio
+pulseaudio bluez alsa-plugins-pulseaudio
+fontconfig fontconfig-32bit

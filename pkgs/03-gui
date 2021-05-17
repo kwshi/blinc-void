@@ -1,0 +1,47 @@
+# audio
+pavucontrol pamixer ponymix paprefs pasystray
+
+# tools
+xsel hsetroot xclip xdotool
+wmctrl
+lxappearance
+tigervnc
+remmina
+gtk2fontsel
+gifsicle
+
+# terminals
+alacritty st
+
+# media viewers
+sxiv 
+vimiv 
+fstl
+zathura zathura-pdf-mupdf zathura-ps
+mupdf
+apvlv
+
+# documents
+xournal xournalpp
+
+# browser
+firefox chromium browsh
+
+# graphical languages
+openscad factor octave
+
+# media players
+spotifyd spotify-tui spotify-adblock-linux
+playerctl
+vlc mplayer mpv
+
+# art & modeling
+inkscape gimp krita darktable
+blender solvespace
+musescore lilypond
+openshot shotcut obs recordmydesktop synfigstudio
+
+# messengers
+Signal-Desktop
+element-desktop
+telegram-desktop

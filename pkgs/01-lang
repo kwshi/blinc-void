@@ -1,0 +1,39 @@
+# languages
+clang
+tectonic
+opam
+ghc stack cabal-install
+rustup rust-analyzer rust-doc
+go
+python3-pip python3-tkinter python3-setuptools
+nodejs yarn pnpm
+julia
+clojure
+kotlin-bin
+erlang
+elixir
+ruby
+apl j
+wasmtime wabt
+elvish nushell zsh fish-shell
+
+# language support tools
+clang clang-analyzer clang-tools-extra valgrind ccls
+gopls
+shellcheck
+ghc-doc hoogle
+
+# extra libraries
+mpfr mpfr-devel
+gmp gmp-devel
+libmpc libmpc-devel
+lapacke lapacke-devel
+cblas cblas-devel
+openblas openblas-devel
+zlib zlib-devel
+libressl libressl-devel
+catch2 cgal
+
+# texlive kinda sucks
+#texlive-full
+texlive
