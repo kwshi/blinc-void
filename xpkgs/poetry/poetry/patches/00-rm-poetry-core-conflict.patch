@@ -1,0 +1,19 @@
+Currently, both `python3-poetry-core` and `poetry` ship (identical copies of)
+`<python-path>/poetry/__init__.py', because they both provide modules within
+the Python namespace package `poetry`.  As such, `xbps-install poetry` fails
+because `poetry`'s `__init__.py` conflicts with the `__init__.py` provided by
+`python3-poetry-core`, which is a dependency of `poetry`.  
+
+The fix: delete the `__init__.py` provided by this package (`poetry`).  Since
+`poetry` depends on `python3-poetry-core` (and the two packages' copies of
+`poetry/__init__.py` are identical), installing `poetry` also installs
+`python3-poetry-core`, ensuring that the necessary/correct `__init__.py` gets
+created anyway.
+
+--- poetry/__init__.py	2021-04-26 21:33:52.803957385 -0700
++++ poetry/__init__.py	1969-12-31 16:00:00.000000000 -0800
+@@ -1,4 +0,0 @@
+-from pkgutil import extend_path
+-
+-
+-__path__ = extend_path(__path__, __name__)

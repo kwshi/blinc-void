@@ -1,0 +1,18 @@
+# Template file for 'python3-cleo'
+pkgname=python3-cleo
+version=0.8.1
+revision=1
+wrksrc="cleo-${version}"
+build_style="python3-pep517"
+hostmakedepends="python3-poetry-core"
+depends="python3-clikit"
+short_desc="Create beautiful and testable command-line interfaces"
+maintainer="Kye Shi <shi.kye@gmail.com>"
+license="MIT"
+homepage="https://cleo.readthedocs.io/en/latest"
+distfiles="https://github.com/sdispater/cleo/archive/refs/tags/${version}.tar.gz"
+checksum=3ff6fe33d9e440dba4d9b0947e65ebebf95671d18d89b67bed1e1a09d2266bc1
+
+post_install() {
+	vlicense LICENSE
+}

@@ -1,0 +1,18 @@
+# Template file for 'python3-clikit'
+pkgname=python3-clikit
+version=0.6.2
+revision=1
+wrksrc="clikit-${version}"
+build_style="python3-pep517"
+hostmakedepends="python3-poetry-core"
+depends="python3-pastel python3-pylev python3-crashtest"
+short_desc="Utilities to build beautiful and testable command line interfaces"
+maintainer="Kye Shi <shi.kye@gmail.com>"
+license="MIT"
+homepage="https://github.com/sdispater/clikit"
+distfiles="https://github.com/sdispater/clikit/archive/refs/tags/${version}.tar.gz"
+checksum="4bb1d934e0c0a93f25429919242d11d60dcd1d9c65ac096033092d7973cbfc6e"
+
+post_install() {
+	vlicense LICENSE
+}
