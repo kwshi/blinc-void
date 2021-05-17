@@ -60,7 +60,7 @@ let g:smoothie_speed_linear_factor = 30
 let g:smoothie_speed_exponentiation_factor = 0.75
 
 let g:latex_to_unicode_auto = 1
-let g:latex_to_unicode_file_types  = 'julia\|python\|haskell\|javascript\|typescript'
+let g:latex_to_unicode_file_types  = 'julia\|python\|haskell\|javascript\|typescript\|'
 "let g:latex_to_unicode_keymap = 1
 
 let g:Hexokinase_optInPatterns = 'full_hex,triple_hex,rgb,rgba,hsl,hsla,colour_names'

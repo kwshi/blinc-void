@@ -5,4 +5,3 @@
 PARTLABEL=efi  /efi             vfat  rw,relatime,iocharset=iso8859-1,shortname=mixed,utf8,errors=remount-ro 0 0
 PARTLABEL=data /data            ext4  rw,relatime                                                            0 0
 /data/blinc    /usr/share/blinc none  bind
-tmpfs          /tmp             tmpfs defaults,nosuid,nodev,size=16G                                         0 0
