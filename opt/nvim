@@ -1,6 +1,0 @@
-# vi: ft=bash
-local url='https://github.com/neovim/neovim/releases/download/nightly/nvim-linux64.tar.gz'
-
-buildah add -q "$1" "$url"
-buildah run "$1" tar -xzf 'nvim-linux64.tar.gz'
-buildah run "$1" rm 'nvim-linux64.tar.gz'
