@@ -35,7 +35,7 @@ fzf ripgrep the_silver_searcher
 irssi weechat
 pass pass-otp pass-import pass-update browserpass passff-host
 pandoc html-xml-utils mmark glow hugo
-nix dpkg apt pacman
+nix
 ffmpeg gifski synfig
 signify
 efivar efibootmgr gummiboot
