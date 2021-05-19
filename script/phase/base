@@ -1,0 +1,18 @@
+#!/bin/bash
+. 'script/lib'
+
+function phase_img_base {
+  buildah copy -q "$1" 'src/xbps'   '/etc/xbps.d'
+  buildah copy -q "$1" 'src/dracut' '/etc/dracut.conf.d'
+  buildah copy -q "$1" '/var/cache/xbps' '/var/cache/xbps'
+  buildah run "$1" -- xbps-install -Suy 'xbps' 'base-files'
+  buildah run "$1" -- xbps-install -uy
+  buildah run "$1" -- xbps-install -y 'base-system' 'base-devel' 'curl' 'wget' 'git'
+
+  buildah run "$1" -- useradd -rb '/opt/blinc' -G 'wheel' 'vpkgs'
+  buildah run "$1" -- useradd -m -G 'wheel' 'kshi'
+  buildah run "$1" -- usermod -s '/bin/bash' 'root'
+
+  buildah config --cmd '/bin/bash' "$1"
+}
+phase_img 'base' 'phase_img_base' 'rootfs'

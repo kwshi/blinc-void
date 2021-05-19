@@ -1,0 +1,21 @@
+#!/bin/bash
+. 'script/lib'
+
+function phase_img_opt {
+  local img dir
+  local -i img_stamp src_stamp
+
+  dir="/opt/blinc/$name"
+
+  log "setting workdir to ${dir@Q}"
+  buildah config --workingdir "$dir" "$1"
+
+  # shellcheck ignore=SC1090
+  ( . "$ROOT_DIR/opt/$name" )
+}
+
+for script in "$ROOT_DIR/opt"/*; do
+  name="${script##*/}"
+  phase_img "opt/$name" 'phase_img_opt' \
+    'base' "$(stat -c '%Y' "$script")"
+done

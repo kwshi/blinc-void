@@ -1,0 +1,8 @@
+#!/bin/bash
+. 'script/lib'
+
+function phase_img_rootfs {
+  log 'extracting rootfs'
+  buildah add -q "$1" "$DOWNLOAD_DIR/rootfs/$VOID_ROOTFS_FILENAME"
+}
+phase_img 'rootfs' 'phase_img_rootfs'
