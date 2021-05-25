@@ -34,24 +34,26 @@ img-rootfs *opts: download
 img-base *opts: img-rootfs
   script/phase/base {{opts}}
   
-img-pkgs *opts: img-base
-  script/phase/pkgs {{opts}} 
-
-img-xpkgs *opts: img-pkgs
+img-xpkgs *opts: img-base
   script/phase/xpkgs {{opts}}
   
+img-pkgs *opts: img-xpkgs
+  script/phase/pkgs {{opts}} 
+
 img-opt *opts: img-base
   script/phase/opt {{opts}}
 
-img-home *opts: img-base
-  script/phase/home {{opts}}
+img-home *opts: img-xpkgs img-pkgs
+  buildah unshare script/phase/home {{opts}}
 
-img-final *opts: img-pkgs
-  #!/bin/bash
-  . <(just _lib)
+img-final *opts: img-home
+  script/phase/final {{opts}}
 
-  function phase_final {
-  }
+build name: img-final
+  script/build/main {{name}}
+
+install name: (build name)
+  sudo ./script/install {{name}}
 
 #tmp := /tmp/blinc-void
 #live := /run/initramfs/live
@@ -77,11 +79,6 @@ img-final *opts: img-pkgs
 #
 #mnt = $(file < $(build)/prep/mnt)
 #ker = $(file < $(build)/prep/kernel)
-#
-#$(build)/prep/kernel: $(build)/prep/mnt
-#	paths=('$(mnt)/lib/modules/'*) \
-#	&& for p in "$${paths[@]}"; do basename "$$p"; done \
-#	| sort -V | tail -n 1 > '$@'
 #
 #/run/initramfs/live/void-%.img: $(build)/prep/mnt
 #	read -r mnt < '$<' \
@@ -111,3 +108,5 @@ img-final *opts: img-pkgs
 #	rm -rf '$(build)/prep' '$(build)/log'
 #
 # https://www.reddit.com/r/voidlinux/comments/aefcn5/how_to_increase_open_files_limit/
+
+# LINE chromium --app=chrome-extension://ophjlpahpchlmihnnnihgmmeilfjmjjc/index.html
