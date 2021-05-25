@@ -10,7 +10,7 @@ function phase_img_base {
   buildah run "$1" -- xbps-install -y 'base-system' 'base-devel' 'curl' 'wget' 'git'
 
   buildah run "$1" -- useradd -rb '/opt/blinc' -G 'wheel' 'vpkgs'
-  buildah run "$1" -- useradd -m -G 'wheel' 'kshi'
+  buildah run "$1" -- useradd -G 'wheel' 'kshi'
   buildah run "$1" -- usermod -s '/bin/bash' 'root'
 
   buildah config --cmd '/bin/bash' "$1"

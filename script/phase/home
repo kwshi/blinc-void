@@ -1,0 +1,46 @@
+#!/bin/bash
+. 'script/lib'
+
+declare -a repo_args
+
+function phase_img_home {
+  local -a pkgs
+
+  log 'installing packages'
+  if [[ -r "$ROOT_DIR/home/$name/pkgs" ]]; then
+    readarray -t pkgs < <(normalize_list < "$ROOT_DIR/home/$name/pkgs")
+    buildah run "$1" xbps-install -y "${repo_args[@]}" "${pkgs[@]}"
+  fi
+
+  log 'running user script'
+  buildah config -u 'kshi' --workingdir '/home/kshi' "$1"
+  # shellcheck disable=SC1090
+  ( . "$ROOT_DIR/home/$name/script" )
+}
+
+function phase_img_home_all {
+  local name path ctr
+  while read -r name; do
+    log "copying from home/$name"
+    ctr="$(buildah from "$BUILDAH_NAME_PREFIX/home/$name")"
+    mnt="$(buildah mount "$ctr")"
+    while read -r path; do
+      buildah copy -q --chown 'kshi:kshi' "$1" "$mnt/home/kshi/$path" "/home/kshi/$path"
+    done < <(normalize_list < "$ROOT_DIR/home/$name/paths")
+    buildah umount "$ctr" > '/dev/null'
+    buildah rm "$ctr" > '/dev/null'
+  done < <(list_dir "$ROOT_DIR/home")
+}
+
+repo_args=()
+while read -r xpkg; do
+  repo_args+=('-R' "/opt/xpkgs/$xpkg")
+done < <(list_dir 'xpkgs')
+
+for path in "$ROOT_DIR/home"/*; do
+  name="${path##*/}"
+  phase_img "home/$name" 'phase_img_home' \
+    'xpkgs' "$(recursive_mtime "$path")"
+done
+
+phase_img 'home' 'phase_img_home_all' 'pkgs'

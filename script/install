@@ -1,0 +1,13 @@
+#!/bin/bash
+. 'script/lib'
+
+out="$BUILD_DIR/out/$1"
+
+log 'copying squashfs image'
+cp -r "$out/squash.img" "/run/initramfs/live/void-$1.img"
+
+log 'copying boot configuration'
+cp "$out/boot.conf" "/efi/loader/entries/void-$1.conf"
+
+log 'copying linux boot files'
+cp -r "$out/linux" "/efi/linux/void/$1"

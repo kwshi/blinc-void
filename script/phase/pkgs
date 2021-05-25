@@ -1,26 +1,30 @@
 #!/bin/bash
 . 'script/lib'
 
-declare -a pkgs lists
+declare -a repo_args pkgs lists
 declare name
 
 function phase_img_pkgs {
+  local -a pkgs
+
   log 'loading packages'
+
   pkgs=()
-  while read -r line; do
-    line="${line%%#*}"
-    read -ra ps <<< "$line"
-    for pkg in "${ps[@]}"; do pkgs+=("$pkg"); done
-  done < "$ROOT_DIR/pkgs/$name"
+  readarray -t pkgs < <(normalize_list < "$ROOT_DIR/pkgs/$name")
   log "loaded, ${#pkgs[@]} packages"
 
-  buildah run "$1" -- xbps-install -y "${pkgs[@]}"
+  buildah run "$1" -- xbps-install -R '/var/cache/xbps' -y "${repo_args[@]}" "${pkgs[@]}"
 }
+
+repo_args=()
+while read -r xpkg; do
+  repo_args+=('-R' "/opt/xpkgs/$xpkg")
+done < <(list_dir 'xpkgs')
 
 lists=("$ROOT_DIR/pkgs"/*)
 for (( i = 0; i < ${#lists[@]}; ++i )); do
   name="${lists[i]##*/}"
-  if [[ $i == 0 ]]; then prev='base'; else prev="pkgs/${lists[i-1]##*/}"; fi
+  if [[ $i == 0 ]]; then prev='xpkgs'; else prev="pkgs/${lists[i-1]##*/}"; fi
   phase_img "pkgs/$name" 'phase_img_pkgs' \
     "$prev" "$(stat -c '%Y' "$ROOT_DIR/pkgs/$name")"
 done

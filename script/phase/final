@@ -1,0 +1,149 @@
+#!/bin/bash
+. 'script/lib'
+
+function phase_img_final {
+  local name mnt ctr
+  local -a xdg symlinks dirs etc sv paths
+
+  #while read -r name; do
+  #  log "copying from opt/$name"
+  #  ctr="$(buildah from "$BUILDAH_NAME_PREFIX/opt/$name")"
+  #  mnt="$(buildah mount "$ctr")"
+  #  buildah copy -q "$1" "$mnt/opt/blinc/$name" "/opt/blinc/$name"
+  #  buildah umount "$ctr" > '/dev/null'
+  #  buildah rm "$ctr" > '/dev/null'
+  #done < <(list_dir "$ROOT_DIR/opt")
+
+  buildah run "$1" -- rm -rf \
+    '/etc/iwd' \
+    '/etc/sudoers.d' \
+    '/etc/containers' \
+    '/etc/lightdm/lightdm.conf' \
+    '/etc/pulse/daemon.conf'
+
+  buildah copy --contextdir "$ROOT_DIR" --ignorefile "$ROOT_DIR/.dockerignore" "$1" "$ROOT_DIR" '/usr/share/blinc'
+
+  log 'copying config paths'
+  readarray -t paths < <(find "$ROOT_DIR/cfg" -type 'f' -printf '%P\n')
+  for path in "${paths[@]}"; do
+    log "copying ${path@Q}"
+    buildah run "$1" -- mkdir -p "/${path%/*}"
+    buildah run "$1" -- ln -sf "/usr/share/blinc/cfg/$path" "/$path"
+  done
+
+  #etc/default/libc-locales
+  #etc/fstab
+  #etc/locale.conf
+  #etc/rc.conf
+  #etc/rc.local
+  #etc/security/limits.conf
+  #etc/sysctl.conf
+  #etc/xdg/user-dirs.defaults
+
+  #readarray -t etc < <(list_dir 'cfg/etc')
+  #buildah run "$1" -- stow -d '/usr/share/blinc' -t '/' 'cfg'
+
+  buildah run "$1" -- chown -R 'root:root' '/etc/sudoers.d'
+
+  buildah run "$1" -- ln -sT \
+    '/usr/share/zoneinfo/America/Los_Angeles' '/etc/localtime'
+  buildah run "$1" -- ln -st \
+    '/etc/fonts/conf.d' '/usr/share/fontconfig/conf.avail/70-no-bitmaps.conf'
+  buildah run "$1" -- ln -sT '/data/containers/root' '/var/lib/containers'
+
+  sv=(
+    'dbus' 
+    'docker' 
+    'iwd' 
+    'lightdm' 
+    'bluetoothd'
+    'chronyd'
+  )
+
+  for (( i=0; i<${#sv[@]}; ++i )); do
+    sv[i]="/etc/sv/${sv[i]}"
+  done
+
+  buildah run "$1" -- ln -st '/etc/runit/runsvdir/default' "${sv[@]}"
+  buildah run "$1" -- mkdir '/data' '/efi'
+
+  buildah run "$1" -- groupadd -r 'autologin'
+  buildah run "$1" -- usermod -aG 'docker,audio,video,autologin' 'kshi'
+
+  log "running user config scripts"
+  buildah config --workingdir '/home/kshi' -u 'kshi' "$1"
+  
+  log 'creating dirs'
+  readarray -t dirs < <(normalize_list <<< '
+    .cache
+    .config/gh
+    .mozilla
+    .local/share
+  ')
+  
+  buildah run "$1" mkdir -p "${dirs[@]}"
+  buildah run "$1" rm '.bashrc' '.bash_profile'
+  
+  log 'symlinks'
+  buildah run "$1" ln -st '.' \
+    '/data/downloads' \
+    '/data/dotfiles' \
+    '/data/documents' \
+    '/data/hacks' \
+    '/data/movies' \
+    '/data/blinc'
+
+  readarray -t symlinks < <(normalize_list <<< '
+    .mozilla/firefox /data/browser/firefox
+    .config/chromium /data/browser/chromium 
+    
+    .zoom                   /data/zoom
+    .gnupg                  /data/gnupg
+    .password-store         /data/pass
+    .klei                   /data/games/klei
+    .multimc                /data/games/multimc
+    .steam                  /data/games/steam/home
+    .local/share/Steam      /data/games/steam/share
+    .local/share/containers /data/containers/kshi
+    .cache/Tectonic         /data/tectonic
+    
+    .config/gh/hosts.yml /data/github/hosts.yml
+    .config/spotifyd     /data/spotify/daemon
+    .config/spotify-tui  /data/spotify/tui
+    .config/spotify      /data/spotify/desktop
+    .config/Signal       /data/signal
+    .config/Slack        /data/slack
+  ')
+
+  log 'more symlinks'
+  for (( i=0; i<${#symlinks[@]}; i+=2 )); do
+    buildah run "$1" -- ln -sT "${symlinks[i+1]}" "${symlinks[i]}"
+  done
+
+  log 'xdg symlinks'
+  xdg=()
+  while read -r path; do 
+    xdg+=("/home/kshi/dotfiles/$path")
+  done < <(normalize_list <<< '
+    cli/git
+    cli/bat
+    cli/pip
+    cli/nvim
+    desk/alacritty
+    desk/picom
+    desk/polybar
+    desk/bspwm
+    desk/sxhkd
+    desk/xournal
+  ')
+
+  buildah run "$1" ln -st '.config' "${xdg[@]}"
+
+  buildah run "$1" ln -sT '/home/kshi/dotfiles/cli/ssh' '.ssh'
+  buildah run "$1" ln -s '/home/kshi/dotfiles/cli/bash/rc' '.bashrc'
+  buildah run "$1" ln -s '/home/kshi/dotfiles/cli/bash/profile' '.bash_profile'
+
+  buildah run "$1" xdg-user-dirs-update
+}
+
+phase_img 'final' 'phase_img_final' 'home'

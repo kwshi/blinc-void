@@ -33,6 +33,16 @@ function query_img_meta {
   else return 1; fi
 }
 
+function create_ctr {
+  local ctr
+  if ctr="$(buildah containers -q -f name="$BUILDAH_NAME_PREFIX/$1" 2> '/dev/null')" \
+    && [[ -n "$ctr" ]]; then
+    log "existing container ${ctr@Q}, overwriting"
+    buildah rm "$ctr" > '/dev/null'
+  fi
+  buildah from --name "$BUILDAH_NAME_PREFIX/$1" "$2"
+}
+
 function phase_img {
   local img ctr from stamp parent parent_stamp
 
@@ -55,17 +65,11 @@ function phase_img {
     fi
   fi
 
-  if ctr="$(buildah containers -q -f name="$BUILDAH_NAME_PREFIX/$1" 2> /dev/null)" \
-    && [[ -n "$ctr" ]]; then
-    log "existing container ${ctr@Q}, overwriting"
-    buildah rm "$ctr" > /dev/null
-  fi
-
   if [[ "${3+_}" == '_' ]]; then from="$BUILDAH_NAME_PREFIX/$3"
   else from='scratch'; fi
 
   log 'creating container'
-  ctr="$(buildah from --name "$BUILDAH_NAME_PREFIX/$1" "$from")"
+  ctr="$(create_ctr "$1" "$from")"
   log "created container ${ctr@Q}"
 
   "$2" "$ctr"
@@ -114,6 +118,20 @@ function recursive_mtime {
     if [[ curr -gt latest ]]; then latest=curr; fi
   done < <(find "$1")
   echo "$latest"
+}
+
+function list_dir {
+  for f in "$1"/*; do
+    echo "${f##*/}"
+  done
+}
+
+function normalize_list {
+  while read -r line; do
+    line="${line%%#*}"
+    read -ra ps <<< "$line"
+    for pkg in "${ps[@]}"; do echo "$pkg"; done
+  done
 }
 
 function init {

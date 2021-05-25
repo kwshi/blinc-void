@@ -2,15 +2,14 @@
 . 'script/lib'
 
 function phase_img_opt {
-  local img dir
-  local -i img_stamp src_stamp
+  local dir
 
   dir="/opt/blinc/$name"
 
   log "setting workdir to ${dir@Q}"
   buildah config --workingdir "$dir" "$1"
 
-  # shellcheck ignore=SC1090
+  # shellcheck disable=SC1090
   ( . "$ROOT_DIR/opt/$name" )
 }
 

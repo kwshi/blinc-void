@@ -1,7 +1,6 @@
 #!/bin/bash
 . 'script/lib'
 
-
 function build_pkg {
   cp -rT "$ROOT_DIR/xpkgs/$1" 'srcpkgs'
   ./xbps-src pkg -qf -r "$1" "$1"
@@ -57,9 +56,8 @@ function phase_img_xpkgs {
 
   for pkg in "${pkgs[@]}"; do
     log "installing ${pkg@Q}"
-    buildah copy -q "$1" "hostdir/binpkgs/$pkg" "/opt/xpkgs/$pkg"
-    buildah run "$1" xbps-install -y -R "$(get_repo '/opt/xpkgs' "$pkg")" "$pkg"
+    buildah copy -q "$1" "$(get_repo 'hostdir/binpkgs' "$pkg")" "/opt/xpkgs/$pkg"
   done
 }
 
-phase_img 'xpkgs' 'phase_img_xpkgs' 'pkgs'
+phase_img 'xpkgs' 'phase_img_xpkgs' 'base'
