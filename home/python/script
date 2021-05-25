@@ -9,6 +9,7 @@ pkgs=(
   'pyls-black'
   'pyls-mypy'
   
+  'matplotlib'
   'numpy'
   'scipy'
   'sympy'
