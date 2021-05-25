@@ -2,7 +2,7 @@
 . 'script/lib'
 
 function build_pkg {
-  cp -rT "$ROOT_DIR/xpkgs/$1" 'srcpkgs'
+  cp -rt 'srcpkgs' "$ROOT_DIR/xpkgs/$1"
   ./xbps-src pkg -qf -r "$1" "$1"
 }
 
