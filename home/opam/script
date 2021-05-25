@@ -1,0 +1,5 @@
+# vi: ft=bash
+# shellcheck shell=bash
+buildah run "$1" opam init -yn
+buildah run "$1" opam install -y 'dune'
+buildah run "$1" opam install -y 'containers'

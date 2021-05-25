@@ -1,0 +1,31 @@
+# vi: ft=bash
+# shellcheck shell=bash
+
+local -a pkgs
+pkgs=(
+  'black'
+  
+  'python-language-server'
+  'pyls-black'
+  'pyls-mypy'
+  
+  'numpy'
+  'scipy'
+  'sympy'
+  'gmpy2'
+  'mpmath'
+  
+  'pandas'
+  'bokeh'
+  'seaborn'
+  
+  'torch'
+  
+  'ipython'
+)
+
+buildah run "$1" virtualenv '.venv'
+if [[ -e ~/'.cache/pip' ]]; then
+  buildah copy "$1" ~/'.cache/pip' '.cache/pip'
+fi
+buildah run "$1" .venv/bin/pip install "${pkgs[@]}"

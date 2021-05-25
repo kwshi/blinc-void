@@ -1,0 +1,5 @@
+python3-devel
+gmp-devel
+mpfr-devel
+libmpc-devel
+python3-virtualenv
