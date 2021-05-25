@@ -20,6 +20,7 @@ postgresql sqlite sqlite-devel
 docker docker-compose podman podman-compose buildah
 
 # tools
+stow
 bash-completion
 jq pgcli 
 postgresql-client
@@ -40,6 +41,8 @@ ffmpeg gifski synfig
 signify
 efivar efibootmgr gummiboot
 lsof htop transmission
+golang-migrate litecli
+stripe
 
 # void-specific stuff
 xtools vpm vpsm
@@ -50,4 +53,5 @@ sl lolcat-c cowsay ponysay
 fortune-mod fortune-mod-void
 
 # editors
-neovim emacs xi-editor
+emacs xi-editor 
+neovim-nightly neovim-plug

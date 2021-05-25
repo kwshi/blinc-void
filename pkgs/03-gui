@@ -31,7 +31,7 @@ firefox chromium browsh
 openscad factor octave
 
 # media players
-spotifyd spotify-tui spotify-adblock-linux
+spotifyd spotify-tui spotify-adblock-linux spotify
 playerctl
 vlc mplayer mpv
 
@@ -45,3 +45,8 @@ openshot shotcut obs recordmydesktop synfigstudio
 Signal-Desktop
 element-desktop
 telegram-desktop
+discord
+slack-desktop
+zoom
+tandem
+parsec

@@ -24,3 +24,4 @@ mesa-vaapi mesa-vdpau mesa-vulkan-radeon
 # audio
 pulseaudio bluez alsa-plugins-pulseaudio
 fontconfig fontconfig-32bit
+librnnoise-ladspa
