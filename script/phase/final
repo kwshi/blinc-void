@@ -43,6 +43,9 @@ function phase_img_final {
   #readarray -t etc < <(list_dir 'cfg/etc')
   #buildah run "$1" -- stow -d '/usr/share/blinc' -t '/' 'cfg'
 
+  # steam fonts patch, because ??????
+  buildah run "$1" -- rm '/usr/share/fonts/steam-fonts/.uuid'
+
   buildah run "$1" -- chown -R 'root:root' '/etc/sudoers.d'
 
   buildah run "$1" -- ln -sT \
