@@ -21,7 +21,10 @@ function phase_img_final {
     '/etc/lightdm/lightdm.conf' \
     '/etc/pulse/daemon.conf'
 
-  buildah copy --contextdir "$ROOT_DIR" --ignorefile "$ROOT_DIR/.dockerignore" "$1" "$ROOT_DIR" '/usr/share/blinc'
+  buildah copy \
+    --contextdir "$ROOT_DIR" \
+    --ignorefile "$ROOT_DIR/.dockerignore" \
+    "$1" "$ROOT_DIR" '/usr/share/blinc'
 
   log 'copying config paths'
   readarray -t paths < <(find "$ROOT_DIR/cfg" -type 'f' -printf '%P\n')
