@@ -58,6 +58,10 @@ function phase_img_final {
     'lightdm' 
     'bluetoothd'
     'chronyd'
+    
+    # logging
+    'socklog-unix'
+    'nanoklogd'
   )
 
   for (( i=0; i<${#sv[@]}; ++i )); do
@@ -68,7 +72,7 @@ function phase_img_final {
   buildah run "$1" -- mkdir '/data' '/efi'
 
   buildah run "$1" -- groupadd -r 'autologin'
-  buildah run "$1" -- usermod -aG 'docker,audio,video,autologin' 'kshi'
+  buildah run "$1" -- usermod -aG 'docker,audio,video,autologin,socklog' 'kshi'
 
   log "running user config scripts"
   buildah config --workingdir '/home/kshi' -u 'kshi' "$1"

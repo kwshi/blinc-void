@@ -11,6 +11,8 @@ xdg-user-dirs
 acl-progs
 iwd openresolv
 bubblewrap
+socklog-void
+socklog
 
 # servers
 nginx lighttpd
