@@ -9,6 +9,7 @@ tigervnc
 remmina
 gtk2fontsel
 gifsicle
+pinentry-dmenu
 
 # terminals
 alacritty st

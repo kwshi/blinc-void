@@ -57,6 +57,8 @@ function phase_img_final {
     '/etc/fonts/conf.d' '/usr/share/fontconfig/conf.avail/70-no-bitmaps.conf'
   buildah run "$1" -- ln -sT '/data/containers/root' '/var/lib/containers'
 
+  buildah run "$1" -- xbps-alternatives -s 'pinentry-gtk'
+
   sv=(
     'dbus' 
     'docker' 
