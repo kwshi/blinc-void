@@ -125,6 +125,7 @@ function phase_img_final {
     .config/spotify      /data/spotify/desktop
     .config/Signal       /data/signal
     .config/Slack        /data/slack
+    .config/tentactl     /data/tentactl
   ')
 
   log 'more symlinks'
