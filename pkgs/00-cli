@@ -13,6 +13,7 @@ iwd openresolv
 bubblewrap
 socklog-void
 socklog
+gummiboot
 
 # servers
 nginx lighttpd
@@ -20,6 +21,9 @@ postgresql sqlite sqlite-devel
 
 # container stuff
 docker docker-compose podman podman-compose buildah
+
+# environment setup
+starship
 
 # tools
 stow
@@ -41,7 +45,7 @@ pandoc html-xml-utils mmark glow hugo
 nix
 ffmpeg gifski synfig
 signify
-efivar efibootmgr gummiboot
+efivar efibootmgr 
 lsof htop transmission
 golang-migrate litecli
 stripe
@@ -56,4 +60,5 @@ fortune-mod fortune-mod-void
 
 # editors
 emacs xi-editor 
-neovim-nightly neovim-plug
+neovim-nightly neovim-plug 
+# TODO neovim-remote, conflicts
