@@ -2,7 +2,7 @@
 . 'script/lib'
 
 function build_pkg {
-  cp -rt 'srcpkgs' "$ROOT_DIR/xpkgs/$1"
+  cp -rT "$ROOT_DIR/xpkgs/$1" 'srcpkgs'
   ./xbps-src pkg -qf -r "$1" "$1"
 }
 
@@ -14,7 +14,7 @@ function get_repo {
 function phase_img_xpkgs {
   local name repo
   local -a pkgs
-  local -i bin_stamp src_stamp
+  local -i bin_stamp src_stamp up_stamp
 
   mkdir -p "$BUILD_DIR/vpkgs"
   cd "$BUILD_DIR/vpkgs"
@@ -44,8 +44,9 @@ function phase_img_xpkgs {
     then
       bin_stamp="$(recursive_mtime "$repo")"
       src_stamp="$(recursive_mtime "$ROOT_DIR/xpkgs/$name")"
+      up_stamp="$(git log -1 --ignore-missing --format='%ct' "srcpkgs/$name")"
 
-      if [[ src_stamp -gt bin_stamp ]]; then
+      if [[ src_stamp -gt bin_stamp || up_stamp -gt bin_stamp ]]; then
         log 'existing binaries, newer sources, overwriting'
         build_pkg "$name"
       else
