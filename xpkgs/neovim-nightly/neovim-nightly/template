@@ -21,6 +21,9 @@ alternatives="
  vim:vim:/usr/bin/nvim
  vim:vim.1:/usr/share/man/man1/nvim.1"
 
+conflicts="neovim<0.5.0"
+provides="neovim-0.5.0"
+
 do_fetch() {
 	mkdir -p "$XBPS_SRCDISTDIR/$pkgname-$version"
   curl -fsSL -O --output-dir "$XBPS_SRCDISTDIR/$pkgname-$version" "$distfiles"
