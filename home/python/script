@@ -23,6 +23,8 @@ pkgs=(
   'torch'
   
   'ipython'
+
+  'neovim'
 )
 
 buildah run "$1" virtualenv '.venv'

@@ -1,0 +1,67 @@
+# vi: ft=bash
+# shellcheck shell=bash
+
+local -a pkgs
+local pkg_code pkg_syms
+
+pkgs=(
+  'PackageCompiler'
+
+  'DataFrames'
+  'CSV'
+  'SQLite'
+  'ZipFile'
+
+  'Plots'
+  'PyPlot'
+  'PGFPlotsX'
+  'PlotlyJS'
+  'Makie'
+  'Gadfly'
+  'Immerse'
+
+  'Javis'
+  'Luxor'
+
+  'OhMyREPL'
+  'Revise'
+  'Pluto'
+  'LanguageServer'
+
+  'Zygote'
+
+  'ArgParse'
+
+  'Flux'
+
+  'PhysicalConstants'
+  'Unitful'
+)
+
+pkg_strs=''
+pkg_syms=''
+for pkg in "${pkgs[@]}"; do
+  pkg_strs+="\"$pkg\","
+  pkg_syms+=":$pkg,"
+done
+
+# initialize cache
+if [[ -e ~/'.julia' ]]; then
+  for path in 'artifacts' 'compiled'; do
+    buildah copy --chown 'kshi:kshi' \
+      "$1" ~/".julia/$path" ".julia/$path"
+  done
+fi
+
+buildah run "$1" mkdir '.julia-sys'
+buildah run "$1" -- tini -- xvfb-run -- julia -e '
+import Pkg
+Pkg.add(['"$pkg_strs"'])
+Pkg.precompile()
+
+import PackageCompiler as PC
+PC.create_sysimage(
+  ['"$pkg_syms"'],
+  sysimage_path=".julia-sys/sys.so"
+)
+'

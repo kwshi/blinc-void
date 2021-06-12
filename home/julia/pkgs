@@ -1,0 +1,8 @@
+julia
+julia-devel
+
+libgomp-devel
+gtk+3-devel
+
+xvfb-run
+tini

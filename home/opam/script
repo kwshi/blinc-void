@@ -1,5 +1,12 @@
 # vi: ft=bash
 # shellcheck shell=bash
+
+local -a pkgs
+pkgs=(
+  'dune'
+  'utop'
+  'containers'
+)
+
 buildah run "$1" opam init -yn
-buildah run "$1" opam install -y 'dune'
-buildah run "$1" opam install -y 'containers'
+buildah run "$1" opam install -y "${pkgs[@]}"
