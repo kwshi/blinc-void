@@ -4,17 +4,7 @@ steam (font issue???), symlink
 
 link/mount buildah containers
 
-flatpak software: zoom, discord, etc. 
-also zoom flatpak can't SSO, because zoom sucks
-xbps-src actually, because flatpak is wak
 pay attention to symlinks
-
-game symlinks, e.g. klei dst
-
-spotifyd, playerctl
-
-default apps (browser), xdg-mime and xdg-open
-specifically: use firefox, not chrome
 
 pulse remember settings
 
@@ -36,8 +26,6 @@ xournal configs
 
 ssd trim cron
 
-compositor (picom), hsetroot background
-
 /opt permissions
 
 irc: irssi, weechat?
@@ -53,8 +41,6 @@ bluetooth??
 xsel/xclip
 
 unicode cli
-
-git: config pull, url git@github.com
 
 factorrc
 
