@@ -106,29 +106,29 @@ function phase_img_final {
     '/data/movies' \
     '/data/blinc'
 
-  readarray -t symlinks < <(normalize_list <<< '
-    .mozilla/firefox /data/browser/firefox
-    .config/chromium /data/browser/chromium 
+  symlinks=(
+    '.mozilla/firefox' '/data/browser/firefox'
+    '.config/chromium' '/data/browser/chromium' 
     
-    .zoom                     /data/zoom
-    .gnupg                    /data/gnupg
-    .password-store           /data/pass
-    .klei                     /data/games/klei
-    .multimc                  /data/games/multimc
-    .steam                    /data/games/steam/home
-    .local/share/Steam        /data/games/steam/share
-    .local/share/UnrailedGame /data/games/unrailed
-    .local/share/containers   /data/containers/kshi
-    .cache/Tectonic           /data/tectonic
+    '.zoom'                     '/data/zoom'
+    '.gnupg'                    '/data/gnupg'
+    '.password-store'           '/data/pass'
+    '.klei'                     '/data/games/klei'
+    '.multimc'                  '/data/games/multimc'
+    '.steam'                    '/data/games/steam/home'
+    '.local/share/Steam'        '/data/games/steam/share'
+    '.local/share/UnrailedGame' '/data/games/unrailed'
+    '.local/share/containers'   '/data/containers/kshi'
+    '.cache/Tectonic'           '/data/tectonic'
     
-    .config/gh/hosts.yml /data/github/hosts.yml
-    .config/spotifyd     /data/spotify/daemon
-    .config/spotify-tui  /data/spotify/tui
-    .config/spotify      /data/spotify/desktop
-    .config/Signal       /data/signal
-    .config/Slack        /data/slack
-    .config/tentactl     /data/tentactl
-  ')
+    '.config/gh/hosts.yml' '/data/github/hosts.yml'
+    '.config/spotifyd'     '/data/spotify/daemon'
+    '.config/spotify-tui'  '/data/spotify/tui'
+    '.config/spotify'      '/data/spotify/desktop'
+    '.config/Signal'       '/data/signal'
+    '.config/Slack'        '/data/slack'
+    '.config/tentactl'     '/data/tentactl'
+  )
 
   log 'more symlinks'
   for (( i=0; i<${#symlinks[@]}; i+=2 )); do
