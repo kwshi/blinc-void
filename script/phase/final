@@ -91,6 +91,7 @@ function phase_img_final {
     .config/gh
     .mozilla
     .local/share
+    .xournal
   ')
   
   buildah run "$1" mkdir -p "${dirs[@]}"
@@ -154,8 +155,10 @@ function phase_img_final {
   buildah run "$1" ln -st '.config' "${xdg[@]}"
 
   buildah run "$1" ln -sT '/home/kshi/dotfiles/cli/ssh' '.ssh'
-  buildah run "$1" ln -s '/home/kshi/dotfiles/cli/bash/rc' '.bashrc'
-  buildah run "$1" ln -s '/home/kshi/dotfiles/cli/bash/profile' '.bash_profile'
+  buildah run "$1" ln -sT '/home/kshi/dotfiles/cli/bash/rc' '.bashrc'
+  buildah run "$1" ln -sT '/home/kshi/dotfiles/cli/bash/profile' '.bash_profile'
+  buildah run "$1" ln -sT '/home/kshi/dotfiles/desk/xournal/config' '.xournal/config'
+  buildah run "$1" ln -sT '/home/kshi/dotfiles/desk/conky/rc' '.conkyrc'
 
   buildah run "$1" xdg-user-dirs-update
 }
