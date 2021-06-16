@@ -1,8 +1,0 @@
-# vi: ft=bash
-local ver='0.0.3'
-local sha256='782e2c23809828afb42e8086f6ed497cf5b9dc3aec35936cb96fc426b19acbb3'
-local url="https://github.com/josh-richardson/cadmus/releases/download/$ver/cadmus.zip"
-
-buildah add -q "$1" "$(fetch_opt 'cadmus' "$ver" 'cadmus.zip' "$sha256" "$url")"
-buildah run "$1" unzip -q 'cadmus.zip'
-buildah run "$1" rm 'cadmus.zip'

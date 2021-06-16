@@ -1,6 +1,0 @@
-# vi: ft=bash
-local ver='9.3'
-local sha256='acb417ee1340409de0e0c646c7b9eb6a1689e4dde74b92a124171b9b27fd9ca6'
-local url="http://mirrors.mit.edu/sage/linux/64bit/sage-$ver-Debian_GNU_Linux_10-x86_64.tar.bz2"
-
-buildah add -q "$1" "$(fetch_opt 'sage' "$ver" 'sage.tar.bz2' "$sha256" "$url")"

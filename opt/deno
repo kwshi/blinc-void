@@ -1,8 +1,0 @@
-# vi: ft=bash
-local ver='1.10.1'
-local sha256='cd82598abdefade06c9df0fc5644313213f118eceb9e42f984ec59323d8aec51'
-local url="https://github.com/denoland/deno/releases/download/v$ver/deno-x86_64-unknown-linux-gnu.zip"
-
-buildah add -q "$1" "$(fetch_opt 'deno' "$ver" 'deno.gz' "$sha256" "$url")"
-buildah run "$1" gunzip 'deno.gz'
-buildah run "$1" chmod +x 'deno'
