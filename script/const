@@ -1,0 +1,16 @@
+# vi: ft=bash
+# shellcheck shell=bash
+VOID_REPO_URL='https://alpha.us.repo.voidlinux.org/live/current'
+VOID_VERSION='20210218'
+BUILDAH_NAME_PREFIX="blinc-void"
+
+ROOT_DIR="$PWD"
+TMP_DIR='/tmp/blinc'
+
+BUILD_DIR="$ROOT_DIR/build"
+DOWNLOAD_DIR="$BUILD_DIR/download"
+VPKGS_DIR="$BUILD_DIR/download"
+
+VOID_ROOTFS_FILENAME="void-x86_64-ROOTFS-$VOID_VERSION.tar.xz"
+
+

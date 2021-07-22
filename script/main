@@ -1,0 +1,179 @@
+#!/bin/bash
+set -euo pipefail
+
+VOID_REPO_URL='https://alpha.us.repo.voidlinux.org/live/current'
+VOID_VERSION='20210218'
+
+VOID_EXTRA_URL='https://api.github.com/repos/kwshi/void-extra/releases/tags/latest'
+
+BUILDAH_NAME_PREFIX="blinc-void"
+
+ROOT_DIR="$PWD"
+TMP_DIR='/tmp/blinc'
+
+BUILD_DIR="$ROOT_DIR/build"
+DOWNLOAD_DIR="$BUILD_DIR/download"
+
+VOID_ROOTFS_FILENAME="void-x86_64-ROOTFS-$VOID_VERSION.tar.xz"
+
+declare -iA stamps
+declare -A fresh
+declare -a xargs xurls
+declare xstamp
+
+if [[ ${1+_} != '_' ]]; then
+  echo 'missing build arg' >&2
+  exit 1
+fi
+
+declare rebuild
+rebuild=
+while getopts 'r:' opt; do
+  case $opt in
+    r) rebuild="$OPTARG";;
+    *) echo 'aaa'; exit 1;;
+  esac
+done
+shift "$((OPTIND-1))"
+
+function _log-with-prefix {
+  echo $'\e[2m[blinc '"$(date +'%F %T %Z')"$']\e[m \e['"$1m""$2"$'\e[m' >&2
+}
+function log-phase { _log-with-prefix '96;1' "PHASE: $1";     }
+function log-done  { _log-with-prefix '32;1' "DONE: $1"$'\n'; }
+function log-err   { _log-with-prefix '91;1' "ERR: $1";       }
+function log       { _log-with-prefix '36'   "$1";            }
+
+function phase-download {
+  log-phase 'download'
+  if [[
+    -e "$DOWNLOAD_DIR/rootfs/$VOID_ROOTFS_FILENAME" &&
+    -e "$DOWNLOAD_DIR/rootfs/sha256sum.sig"
+  ]]; then
+    if [[ "$rebuild" == 'download' ]]; then
+      log 'existing download files, overwriting'
+      "$ROOT_DIR/script/phase/download"
+      fresh['download']=
+    else log 'existing download files, skipping'; fi
+  else
+    ( . "$ROOT_DIR/script/phase/download" )
+    fresh['download']=
+  fi
+  log-done 'download'
+}
+
+function run-phase-img-bare {
+  local -i build pstamp
+  local name fn pimg pphase phase ctr
+  name=$1
+  fn=$2
+  pimg=$3
+  pphase=$4
+  pstamp=$5
+  phase="img/$name"
+
+  log-phase "$phase"
+
+  if [[ "${stamps[$name]+-}" == '-' ]]; then
+    if [[ stamps[$name] -le "$pstamp" ]]; then
+      build=1
+      # TODO distinguish between manually given timestamp and parent image stamp
+      log 'existing image, newer parent, rebuilding'
+    elif [[ "${fresh[$pphase]+-}" == '-' ]]; then
+      build=1
+      log 'existing image, newer parent, rebuilding'
+    elif [[ "$rebuild" == "$phase" ]]; then
+      build=1
+      log 'existing image, got `-r '"$phase"'`, rebuilding'
+    else
+      build=0
+      log 'existing image, skipping'
+    fi
+  else build=1; fi
+
+  if (( build == 1 )); then
+    ctr="$(buildah from "$pimg")"
+    ( "$fn" "$ctr" )
+    buildah commit --rm "$ctr" "$BUILDAH_NAME_PREFIX/$1"
+    fresh[$phase]=
+  fi
+
+  log-done "$phase"
+}
+
+function run-phase-img {
+  local name fn pname
+  local -i pstamp
+  name=$1
+  fn=$2
+  pname=$3
+  pstamp=${4-0}
+
+  if (( stamps[$3] > pstamp )); then pstamp=stamps["$pname"]; fi
+
+  run-phase-img-bare \
+    "$name" "$fn" "$BUILDAH_NAME_PREFIX/$pname" "img/$pname" "$pstamp"
+}
+
+function phase-img-rootfs { phase-download;   ( . 'script/phase/rootfs' ); }
+function phase-img-base   { phase-img-rootfs; ( . 'script/phase/base'   ); }
+function phase-img-xpkgs  { phase-img-base;   ( . 'script/phase/xpkgs'  ); }
+function phase-img-pkgs   { phase-img-xpkgs;  ( . 'script/phase/pkgs'   ); }
+function phase-img-home   { phase-img-pkgs;   ( . 'script/phase/home'   ); }
+function phase-img-final  { phase-img-home;   ( . 'script/phase/final'  ); }
+
+function main {
+  local -a rows
+  local name data
+
+  readarray -t rows < <(buildah images --format $'{{.Name}}\n{{.CreatedAtRaw}}')
+  for ((i=0; i<${#rows[@]}; i+=2)); do
+    name=${rows[i]#"localhost/$BUILDAH_NAME_PREFIX/"}
+    if [[ "$name" == "${rows[i]}" ]]; then continue; fi
+    read -r date time offset _ <<< "${rows[i+1]}"
+
+    stamps["$name"]=$(date -d "$date $time $offset" +'%s')
+  done
+
+  xargs=(-R '/var/cache/xbps')
+  xurls=()
+  data=$(curl -fsSL -H "Authorization: token $GITHUB_TOKEN" "$VOID_EXTRA_URL")
+  xstamp=$(date -d "$(jq -cr '.published_at' <<< "$data")" +'%s')
+  readarray -t rows < <(jq -cr '.assets[]|.name,.url' <<< "$data")
+  for ((i=0; i<${#rows[@]}; i+=2)); do
+    xargs+=(-R "/opt/xpkgs/${rows[i]%.tar.gz}")
+    xurls+=("${rows[i+1]}")
+  done
+
+  case $1 in
+    'download')   phase-download;;
+    'img/rootfs') phase-img-rootfs;;
+    'img/base')   phase-img-base;;
+    'img/xpkgs')  phase-img-xpkgs;;
+    'img/pkgs')   phase-img-pkgs;;
+    'img/home')   phase-img-home;;
+    'img/final')  phase-img-final;;
+    *) echo "$1";;
+  esac
+}
+
+function normalize-list {
+  while read -r line; do
+    line="${line%%#*}"
+    read -ra ps <<< "$line"
+    for pkg in "${ps[@]}"; do echo "$pkg"; done
+  done
+}
+
+function recursive-mtime {
+  local f
+  local -i curr latest
+  latest="$(stat -c '%Y' "$1")"
+  while read -r f; do
+    curr="$(stat -c '%Y' "$f")"
+    if [[ curr -gt latest ]]; then latest=curr; fi
+  done < <(find "$1")
+  echo "$latest"
+}
+
+main "$@"

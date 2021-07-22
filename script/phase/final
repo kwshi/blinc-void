@@ -1,18 +1,9 @@
-#!/bin/bash
-. 'script/lib'
+# vi: ft=bash
+# shellcheck shell=bash
 
-function phase_img_final {
+function build {
   local name mnt ctr
   local -a xdg symlinks dirs etc sv paths
-
-  #while read -r name; do
-  #  log "copying from opt/$name"
-  #  ctr="$(buildah from "$BUILDAH_NAME_PREFIX/opt/$name")"
-  #  mnt="$(buildah mount "$ctr")"
-  #  buildah copy -q "$1" "$mnt/opt/blinc/$name" "/opt/blinc/$name"
-  #  buildah umount "$ctr" > '/dev/null'
-  #  buildah rm "$ctr" > '/dev/null'
-  #done < <(list_dir "$ROOT_DIR/opt")
 
   buildah run "$1" -- rm -rf \
     '/etc/iwd' \
@@ -34,20 +25,9 @@ function phase_img_final {
     buildah run "$1" -- ln -sf "/usr/share/blinc/cfg/$path" "/$path"
   done
 
-  #etc/default/libc-locales
-  #etc/fstab
-  #etc/locale.conf
-  #etc/rc.conf
-  #etc/rc.local
-  #etc/security/limits.conf
-  #etc/sysctl.conf
-  #etc/xdg/user-dirs.defaults
-
-  #readarray -t etc < <(list_dir 'cfg/etc')
-  #buildah run "$1" -- stow -d '/usr/share/blinc' -t '/' 'cfg'
-
   # steam fonts patch, because ??????
   buildah run "$1" -- rm '/usr/share/fonts/steam-fonts/.uuid'
+  buildah run "$1" -- mv '/usr/share/fonts/steam-fonts' '/usr/share/fonts/steam-bargage'
 
   buildah run "$1" -- chown -R 'root:root' '/etc/sudoers.d'
 
@@ -56,17 +36,20 @@ function phase_img_final {
   buildah run "$1" -- ln -st \
     '/etc/fonts/conf.d' '/usr/share/fontconfig/conf.avail/70-no-bitmaps.conf'
   buildah run "$1" -- ln -sT '/data/containers/root' '/var/lib/containers'
+  buildah run "$1" -- ln -sT '/data/containers/docker' '/var/lib/docker'
 
   buildah run "$1" -- xbps-alternatives -s 'pinentry-gtk'
 
   sv=(
-    'dbus' 
-    'docker' 
-    'iwd' 
-    'lightdm' 
+    'dbus'
+    'docker'
+    'iwd'
+    'lightdm'
     'bluetoothd'
     'chronyd'
-    
+
+    'cupsd'
+
     # logging
     'socklog-unix'
     'nanoklogd'
@@ -84,19 +67,19 @@ function phase_img_final {
 
   log "running user config scripts"
   buildah config --workingdir '/home/kshi' -u 'kshi' "$1"
-  
+
   log 'creating dirs'
-  readarray -t dirs < <(normalize_list <<< '
+  dirs=(
     .cache
     .config/gh
     .mozilla
     .local/share
     .xournal
-  ')
-  
+  )
+
   buildah run "$1" mkdir -p "${dirs[@]}"
   buildah run "$1" rm '.bashrc' '.bash_profile'
-  
+
   log 'symlinks'
   buildah run "$1" ln -st '.' \
     '/data/downloads' \
@@ -108,19 +91,21 @@ function phase_img_final {
 
   symlinks=(
     '.mozilla/firefox' '/data/browser/firefox'
-    '.config/chromium' '/data/browser/chromium' 
-    
+    '.config/chromium' '/data/browser/chromium'
+
     '.zoom'                     '/data/zoom'
     '.gnupg'                    '/data/gnupg'
     '.password-store'           '/data/pass'
     '.klei'                     '/data/games/klei'
     '.multimc'                  '/data/games/multimc'
     '.steam'                    '/data/games/steam/home'
+    '.Mathematica'              '/data/mathematica'
     '.local/share/Steam'        '/data/games/steam/share'
     '.local/share/UnrailedGame' '/data/games/unrailed'
+    '.config/unity3d'           '/data/games/unity3d'
     '.local/share/containers'   '/data/containers/kshi'
     '.cache/Tectonic'           '/data/tectonic'
-    
+
     '.config/gh/hosts.yml' '/data/github/hosts.yml'
     '.config/spotifyd'     '/data/spotify/daemon'
     '.config/spotify-tui'  '/data/spotify/tui'
@@ -136,25 +121,29 @@ function phase_img_final {
   done
 
   log 'xdg symlinks'
-  xdg=()
-  while read -r path; do 
-    xdg+=("/home/kshi/dotfiles/$path")
-  done < <(normalize_list <<< '
+  paths=(
     cli/git
     cli/bat
     cli/pip
     cli/nvim
+    cli/emacs
     desk/alacritty
     desk/picom
     desk/polybar
     desk/bspwm
     desk/sxhkd
-    desk/xournal
-  ')
+    desk/autorandr
+    desk/rofi
+  )
+  xdg=()
+  for path in "${paths[@]}"; do
+    xdg+=("/home/kshi/dotfiles/$path")
+  done
 
   buildah run "$1" ln -st '.config' "${xdg[@]}"
 
   buildah run "$1" ln -sT '/home/kshi/dotfiles/cli/ssh' '.ssh'
+  buildah run "$1" ln -sT '/home/kshi/dotfiles/cli/pass-git' '.config/pass-git-helper'
   buildah run "$1" ln -sT '/home/kshi/dotfiles/cli/bash/rc' '.bashrc'
   buildah run "$1" ln -sT '/home/kshi/dotfiles/cli/bash/profile' '.bash_profile'
   buildah run "$1" ln -sT '/home/kshi/dotfiles/desk/xournal/config' '.xournal/config'
@@ -163,4 +152,4 @@ function phase_img_final {
   buildah run "$1" xdg-user-dirs-update
 }
 
-phase_img 'final' 'phase_img_final' 'home'
+run-phase-img 'final' build 'home'

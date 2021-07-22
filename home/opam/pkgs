@@ -1,1 +1,6 @@
 opam
+gmp-devel
+libcurl-devel
+zlib-devel
+fuse-devel
+sqlite-devel

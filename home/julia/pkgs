@@ -4,5 +4,7 @@ julia-devel
 libgomp-devel
 gtk+3-devel
 
+gmpxx-devel
+
 xvfb-run
 tini

@@ -5,7 +5,22 @@ local -a pkgs
 pkgs=(
   'dune'
   'utop'
+  'odoc'
+  'odig'
+
   'containers'
+  'linenoise'
+  'fmt'
+  'ppx_deriving'
+  'angstrom'
+  'alcotest'
+  'lwt'
+  'cmdliner'
+
+  'menhir'
+  'google-drive-ocamlfuse'
+  'ocaml-lsp-server'
+  'ocamlformat'
 )
 
 buildah run "$1" opam init -yn

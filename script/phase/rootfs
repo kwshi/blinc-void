@@ -1,8 +1,9 @@
-#!/bin/bash
-. 'script/lib'
+# vi: ft=bash
+# shellcheck shell=bash
 
-function phase_img_rootfs {
-  log 'extracting rootfs'
+function build {
   buildah add -q "$1" "$DOWNLOAD_DIR/rootfs/$VOID_ROOTFS_FILENAME"
 }
-phase_img 'rootfs' 'phase_img_rootfs'
+
+run-phase-img-bare 'rootfs' build 'scratch' 'download' \
+  "$(stat -c '%Y' "$DOWNLOAD_DIR/rootfs/$VOID_ROOTFS_FILENAME")"

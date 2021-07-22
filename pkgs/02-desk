@@ -2,6 +2,7 @@
 xorg lightdm bspwm sxhkd 
 
 # daemons/services
+conky
 barrier
 picom
 polybar
@@ -14,7 +15,8 @@ caffeine-ng
 pinentry-gtk
 
 # tools
-rofi dmenu sct
+rofi rofi-pass rofi-calc rofi-emoji
+dmenu sct
 scrot maim peek
 fswebcam cheese
 

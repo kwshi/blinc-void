@@ -1,0 +1,50 @@
+# vi: ft=bash
+# shellcheck shell=bash
+
+local nvim_dir autoload_dir plug_dir
+nvim_dir='.local/share/nvim/site'
+autoload_dir="$nvim_dir/autoload"
+plug_dir="$nvim_dir/plug"
+
+local -a pkgs
+pkgs=(
+  'gruvbox-community/gruvbox'
+
+  'preservim/nerdtree'
+  'junegunn/fzf'
+  'junegunn/fzf.vim'
+  'neovim/nvim-lspconfig'
+  #'nvim-lua/completion-nvim'
+  #'norcalli/nvim-colorizer.lua'
+
+  'rrethy/vim-hexokinase'
+  'psliwka/vim-smoothie'
+
+  'prettier/vim-prettier'
+
+  'kana/vim-textobj-user'
+  'glts/vim-textobj-comment'
+
+  'JuliaEditorSupport/julia-vim'
+  'evanleck/vim-svelte'
+  'cespare/vim-toml'
+  'vmchale/just-vim'
+  'lervag/vimtex'
+
+  'SirVer/ultisnips'
+  #'honza/vim-snippets'
+
+  'ntpeters/vim-better-whitespace'
+)
+
+buildah run "$1" -- mkdir -p "$autoload_dir" "$plug_dir"
+
+buildah add "$1" \
+  'https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim' \
+  "$autoload_dir/plug.vim"
+
+for repo in "${pkgs[@]}"; do
+  buildah run "$1" git clone "https://github.com/$repo" "$dir/${repo##*/}"
+done
+
+buildah run "$1" make -C "$dir/vim-hexokinase" hexokinase

@@ -5,7 +5,7 @@ nvme-cli lm_sensors
 chrony
 cronutils
 dbus
-fuse fuse-overlayfs
+fuse fuse-overlayfs fuse-sshfs
 geoclue2
 xdg-user-dirs
 acl-progs
@@ -15,9 +15,19 @@ socklog-void
 socklog
 gummiboot
 
+# printer stuff
+cups
+cups-pdf
+gutenprint
+gutenprint
+hplip
+foomatic-db
+foomatic-db-engine
+foomatic-db-nonfree
+
 # servers
 nginx lighttpd
-postgresql sqlite sqlite-devel 
+postgresql sqlite sqlite-devel
 
 # container stuff
 docker docker-compose podman podman-compose buildah
@@ -26,9 +36,10 @@ docker docker-compose podman podman-compose buildah
 starship
 
 # tools
+exiftool
 stow
 bash-completion
-jq pgcli 
+jq pgcli
 postgresql-client
 redis zip exa bat hyperfine
 redo just
@@ -40,15 +51,21 @@ mupdf-tools
 squashfs-tools squashfs-tools-ng
 fzf ripgrep the_silver_searcher
 irssi weechat
-pass pass-otp pass-import pass-update browserpass passff-host
+pass pass-otp pass-import pass-update pass-git-helper
+browserpass passff-host
 pandoc html-xml-utils mmark glow hugo
 nix
 ffmpeg gifski synfig
 signify
-efivar efibootmgr 
+efivar efibootmgr
 lsof htop transmission
 golang-migrate litecli
 stripe
+
+fd dust tealdeer tokei
+
+recode
+pup
 
 # void-specific stuff
 xtools vpm vpsm
@@ -59,6 +76,8 @@ sl lolcat-c cowsay ponysay
 fortune-mod fortune-mod-void
 
 # editors
-emacs xi-editor 
-neovim-nightly neovim-plug 
-# TODO neovim-remote, conflicts
+emacs xi-editor
+neovim
+#neovim-plug
+neovim-remote
+# TODO maybe nightly, fix conflicts neovim-remote

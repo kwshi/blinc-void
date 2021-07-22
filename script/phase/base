@@ -1,7 +1,6 @@
-#!/bin/bash
-. 'script/lib'
+# vi: ft=bash
 
-function phase_img_base {
+function build {
   buildah copy -q "$1" 'src/xbps'   '/etc/xbps.d'
   buildah copy -q "$1" 'src/dracut' '/etc/dracut.conf.d'
   buildah copy -q "$1" '/var/cache/xbps' '/var/cache/xbps'
@@ -15,4 +14,5 @@ function phase_img_base {
 
   buildah config --cmd '/bin/bash' "$1"
 }
-phase_img 'base' 'phase_img_base' 'rootfs'
+
+run-phase-img 'base' build 'rootfs'

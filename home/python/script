@@ -5,9 +5,13 @@ local -a pkgs
 pkgs=(
   'black'
   
-  'python-language-server'
-  'pyls-black'
-  'pyls-mypy'
+  'python-lsp-server[all]'
+  'python-lsp-black'
+  'pylsp-mypy'
+  #'python-language-server'
+  #'pyls-black'
+  #'pyls-mypy'
+  #'future' # needed by 'pyls-mypy'
   
   'matplotlib'
   'numpy'
@@ -24,7 +28,7 @@ pkgs=(
   
   'ipython'
 
-  'neovim'
+  'pynvim'
 )
 
 buildah run "$1" virtualenv '.venv'

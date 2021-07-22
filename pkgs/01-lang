@@ -20,6 +20,7 @@ apl j
 wasmtime wabt
 elm
 elvish nushell zsh fish-shell
+fsharp
 
 # language support tools
 clang clang-analyzer clang-tools-extra valgrind ccls
@@ -39,5 +40,5 @@ libressl libressl-devel
 catch2 cgal
 
 # texlive kinda sucks
-#texlive-full
-texlive
+texlive-full
+#texlive

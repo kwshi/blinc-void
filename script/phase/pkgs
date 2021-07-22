@@ -1,35 +1,33 @@
-#!/bin/bash
-. 'script/lib'
+# vi: ft=bash
+# shellcheck shell=bash
 
-declare -a repo_args pkgs lists
-declare name
+local -a pkgs lists
+local fname lname
 
-function phase_img_pkgs {
+function build-one {
   local -a pkgs
 
   log 'loading packages'
 
-  pkgs=()
-  readarray -t pkgs < <(normalize_list < "$ROOT_DIR/pkgs/$name")
+  readarray -t pkgs < <(normalize-list < "$ROOT_DIR/pkgs/$lname")
   log "loaded, ${#pkgs[@]} packages"
 
-  buildah run "$1" -- xbps-install -R '/var/cache/xbps' -y "${repo_args[@]}" "${pkgs[@]}"
+  buildah run "$1" -- xbps-install -y "${xargs[@]}" "${pkgs[@]}"
 }
 
-repo_args=()
-while read -r xpkg; do
-  repo_args+=('-R' "/opt/xpkgs/$xpkg")
-done < <(list_dir 'xpkgs')
+function tag-last {
+  log-phase 'img/pkgs'
+  log "tagging alias for final image: ${lname@Q}"
+  buildah tag "$BUILDAH_NAME_PREFIX/pkgs/$lname" "$BUILDAH_NAME_PREFIX/pkgs"
+  log-done 'img/pkgs'
+}
 
 lists=("$ROOT_DIR/pkgs"/*)
 for (( i = 0; i < ${#lists[@]}; ++i )); do
-  name="${lists[i]##*/}"
+  lname="${lists[i]##*/}"
   if [[ $i == 0 ]]; then prev='xpkgs'; else prev="pkgs/${lists[i-1]##*/}"; fi
-  phase_img "pkgs/$name" 'phase_img_pkgs' \
-    "$prev" "$(stat -c '%Y' "$ROOT_DIR/pkgs/$name")"
+  run-phase-img "pkgs/$lname" build-one "$prev" \
+    "$(stat -c '%Y' "$ROOT_DIR/pkgs/$lname")"
 done
 
-log_phase 'img/pkgs'
-log "tagging alias for final image: ${name@Q}"
-buildah tag "$BUILDAH_NAME_PREFIX/pkgs/$name" "$BUILDAH_NAME_PREFIX/pkgs"
-log_done 'img/pkgs'
+tag-last

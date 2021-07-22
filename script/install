@@ -11,3 +11,13 @@ cp "$out/boot.conf" "/efi/loader/entries/void-$1.conf"
 
 log 'copying linux boot files'
 cp -r "$out/linux" "/efi/linux/void/$1"
+
+log 'updating default boot entry'
+readarray -t conf < '/efi/loader/loader.conf'
+for line in "${conf[@]}"; do
+  if [[ "${line%% *}" == 'default' ]]; then
+    echo "default void-$1"
+  else
+    echo "$line"
+  fi
+done > '/efi/loader/loader.conf'

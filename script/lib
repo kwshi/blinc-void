@@ -1,4 +1,4 @@
-# vi: ft=bash 
+# vi: ft=bash
 # shellcheck shell=bash
 
 VOID_REPO_URL='https://alpha.us.repo.voidlinux.org/live/current'
@@ -48,23 +48,6 @@ function phase_img {
 
   log_phase "img/$1"
 
-  if read -r img stamp < <(query_img_meta "$1"); then
-    if [[ "${3+_}" == '_' ]] \
-      && read -r parent parent_stamp < <(query_img_meta "$3") \
-      && [[ "$parent_stamp" -gt "$stamp" ]]
-    then
-      log "existing image ${img@Q}, newer parent ${parent@Q}, overwriting"
-    elif [[ "${4+_}" == '_' && "$4" =~ ^[0-9]+$ && "$4" -gt stamp ]]; then
-      log "existing image ${img@Q}, newer source stamp, overwriting"
-    elif [[ "${force+_}" == '_' || "${rebuild-}" == "img/$1" ]]; then
-      log "existing image ${img@Q}, overwriting"
-    else
-      log 'image exists, skipping'
-      log_done "img/$1"
-      return
-    fi
-  fi
-
   if [[ "${3+_}" == '_' ]]; then from="$BUILDAH_NAME_PREFIX/$3"
   else from='scratch'; fi
 
@@ -109,11 +92,11 @@ function parse_args {
   done
 }
 
-function recursive_mtime {
+function recursive-mtime {
   local f
   local -i curr latest
   latest="$(stat -c '%Y' "$1")"
-  while read -r f; do 
+  while read -r f; do
     curr="$(stat -c '%Y' "$f")"
     if [[ curr -gt latest ]]; then latest=curr; fi
   done < <(find "$1")

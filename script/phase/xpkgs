@@ -1,64 +1,16 @@
-#!/bin/bash
-. 'script/lib'
+# vi: ft=bash
+# shellcheck shell=bash
 
-function build_pkg {
-  cp -rT "$ROOT_DIR/xpkgs/$1" 'srcpkgs'
-  ./xbps-src pkg -qf -r "$1" "$1"
-}
+function build {
+  local -a args
+  args=(-fL -H "Authorization: token $GITHUB_TOKEN")
 
-function get_repo {
-  if [[ -e "$ROOT_DIR/xpkgs/$2/.nonfree" ]]; then echo "$1/$2/nonfree"
-  else echo "$1/$2"; fi
-}
+  buildah run "$1" mkdir '/opt/xpkgs'
 
-function phase_img_xpkgs {
-  local name repo
-  local -a pkgs
-  local -i bin_stamp src_stamp up_stamp
-
-  mkdir -p "$BUILD_DIR/vpkgs"
-  cd "$BUILD_DIR/vpkgs"
-  if [[ ! -e '.git' ]]; then
-    log 'cloning void-packages'
-    git clone -q 'https://github.com/void-linux/void-packages' '.'
-    echo 'XBPS_ALLOW_RESTRICTED=yes' > 'etc/conf'
-    ./xbps-src binary-bootstrap -q
-  fi
-
-  git clean -qdf
-  git reset -q --hard
-  git fetch -q 'origin' 'master'
-  git checkout -q 'origin/master'
-
-  ./xbps-src bootstrap-update -q
-  for path in "$ROOT_DIR/xpkgs"/*; do
-    name="${path##*/}"
-    pkgs+=("$name")
-
-    log "building package ${name@Q}"
-
-    repo="$(get_repo 'hostdir/binpkgs' "$name")"
-
-    if [[ -d "$repo" ]] \
-      && read -r < <(find "$repo" -name '*.xbps')
-    then
-      bin_stamp="$(recursive_mtime "$repo")"
-      src_stamp="$(recursive_mtime "$ROOT_DIR/xpkgs/$name")"
-      up_stamp="$(git log -1 --ignore-missing --format='%ct' "srcpkgs/$name")"
-
-      if [[ src_stamp -gt bin_stamp || up_stamp -gt bin_stamp ]]; then
-        log 'existing binaries, newer sources, overwriting'
-        build_pkg "$name"
-      else
-        log 'existing binaries, skipping'
-      fi
-    else build_pkg "$name"; fi
-  done
-
-  for pkg in "${pkgs[@]}"; do
-    log "installing ${pkg@Q}"
-    buildah copy -q "$1" "$(get_repo 'hostdir/binpkgs' "$pkg")" "/opt/xpkgs/$pkg"
+  for url in "${xurls[@]}"; do
+    curl "${args[@]}" -H 'Accept: application/octet-stream' "$url" \
+      | buildah run "$1" -- tar -xz -C '/opt/xpkgs'
   done
 }
 
-phase_img 'xpkgs' 'phase_img_xpkgs' 'base'
+run-phase-img 'xpkgs' build 'base' "$xstamp"

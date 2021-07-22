@@ -12,8 +12,12 @@ pkgs=(
   'SQLite'
   'ZipFile'
 
-  'Plots'
-  'PyPlot'
+  'Nemo'
+  'AbstractAlgebra'
+  'GaloisFields'
+
+  #'Plots'
+  #'PyPlot'
   'PGFPlotsX'
   'PlotlyJS'
   'Makie'
@@ -36,6 +40,8 @@ pkgs=(
 
   'PhysicalConstants'
   'Unitful'
+
+  'RowEchelon'
 )
 
 pkg_strs=''

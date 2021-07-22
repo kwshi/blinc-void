@@ -45,3 +45,18 @@ unicode cli
 factorrc
 
 macos fonts
+
+---
+
+resize efi partition:
+
+- backup everything
+
+- backup all contents of /efi
+- delete efi partition, 5G boot partition, recreate new 5G efi part
+- update fstab of void recovery system
+
+from void recovery system:
+- update fstab of live system
+- move live partition up, consider resizing?
+- move data partition up

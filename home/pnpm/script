@@ -2,24 +2,28 @@
 # shellcheck shell=bash
 
 local -a pkgs
-readarray -t pkgs < <(normalize_list <<< '
+pkgs=(
 
-typescript
-ttypescript
+  'typescript'
+  'ttypescript'
 
-prettier
-eslint
-typescript-language-server
+  'prettier'
+  'eslint'
+  'typescript-language-server'
 
-@elm-tooling/elm-language-server
-elm-format
-elm-test
+  '@elm-tooling/elm-language-server'
+  'elm-format'
+  'elm-test'
 
-svelte-language-server
+  'svelte-language-server'
 
-netlify-cli
-vercel
+  'netlify-cli'
+  'vercel'
 
-')
+  'pyright'
+
+  'neovim'
+
+)
 
 buildah run "$1" -- pnpm add -C '.pnpm-global' "${pkgs[@]}"
