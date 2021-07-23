@@ -56,7 +56,7 @@ function phase-download {
       fresh['download']=
     else log 'existing download files, skipping'; fi
   else
-    ( . "$ROOT_DIR/script/phase/download" )
+    . "$ROOT_DIR/script/phase/download"
     fresh['download']=
   fi
   log-done 'download'
@@ -74,12 +74,13 @@ function run-phase-img-bare {
 
   log-phase "$phase"
 
-  if [[ "${stamps[$name]+-}" == '-' ]]; then
-    if [[ stamps[$name] -le "$pstamp" ]]; then
+  if [[ "${stamps[$name]+_}" == '_' ]]; then
+    echo "FRESH is ${!fresh[*]}, pphase $pphase, pimg $pimg"
+    if [[ stamps[$name] -le pstamp ]]; then
       build=1
       # TODO distinguish between manually given timestamp and parent image stamp
       log 'existing image, newer parent, rebuilding'
-    elif [[ "${fresh[$pphase]+-}" == '-' ]]; then
+    elif [[ "${fresh[$pphase]+_}" == '_' ]]; then
       build=1
       log 'existing image, newer parent, rebuilding'
     elif [[ "$rebuild" == "$phase" ]]; then
@@ -93,7 +94,7 @@ function run-phase-img-bare {
 
   if (( build == 1 )); then
     ctr="$(buildah from "$pimg")"
-    ( "$fn" "$ctr" )
+    "$fn" "$ctr"
     buildah commit --rm "$ctr" "$BUILDAH_NAME_PREFIX/$1"
     fresh[$phase]=
   fi
@@ -115,12 +116,12 @@ function run-phase-img {
     "$name" "$fn" "$BUILDAH_NAME_PREFIX/$pname" "img/$pname" "$pstamp"
 }
 
-function phase-img-rootfs { phase-download;   ( . 'script/phase/rootfs' ); }
-function phase-img-base   { phase-img-rootfs; ( . 'script/phase/base'   ); }
-function phase-img-xpkgs  { phase-img-base;   ( . 'script/phase/xpkgs'  ); }
-function phase-img-pkgs   { phase-img-xpkgs;  ( . 'script/phase/pkgs'   ); }
-function phase-img-home   { phase-img-pkgs;   ( . 'script/phase/home'   ); }
-function phase-img-final  { phase-img-home;   ( . 'script/phase/final'  ); }
+function phase-img-rootfs { phase-download;   . 'script/phase/rootfs'; }
+function phase-img-base   { phase-img-rootfs; . 'script/phase/base'  ; }
+function phase-img-xpkgs  { phase-img-base;   . 'script/phase/xpkgs' ; }
+function phase-img-pkgs   { phase-img-xpkgs;  . 'script/phase/pkgs'  ; }
+function phase-img-home   { phase-img-pkgs;   . 'script/phase/home'  ; }
+function phase-img-final  { phase-img-home;   . 'script/phase/final' ; }
 
 function main {
   local -a rows
