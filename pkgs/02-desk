@@ -1,5 +1,5 @@
 # core
-xorg lightdm bspwm sxhkd 
+xorg lightdm bspwm sxhkd
 
 # daemons/services
 conky
@@ -8,11 +8,13 @@ picom
 polybar
 stalonetray
 dunst
-autorandr 
-redshift 
-redshift-gtk 
+autorandr
+redshift
+redshift-gtk
 caffeine-ng
 pinentry-gtk
+
+talon
 
 # tools
 rofi rofi-pass rofi-calc rofi-emoji

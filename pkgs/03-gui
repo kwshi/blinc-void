@@ -15,8 +15,8 @@ pinentry-dmenu
 alacritty st
 
 # media viewers
-sxiv 
-vimiv 
+sxiv
+vimiv
 fstl
 zathura zathura-pdf-mupdf zathura-ps
 mupdf
