@@ -44,7 +44,7 @@ buildah add "$1" \
   "$autoload_dir/plug.vim"
 
 for repo in "${pkgs[@]}"; do
-  buildah run "$1" git clone "https://github.com/$repo" "$dir/${repo##*/}"
+  buildah run "$1" git clone "https://github.com/$repo" "$plug_dir/${repo##*/}"
 done
 
-buildah run "$1" make -C "$dir/vim-hexokinase" hexokinase
+buildah run "$1" make -C "$plug_dir/vim-hexokinase" hexokinase
