@@ -4,7 +4,7 @@
 local -a pkgs
 pkgs=(
   'black'
-  
+
   'python-lsp-server[all]'
   'python-lsp-black'
   'pylsp-mypy'
@@ -12,20 +12,20 @@ pkgs=(
   #'pyls-black'
   #'pyls-mypy'
   #'future' # needed by 'pyls-mypy'
-  
+
   'matplotlib'
   'numpy'
   'scipy'
   'sympy'
   'gmpy2'
   'mpmath'
-  
+
   'pandas'
   'bokeh'
   'seaborn'
-  
+
   'torch'
-  
+
   'ipython'
 
   'pynvim'
@@ -33,6 +33,6 @@ pkgs=(
 
 buildah run "$1" virtualenv '.venv'
 if [[ -e ~/'.cache/pip' ]]; then
-  buildah copy "$1" ~/'.cache/pip' '.cache/pip'
+  buildah copy --chown 'kshi:kshi' "$1" ~/'.cache/pip' '.cache/pip'
 fi
 buildah run "$1" .venv/bin/pip install "${pkgs[@]}"
