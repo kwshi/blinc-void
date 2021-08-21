@@ -1,8 +1,7 @@
-# vi: ft=bash
-# shellcheck shell=bash
+#!/bin/bash
+set -eufo pipefail
 
-local -a pkgs
-pkgs=(
+declare -a pkgs=(
   'dune'
   'utop'
   'odoc'
@@ -18,6 +17,8 @@ pkgs=(
   'cmdliner'
 
   'menhir'
+  'sedlex'
+
   'google-drive-ocamlfuse'
   'ocaml-lsp-server'
   'ocamlformat'

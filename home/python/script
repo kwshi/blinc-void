@@ -1,13 +1,13 @@
-# vi: ft=bash
-# shellcheck shell=bash
+#!/bin/bash
+set -eufo pipefail
 
-local -a pkgs
-pkgs=(
+declare -a pkgs=(
   'black'
 
-  'python-lsp-server[all]'
+  'python-lsp-server'
   'python-lsp-black'
   'pylsp-mypy'
+  'pyls-isort'
   #'python-language-server'
   #'pyls-black'
   #'pyls-mypy'

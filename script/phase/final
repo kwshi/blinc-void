@@ -1,11 +1,18 @@
 # vi: ft=bash
 # shellcheck shell=bash
 
-function build {
+#function build {
+
   local name mnt ctr
   local -a xdg symlinks dirs etc sv paths
 
-  buildah run "$1" -- rm -rf \
+log-phase 'img/final'
+
+if newer-deps 'final' -i 'home'; then
+
+  ctr=$(from 'final' "$BUILDAH_NAME_PREFIX/home")
+
+  buildah run "$ctr" -- rm -rf \
     '/etc/iwd' \
     '/etc/sudoers.d' \
     '/etc/containers' \
@@ -15,30 +22,31 @@ function build {
   buildah copy \
     --contextdir "$ROOT_DIR" \
     --ignorefile "$ROOT_DIR/.dockerignore" \
-    "$1" "$ROOT_DIR" '/usr/share/blinc'
+    "$ctr" "$ROOT_DIR" '/usr/share/blinc'
 
   log 'copying config paths'
   readarray -t paths < <(find "$ROOT_DIR/cfg" -type 'f' -printf '%P\n')
   for path in "${paths[@]}"; do
     log "copying ${path@Q}"
-    buildah run "$1" -- mkdir -p "/${path%/*}"
-    buildah run "$1" -- ln -sf "/usr/share/blinc/cfg/$path" "/$path"
+    buildah run "$ctr" -- mkdir -p "/${path%/*}"
+    buildah run "$ctr" -- ln -sf "/usr/share/blinc/cfg/$path" "/$path"
   done
 
   # steam fonts patch, because ??????
-  buildah run "$1" -- rm '/usr/share/fonts/steam-fonts/.uuid'
-  buildah run "$1" -- mv '/usr/share/fonts/steam-fonts' '/usr/share/fonts/steam-bargage'
+  buildah run "$ctr" -- rm '/usr/share/fonts/steam-fonts/.uuid'
+  buildah run "$ctr" -- mv '/usr/share/fonts/steam-fonts' '/usr/share/fonts/steam-bargage'
 
-  buildah run "$1" -- chown -R 'root:root' '/etc/sudoers.d'
+  buildah run "$ctr" -- chown -R 'root:root' '/etc/sudoers.d'
 
-  buildah run "$1" -- ln -sT \
+  buildah run "$ctr" -- ln -sT \
     '/usr/share/zoneinfo/America/Los_Angeles' '/etc/localtime'
-  buildah run "$1" -- ln -st \
+  buildah run "$ctr" -- ln -st \
     '/etc/fonts/conf.d' '/usr/share/fontconfig/conf.avail/70-no-bitmaps.conf'
-  buildah run "$1" -- ln -sT '/data/containers/root' '/var/lib/containers'
-  buildah run "$1" -- ln -sT '/data/containers/docker' '/var/lib/docker'
+  buildah run "$ctr" -- ln -sT '/data/containers/root' '/var/lib/containers'
+  buildah run "$ctr" -- ln -sT '/data/containers/docker' '/var/lib/docker'
+  buildah run "$ctr" -- ln -sT '/data/iwd' '/var/lib/iwd'
 
-  buildah run "$1" -- xbps-alternatives -s 'pinentry-gtk'
+  buildah run "$ctr" -- xbps-alternatives -s 'pinentry-gtk'
 
   sv=(
     'dbus'
@@ -59,14 +67,14 @@ function build {
     sv[i]="/etc/sv/${sv[i]}"
   done
 
-  buildah run "$1" -- ln -st '/etc/runit/runsvdir/default' "${sv[@]}"
-  buildah run "$1" -- mkdir '/data' '/efi'
+  buildah run "$ctr" -- ln -st '/etc/runit/runsvdir/default' "${sv[@]}"
+  buildah run "$ctr" -- mkdir '/data' '/efi'
 
-  buildah run "$1" -- groupadd -r 'autologin'
-  buildah run "$1" -- usermod -aG 'docker,audio,video,autologin,socklog' 'kshi'
+  buildah run "$ctr" -- groupadd -r 'autologin'
+  buildah run "$ctr" -- usermod -aG 'docker,audio,video,autologin,socklog' 'kshi'
 
   log "running user config scripts"
-  buildah config --workingdir '/home/kshi' -u 'kshi' "$1"
+  buildah config --workingdir '/home/kshi' -u 'kshi' "$ctr"
 
   log 'creating dirs'
   dirs=(
@@ -77,11 +85,11 @@ function build {
     .xournal
   )
 
-  buildah run "$1" mkdir -p "${dirs[@]}"
-  buildah run "$1" rm '.bashrc' '.bash_profile'
+  buildah run "$ctr" mkdir -p "${dirs[@]}"
+  buildah run "$ctr" rm '.bashrc' '.bash_profile'
 
   log 'symlinks'
-  buildah run "$1" ln -st '.' \
+  buildah run "$ctr" ln -st '.' \
     '/data/downloads' \
     '/data/dotfiles' \
     '/data/documents' \
@@ -117,7 +125,7 @@ function build {
 
   log 'more symlinks'
   for (( i=0; i<${#symlinks[@]}; i+=2 )); do
-    buildah run "$1" -- ln -sT "${symlinks[i+1]}" "${symlinks[i]}"
+    buildah run "$ctr" -- ln -sT "${symlinks[i+1]}" "${symlinks[i]}"
   done
 
   log 'xdg symlinks'
@@ -140,16 +148,23 @@ function build {
     xdg+=("/home/kshi/dotfiles/$path")
   done
 
-  buildah run "$1" ln -st '.config' "${xdg[@]}"
+  buildah run "$ctr" ln -st '.config' "${xdg[@]}"
 
-  buildah run "$1" ln -sT '/home/kshi/dotfiles/cli/ssh' '.ssh'
-  buildah run "$1" ln -sT '/home/kshi/dotfiles/cli/pass-git' '.config/pass-git-helper'
-  buildah run "$1" ln -sT '/home/kshi/dotfiles/cli/bash/rc' '.bashrc'
-  buildah run "$1" ln -sT '/home/kshi/dotfiles/cli/bash/profile' '.bash_profile'
-  buildah run "$1" ln -sT '/home/kshi/dotfiles/desk/xournal/config' '.xournal/config'
-  buildah run "$1" ln -sT '/home/kshi/dotfiles/desk/conky/rc' '.conkyrc'
+  buildah run "$ctr" ln -sT '/home/kshi/dotfiles/cli/ssh' '.ssh'
+  buildah run "$ctr" ln -sT '/home/kshi/dotfiles/cli/pass-git' '.config/pass-git-helper'
+  buildah run "$ctr" ln -sT '/home/kshi/dotfiles/cli/bash/rc' '.bashrc'
+  buildah run "$ctr" ln -sT '/home/kshi/dotfiles/cli/bash/profile' '.bash_profile'
+  buildah run "$ctr" ln -sT '/home/kshi/dotfiles/desk/xournal/config' '.xournal/config'
+  buildah run "$ctr" ln -sT '/home/kshi/dotfiles/desk/conky/rc' '.conkyrc'
 
-  buildah run "$1" xdg-user-dirs-update
-}
+  buildah run "$ctr" xdg-user-dirs-update
 
-run-phase-img 'final' build 'home'
+  commit 'final' "$ctr"
+
+fi
+
+log-done 'img/final'
+
+#}
+
+#run-phase-img 'final' build 'home'

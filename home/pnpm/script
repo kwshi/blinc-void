@@ -1,8 +1,7 @@
-# vi: ft=bash
-# shellcheck shell=bash
+#!/bin/bash
+set -eufo pipefail
 
-local -a pkgs
-pkgs=(
+declare -a pkgs=(
 
   'typescript'
   'ttypescript'

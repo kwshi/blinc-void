@@ -1,16 +1,36 @@
 # vi: ft=bash
 # shellcheck shell=bash
 
-function build {
-  local -a args
-  args=(-fL -H "Authorization: token $GITHUB_TOKEN")
+#function build {
+#  local -a args
+#  args=(-fL -H "Authorization: token $GITHUB_TOKEN")
+#
+#  buildah run "$1" mkdir '/opt/xpkgs'
+#
+#  for url in "${xurls[@]}"; do
+#    curl "${args[@]}" -H 'Accept: application/octet-stream' "$url" \
+#      | buildah run "$1" -- tar -xz -C '/opt/xpkgs'
+#  done
+#}
+#
+#run-phase-img 'xpkgs' build 'base' "$xstamp"
 
-  buildah run "$1" mkdir '/opt/xpkgs'
+if newer-deps 'xpkgs' -i 'base'; then
+  # TODO use flag in `from` to abstract away prefix
+  ctr=$(from 'xpkgs' "$BUILDAH_NAME_PREFIX/base")
+
+  log 'creating xpkgs directory'
+  buildah run "$ctr" mkdir '/opt/xpkgs'
 
   for url in "${xurls[@]}"; do
-    curl "${args[@]}" -H 'Accept: application/octet-stream' "$url" \
-      | buildah run "$1" -- tar -xz -C '/opt/xpkgs'
+    # TODO log file name instead of just url
+    log "downloading ${url@Q}"
+    curl -fL \
+      -H "Authorization: token $GITHUB_TOKEN" \
+      -H 'Accept: application/octet-stream' \
+      "$url" \
+      | buildah run "$ctr" -- tar -xz -C '/opt/xpkgs'
   done
-}
 
-run-phase-img 'xpkgs' build 'base' "$xstamp"
+  commit 'xpkgs' "$ctr"
+fi

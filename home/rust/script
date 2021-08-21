@@ -1,3 +1,4 @@
-# vi: ft=bash
-# shellcheck shell=bash
+#!/bin/bash
+set -eufo pipefail
+
 buildah run "$1" rustup-init -qy -c 'rust-src'

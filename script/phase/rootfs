@@ -1,9 +1,22 @@
 # vi: ft=bash
 # shellcheck shell=bash
 
-function build {
-  buildah add -q "$1" "$DOWNLOAD_DIR/rootfs/$VOID_ROOTFS_FILENAME"
-}
+#function build {
+#  buildah add -q "$1" "$DOWNLOAD_DIR/rootfs/$VOID_ROOTFS_FILENAME"
+#}
+#
+#run-phase-img-bare 'rootfs' build 'scratch' 'download' \
+#  "$(stat -c '%Y' "$DOWNLOAD_DIR/rootfs/$VOID_ROOTFS_FILENAME")"
 
-run-phase-img-bare 'rootfs' build 'scratch' 'download' \
-  "$(stat -c '%Y' "$DOWNLOAD_DIR/rootfs/$VOID_ROOTFS_FILENAME")"
+log-phase 'img/rootfs'
+
+if newer-deps 'rootfs' -p "$DOWNLOAD_DIR/rootfs"; then
+  ctr=$(from 'rootfs' 'scratch')
+
+  log 'extracting rootfs'
+  buildah add -q "$ctr" "$DOWNLOAD_DIR/rootfs/$VOID_ROOTFS_FILENAME"
+
+  commit 'rootfs' "$ctr"
+fi
+
+log-done 'img/rootfs'

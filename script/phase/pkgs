@@ -2,32 +2,63 @@
 # shellcheck shell=bash
 
 local -a pkgs lists
-local fname lname
+local lname path
 
-function build-one {
-  local -a pkgs
+#function build-one {
+#  local -a pkgs
+#
+#  log 'loading packages'
+#
+#  readarray -t pkgs < <(normalize-list < "$ROOT_DIR/pkgs/$lname")
+#  log "loaded, ${#pkgs[@]} packages"
+#
+#  buildah run "$1" -- xbps-install -y "${xargs[@]}" "${pkgs[@]}"
+#}
+#
+#function tag-last {
+#  log-phase 'img/pkgs'
+#  log "tagging alias for final image: ${lname@Q}"
+#  buildah tag "$BUILDAH_NAME_PREFIX/pkgs/$lname" "$BUILDAH_NAME_PREFIX/pkgs"
+#  log-done 'img/pkgs'
+#}
 
-  log 'loading packages'
+log-phase 'img/pkgs'
 
-  readarray -t pkgs < <(normalize-list < "$ROOT_DIR/pkgs/$lname")
-  log "loaded, ${#pkgs[@]} packages"
-
-  buildah run "$1" -- xbps-install -y "${xargs[@]}" "${pkgs[@]}"
-}
-
-function tag-last {
-  log-phase 'img/pkgs'
-  log "tagging alias for final image: ${lname@Q}"
-  buildah tag "$BUILDAH_NAME_PREFIX/pkgs/$lname" "$BUILDAH_NAME_PREFIX/pkgs"
-  log-done 'img/pkgs'
-}
-
-lists=("$ROOT_DIR/pkgs"/*)
+lists=()
+for path in "$ROOT_DIR/pkgs"/*; do
+  if [[ $path == *'~' ]]; then continue; fi
+  lists+=("${path##*/}")
+done
 for (( i = 0; i < ${#lists[@]}; ++i )); do
-  lname="${lists[i]##*/}"
-  if [[ $i == 0 ]]; then prev='xpkgs'; else prev="pkgs/${lists[i-1]##*/}"; fi
-  run-phase-img "pkgs/$lname" build-one "$prev" \
-    "$(stat -c '%Y' "$ROOT_DIR/pkgs/$lname")"
+  lname=${lists[i]}
+  if [[ $i == 0 ]]; then prev='xpkgs'; else prev="pkgs/${lists[i-1]}"; fi
+
+  log "list: ${lname@Q}"
+
+  if newer-deps "pkgs/$lname" -p "pkgs/$lname" -i "$prev"; then
+    ctr="$(from "pkgs/$lname" "$BUILDAH_NAME_PREFIX/$prev")"
+
+    log 'loading packages'
+
+    readarray -t pkgs < <(normalize-list < "$ROOT_DIR/pkgs/$lname")
+    log "loaded, ${#pkgs[@]} packages"
+
+    # TODO refactor into main lib function
+    buildah run "$ctr" -- xbps-install -y "${xargs[@]}" "${pkgs[@]}"
+
+    commit "pkgs/$lname" "$ctr"
+  fi
 done
 
-tag-last
+log 'tagging final image'
+
+if newer-deps 'pkgs' -i "pkgs/$lname"; then
+  # TODO use `buildah tag` somehow but keep timestamp behavior
+  commit 'pkgs' "$(from 'pkgs' "$BUILDAH_NAME_PREFIX/pkgs/$lname")"
+fi
+
+log-done 'img/pkgs'
+
+#run-phase-img 'pkgs' build-last "$lname"
+
+#tag-last

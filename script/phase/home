@@ -1,30 +1,82 @@
 # vi: ft=bash
 # shellcheck shell=bash
 
-local path
-local -a hnames
-declare hname
+#local path
+local -a hnames iargs paths
+local hname name path # TODO should be ok to use just `name` now
 
-function build-one {
-  local -a pkgs
+#
+#function build-one {
+#  local -a pkgs
+#
+#  log 'installing packages'
+#  if [[ -r "$ROOT_DIR/home/$hname/pkgs" ]]; then
+#    readarray -t pkgs < <(normalize-list < "$ROOT_DIR/home/$hname/pkgs")
+#    if [[ ${#pkgs[@]} -gt 0 ]]; then
+#      buildah run "$1" xbps-install -y "${xargs[@]}" "${pkgs[@]}"
+#    fi
+#  fi
+#
+#  log 'running user script'
+#  buildah config -u 'kshi' --workingdir '/home/kshi' "$1"
+#  # shellcheck disable=SC1090
+#  ( . "$ROOT_DIR/home/$hname/script" )
+#}
+#
+#function build-all {
+#  local name path ctr
+#  local -a paths
+#  for name in "${hnames[@]}"; do
+#    log "copying from home/$name"
+#    readarray -t paths < <(normalize-list < "$ROOT_DIR/home/$name/paths")
+#    for path in "${paths[@]}"; do
+#      buildah copy -q \
+#        --chown 'kshi:kshi' \
+#        --from "$BUILDAH_NAME_PREFIX/home/$name" \
+#        "$1" "/home/kshi/$path" "/home/kshi/$path"
+#    done
+#  done
+#}
 
-  log 'installing packages'
-  if [[ -r "$ROOT_DIR/home/$hname/pkgs" ]]; then
-    readarray -t pkgs < <(normalize-list < "$ROOT_DIR/home/$hname/pkgs")
-    if [[ ${#pkgs[@]} -gt 0 ]]; then
-      buildah run "$1" xbps-install -y "${xargs[@]}" "${pkgs[@]}"
+for path in "$ROOT_DIR/home"/*; do
+  hname="${path##*/}"
+  hnames+=("$hname")
+  iargs+=(-i "home/$hname")
+  #run-phase-img "home/$hname" build-one \
+  #  'xpkgs' "$(recursive-mtime "$path")"
+
+  log-phase "img/home/$hname"
+
+  if newer-deps "home/$hname" -i 'xpkgs' -p "$path"; then
+    ctr=$(from "home/$hname" "$BUILDAH_NAME_PREFIX/xpkgs")
+
+    log 'installing packages'
+    if [[ -r "$ROOT_DIR/home/$hname/pkgs" ]]; then
+      readarray -t pkgs < <(normalize-list < "$ROOT_DIR/home/$hname/pkgs")
+      if [[ ${#pkgs[@]} -gt 0 ]]; then
+        buildah run "$ctr" -- xbps-install -y "${xargs[@]}" "${pkgs[@]}"
+      fi
     fi
+
+    log 'running user script'
+    buildah config -u 'kshi' --workingdir '/home/kshi' "$ctr"
+    # shellcheck disable=SC1090
+    "$ROOT_DIR/home/$hname/script" "$ctr"
+
+    commit "home/$hname" "$ctr"
   fi
 
-  log 'running user script'
-  buildah config -u 'kshi' --workingdir '/home/kshi' "$1"
-  # shellcheck disable=SC1090
-  ( . "$ROOT_DIR/home/$hname/script" )
-}
+  log-done "img/home/$hname"
+done
 
-function build-all {
-  local name path ctr
-  local -a paths
+
+log-phase 'img/home'
+
+# TODO rebuild when home sub-images rebuild DONE?
+#run-phase-img 'home' build-all 'pkgs'
+if newer-deps 'home' -i 'pkgs' "${iargs[@]}"; then
+  ctr=$(from 'home' "$BUILDAH_NAME_PREFIX/pkgs")
+
   for name in "${hnames[@]}"; do
     log "copying from home/$name"
     readarray -t paths < <(normalize-list < "$ROOT_DIR/home/$name/paths")
@@ -32,16 +84,11 @@ function build-all {
       buildah copy -q \
         --chown 'kshi:kshi' \
         --from "$BUILDAH_NAME_PREFIX/home/$name" \
-        "$1" "/home/kshi/$path" "/home/kshi/$path"
+        "$ctr" "/home/kshi/$path" "/home/kshi/$path"
     done
   done
-}
 
-for path in "$ROOT_DIR/home"/*; do
-  hname="${path##*/}"
-  hnames+=("$hname")
-  run-phase-img "home/$hname" build-one \
-    'xpkgs' "$(recursive-mtime "$path")"
-done
+  commit 'home' "$ctr"
+fi
 
-run-phase-img 'home' build-all 'pkgs'
+log-done 'img/home'

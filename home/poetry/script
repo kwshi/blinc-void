@@ -1,3 +1,0 @@
-# vi: ft=bash
-# shellcheck shell=bash
-buildah run "$1" mkdir '.poetry-global'

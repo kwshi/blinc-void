@@ -61,6 +61,8 @@ efivar efibootmgr
 lsof htop transmission
 golang-migrate litecli
 stripe
+neofetch
+onefetch
 
 fd dust tealdeer tokei
 

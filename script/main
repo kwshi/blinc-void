@@ -21,7 +21,7 @@ declare -A fresh
 declare -a xargs xurls
 declare xstamp
 
-if [[ ${1+_} != '_' ]]; then
+if [[ ! -v 1 ]]; then
   echo 'missing build arg' >&2
   exit 1
 fi
@@ -43,6 +43,81 @@ function log-phase { _log-with-prefix '96;1' "PHASE: $1";     }
 function log-done  { _log-with-prefix '32;1' "DONE: $1"$'\n'; }
 function log-err   { _log-with-prefix '91;1' "ERR: $1";       }
 function log       { _log-with-prefix '36'   "$1";            }
+
+function newer-img-parents {
+  local name=$1 pname
+  local -a pnames newer=()
+  shift
+  pnames=("$@")
+
+  for pname in "${pnames[@]}"; do
+    if (( stamps[$name] <= stamps[$pname] )) \
+      || [[ -v fresh["img/$pname"] ]];
+    then newer+=("$pname"); fi
+  done
+  for pname in "${newer[@]}"; do echo "$pname"; done
+}
+
+function recursive-mtime {
+  local -i curr latest
+  local -a paths
+  local path
+  latest="$(stat -c '%Y' "$1")"
+  readarray -t paths < <(find "$1")
+  for path in "${paths[@]}"; do
+    curr="$(stat -c '%Y' "$path")"
+    if (( curr > latest )); then latest=curr; fi
+  done
+  echo "$latest"
+}
+
+# TODO unify this with run-phase-img framework?
+function newer-deps {
+  local current=$1
+  local -i OPTIND=0
+  local -a imgs=() paths=() newer_imgs=() newer_paths=()
+  shift
+  while getopts 'i:p:' opt; do
+    case $opt in
+      'i') imgs+=("$OPTARG");;
+      'p') paths+=("$OPTARG");;
+      *);;
+    esac
+  done
+
+  if [[ ! -v stamps["$current"] ]]; then return 0; fi
+
+  for img in "${imgs[@]}"; do
+    if (( stamps[$current] <= stamps[$img] )) ||
+      [[ -v fresh["img/$img"] ]]; then
+      newer_imgs+=("$img")
+    fi
+  done
+
+  for path in "${paths[@]}"; do
+    if (( stamps[$current] < "$(recursive-mtime "$path")" )); then
+      newer_paths+=("$path")
+    fi
+  done
+
+  if (( ${#newer_imgs[@]} + ${#newer_paths[@]} > 0 )); then
+    if (( ${#newer_imgs[@]} > 0 )); then
+      log "newer dependency images: ${newer_imgs[*]@Q}"
+    fi
+    if (( ${#newer_paths[@]} > 0 )); then
+      log "newer dependency paths: ${newer_paths[*]@Q}"
+    fi
+    return 0
+  fi
+
+  if [[ "$rebuild" == "img/$current" ]]; then
+    log "up-to-date against dependencies but got \`-r ${rebuild@Q}\`, rebuilding"
+    return 0
+  fi
+
+  log 'up-to-date, skipping'
+  return 1
+}
 
 function phase-download {
   log-phase 'download'
@@ -74,13 +149,13 @@ function run-phase-img-bare {
 
   log-phase "$phase"
 
-  if [[ "${stamps[$name]+_}" == '_' ]]; then
+  if [[ -v stamps["$name"] ]]; then
     echo "FRESH is ${!fresh[*]}, pphase $pphase, pimg $pimg"
     if [[ stamps[$name] -le pstamp ]]; then
       build=1
       # TODO distinguish between manually given timestamp and parent image stamp
       log 'existing image, newer parent, rebuilding'
-    elif [[ "${fresh[$pphase]+_}" == '_' ]]; then
+    elif [[ -v fresh["$pphase"] ]]; then
       build=1
       log 'existing image, newer parent, rebuilding'
     elif [[ "$rebuild" == "$phase" ]]; then
@@ -102,6 +177,21 @@ function run-phase-img-bare {
   log-done "$phase"
 }
 
+function from {
+  log "initializing container from ${2@Q}"
+  # TODO log existing
+  buildah rm "$BUILDAH_NAME_PREFIX/$1" > '/dev/null' 2> '/dev/null' || :
+  buildah from --name "$BUILDAH_NAME_PREFIX/$1" "$2"
+}
+
+function commit {
+  # TODO since containers constructed with same name as image, no need to take
+  # separate arg
+  log "committing to image"
+  buildah commit --rm "$2" "$BUILDAH_NAME_PREFIX/$1"
+  fresh["img/$1"]=
+}
+
 function run-phase-img {
   local name fn pname
   local -i pstamp
@@ -109,6 +199,9 @@ function run-phase-img {
   fn=$2
   pname=$3
   pstamp=${4-0}
+
+  local -a newer
+  readarray -t newer < <(newer-img-parents "$name" "$pname")
 
   if (( stamps[$3] > pstamp )); then pstamp=stamps["$pname"]; fi
 
@@ -164,17 +257,6 @@ function normalize-list {
     read -ra ps <<< "$line"
     for pkg in "${ps[@]}"; do echo "$pkg"; done
   done
-}
-
-function recursive-mtime {
-  local f
-  local -i curr latest
-  latest="$(stat -c '%Y' "$1")"
-  while read -r f; do
-    curr="$(stat -c '%Y' "$f")"
-    if [[ curr -gt latest ]]; then latest=curr; fi
-  done < <(find "$1")
-  echo "$latest"
 }
 
 main "$@"
