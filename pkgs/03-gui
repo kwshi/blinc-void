@@ -12,9 +12,10 @@ gifsicle
 pinentry-dmenu
 
 # terminals
-alacritty st
+alacritty st kitty wezterm
 
 # media viewers
+viu # in-terminal image viewer, wezterm/kitty compatible
 sxiv
 vimiv
 fstl
@@ -32,7 +33,8 @@ firefox chromium browsh
 openscad factor octave
 
 # media players
-spotifyd spotify-tui spotify-adblock-linux spotify
+spotifyd spotify-tui spotify-adblock-linux
+# spotify
 playerctl
 vlc mplayer mpv
 
@@ -51,3 +53,6 @@ slack-desktop
 zoom
 tandem
 parsec
+
+# android screen access
+scrcpy

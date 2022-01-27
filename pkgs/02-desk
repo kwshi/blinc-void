@@ -2,6 +2,23 @@
 xorg lightdm bspwm sxhkd
 
 # daemons/services
+fcitx5
+fcitx5-qt5
+fcitx5-qt6
+fcitx5-gtk+2
+fcitx5-gtk+3
+fcitx5-gtk4
+fcitx5-lua
+fcitx5-configtool
+
+fcitx5-rime
+fcitx5-table-extra
+fcitx5-table-other
+fcitx5-chinese-addons
+fcitx5-chinese-addons-pinyin-dict-manager
+fcitx5-zhuyin
+fcitx5-chewing
+
 conky
 barrier
 picom
@@ -17,10 +34,15 @@ pinentry-gtk
 talon
 
 # tools
-rofi rofi-pass rofi-calc rofi-emoji
+rofi rofi-pass rofi-calc rofi-emoji rofi-blocks
 dmenu sct
 scrot maim peek
 fswebcam cheese
+
+slock
+
+# calculator :D
+free42
 
 # graphics
 mesa-vaapi mesa-vdpau mesa-vulkan-radeon

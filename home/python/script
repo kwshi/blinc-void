@@ -3,6 +3,9 @@ set -eufo pipefail
 
 declare -a pkgs=(
   'black'
+  'build'
+
+  'pillow'
 
   'python-lsp-server'
   'python-lsp-black'
@@ -12,27 +15,34 @@ declare -a pkgs=(
   #'pyls-black'
   #'pyls-mypy'
   #'future' # needed by 'pyls-mypy'
+  'pytest'
 
   'matplotlib'
   'numpy'
   'scipy'
   'sympy'
-  'gmpy2'
+  #'gmpy2'
   'mpmath'
 
   'pandas'
   'bokeh'
   'seaborn'
 
-  'torch'
+  # 'torch==1.9.1'
+  'scikit-learn'
+  #'scikit-image'
+
+  'more-itertools'
 
   'ipython'
+  'pyside2' # needed by qtconsole, but weirdly not installed as dep
+  'qtconsole'
 
   'pynvim'
 )
 
 buildah run "$1" virtualenv '.venv'
 if [[ -e ~/'.cache/pip' ]]; then
-  buildah copy --chown 'kshi:kshi' "$1" ~/'.cache/pip' '.cache/pip'
+  buildah copy -q --chown 'kshi:kshi' "$1" ~/'.cache/pip' '.cache/pip'
 fi
 buildah run "$1" .venv/bin/pip install "${pkgs[@]}"

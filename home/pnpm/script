@@ -15,7 +15,9 @@ declare -a pkgs=(
   'elm-test'
 
   'svelte-language-server'
+  'prettier-plugin-svelte'
 
+  'heroku' # TODO make into package
   'netlify-cli'
   'vercel'
 

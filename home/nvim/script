@@ -35,7 +35,28 @@ pkgs=(
   'SirVer/ultisnips'
   #'honza/vim-snippets'
 
+  'lilydjwg/fcitx.vim'
+
   'ntpeters/vim-better-whitespace'
+
+  'dense-analysis/ale'
+  'nvim-lua/lsp-status.nvim'
+
+  'sirtaj/vim-openscad'
+
+  'jreybert/vimagit'
+  'tpope/vim-fugitive'
+  'kdheepak/lazygit.nvim'
+
+  'nvim-telescope/telescope.nvim'
+
+  'mattn/emmet-vim'
+
+  'ziglang/zig.vim'
+
+  'psf/black'
+
+  'chrisbra/unicode.vim'
 )
 
 buildah run "$1" -- mkdir -p "$autoload_dir" "$plug_dir"

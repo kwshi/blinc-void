@@ -1,0 +1,11 @@
+#!/bin/bash
+set -eufo pipefail
+
+declare -a pkgs=(
+  'penlight'
+  'inspect'
+)
+
+for pkg in "${pkgs[@]}"; do
+  buildah run "$1" luarocks install --local "$pkg"
+done

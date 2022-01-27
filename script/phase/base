@@ -39,6 +39,9 @@ if newer-deps 'base' -i 'rootfs'; then
   buildah run "$ctr" -- useradd -u 1000 -G 'wheel' 'kshi'
   buildah run "$ctr" -- usermod -s '/bin/bash' 'root'
 
+  log 'setting /tmp permissions'
+  buildah run "$ctr" -- chmod 'go+w' '/tmp'
+
   log 'setting default command to bash'
   buildah config --cmd '/bin/bash' "$ctr"
 

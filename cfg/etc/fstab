@@ -3,5 +3,7 @@
 #
 # <file system>	<dir>	<type>	<options>		<dump>	<pass>
 PARTLABEL=efi  /efi             vfat  rw,relatime,iocharset=iso8859-1,shortname=mixed,utf8,errors=remount-ro 0 0
-PARTLABEL=data /data            ext4  rw,relatime                                                            0 0
-/data/blinc    /usr/share/blinc none  bind
+PARTLABEL=data /data            ext4  rw,relatime 0 0
+PARTLABEL=big  /extra           ext4  rw,relatime 0 0
+/extra/blinc   /usr/share/blinc none  bind
+/extra/nix     /nix             none  bind

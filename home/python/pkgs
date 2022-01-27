@@ -3,3 +3,8 @@ gmp-devel
 mpfr-devel
 libmpc-devel
 python3-virtualenv
+
+# scipy dependencies
+gcc-fortran
+
+openblas-devel

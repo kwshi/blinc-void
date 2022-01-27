@@ -9,11 +9,12 @@ fuse fuse-overlayfs fuse-sshfs
 geoclue2
 xdg-user-dirs
 acl-progs
-iwd openresolv
+iwd openresolv connman
 bubblewrap
 socklog-void
 socklog
 gummiboot
+
 
 # printer stuff
 cups
@@ -36,16 +37,18 @@ docker docker-compose podman podman-compose buildah
 starship
 
 # tools
+mosh
 exiftool
 stow
 bash-completion
 jq pgcli
 postgresql-client
 redis zip exa bat hyperfine
-redo just
+redo
 yj
 github-cli grip git-cal ghi hub
 gitlab-runner
+tea
 inotify-tools
 mupdf-tools
 squashfs-tools squashfs-tools-ng
@@ -63,8 +66,22 @@ golang-migrate litecli
 stripe
 neofetch
 onefetch
+psmisc
+lazygit
+
+ranger
+ueberzug
+
+rmapi
+
+xsv # cli csv toolkit
 
 fd dust tealdeer tokei
+
+qmk # keyboard firmware stuff
+
+just watchexec
+wrk
 
 recode
 pup
@@ -76,10 +93,12 @@ void-release-keys void-docs void-docs-browse
 # toys
 sl lolcat-c cowsay ponysay
 fortune-mod fortune-mod-void
+figlet figlet-fonts
 
 # editors
 emacs xi-editor
 neovim
 #neovim-plug
 neovim-remote
+tree-sitter-devel
 # TODO maybe nightly, fix conflicts neovim-remote

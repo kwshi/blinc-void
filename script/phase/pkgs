@@ -53,8 +53,13 @@ done
 log 'tagging final image'
 
 if newer-deps 'pkgs' -i "pkgs/$lname"; then
-  # TODO use `buildah tag` somehow but keep timestamp behavior
-  commit 'pkgs' "$(from 'pkgs' "$BUILDAH_NAME_PREFIX/pkgs/$lname")"
+  ctr=$(from 'pkgs' "$BUILDAH_NAME_PREFIX/pkgs/$lname")
+
+  # clean xbps-cache
+  log 'cleaning xbps cache'
+  buildah run "$ctr" -- xbps-remove -O
+
+  commit 'pkgs' "$ctr"
 fi
 
 log-done 'img/pkgs'

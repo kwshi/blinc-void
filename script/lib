@@ -1,8 +1,8 @@
 # vi: ft=bash
 # shellcheck shell=bash
 
-VOID_REPO_URL='https://alpha.us.repo.voidlinux.org/live/current'
-VOID_VERSION='20210218'
+VOID_VERSION='20210930'
+VOID_REPO_URL="https://alpha.us.repo.voidlinux.org/live/$VOID_VERSION"
 BUILDAH_NAME_PREFIX="blinc-void"
 
 ROOT_DIR="$PWD"

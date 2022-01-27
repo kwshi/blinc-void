@@ -1,4 +1,5 @@
 set positional-arguments
+set dotenv-load
 
 _default:
   @just --choose
@@ -6,10 +7,16 @@ _default:
 build *args:
   script/main "$@"
 
-pack name: (build 'img/final')
+rebuild:
+  script/main -r 'img/base' 'img/final'
+
+retry:
+  script/main 'img/final'
+
+pack name:
   script/build/main {{name}}
 
-install name: (build name)
+install name:
   sudo ./script/install {{name}}
 
 

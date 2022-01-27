@@ -1,0 +1,9 @@
+#!/bin/bash
+set -eufo pipefail
+
+declare -a pkgs=(
+  'hspec'
+  'QuickCheck'
+)
+
+buildah run "$1" cabal install --lib "${pkgs[@]}"

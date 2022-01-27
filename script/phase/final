@@ -19,10 +19,17 @@ if newer-deps 'final' -i 'home'; then
     '/etc/lightdm/lightdm.conf' \
     '/etc/pulse/daemon.conf'
 
-  buildah copy \
+  # copy latest configuration files from current repo to bootstrap (most other
+  # files will be overridden @ boot time, when /etc/fstab bind-mounts this
+  # directory)
+  buildah copy -q \
     --contextdir "$ROOT_DIR" \
     --ignorefile "$ROOT_DIR/.dockerignore" \
     "$ctr" "$ROOT_DIR" '/usr/share/blinc'
+
+  # copy dbus machine-id to persist it across reinstalls (attempt to convince
+  # mathematica the machine hasn't changed)
+  buildah copy -q "$ctr" '/var/lib/dbus/machine-id' '/var/lib/dbus/machine-id'
 
   log 'copying config paths'
   readarray -t paths < <(find "$ROOT_DIR/cfg" -type 'f' -printf '%P\n')
@@ -42,16 +49,21 @@ if newer-deps 'final' -i 'home'; then
     '/usr/share/zoneinfo/America/Los_Angeles' '/etc/localtime'
   buildah run "$ctr" -- ln -st \
     '/etc/fonts/conf.d' '/usr/share/fontconfig/conf.avail/70-no-bitmaps.conf'
-  buildah run "$ctr" -- ln -sT '/data/containers/root' '/var/lib/containers'
-  buildah run "$ctr" -- ln -sT '/data/containers/docker' '/var/lib/docker'
+  buildah run "$ctr" -- ln -sT '/extra/containers/root' '/var/lib/containers'
+  buildah run "$ctr" -- ln -sT '/extra/containers/docker' '/var/lib/docker'
+
+  buildah run "$ctr" -- rmdir '/var/lib/iwd'
   buildah run "$ctr" -- ln -sT '/data/iwd' '/var/lib/iwd'
+
+  buildah run "$ctr" -- ln -sT '/data/connman' '/var/lib/connman'
 
   buildah run "$ctr" -- xbps-alternatives -s 'pinentry-gtk'
 
   sv=(
     'dbus'
     'docker'
-    'iwd'
+    # 'iwd'
+    'connmand'
     'lightdm'
     'bluetoothd'
     'chronyd'
@@ -61,6 +73,9 @@ if newer-deps 'final' -i 'home'; then
     # logging
     'socklog-unix'
     'nanoklogd'
+
+    # android debugger server
+    'adb'
   )
 
   for (( i=0; i<${#sv[@]}; ++i )); do
@@ -68,10 +83,10 @@ if newer-deps 'final' -i 'home'; then
   done
 
   buildah run "$ctr" -- ln -st '/etc/runit/runsvdir/default' "${sv[@]}"
-  buildah run "$ctr" -- mkdir '/data' '/efi'
+  buildah run "$ctr" -- mkdir '/data' '/efi' '/extra'
 
   buildah run "$ctr" -- groupadd -r 'autologin'
-  buildah run "$ctr" -- usermod -aG 'docker,audio,video,autologin,socklog' 'kshi'
+  buildah run "$ctr" -- usermod -aG 'docker,audio,video,autologin,socklog,dialout,optical,cdrom' 'kshi'
 
   log "running user config scripts"
   buildah config --workingdir '/home/kshi' -u 'kshi' "$ctr"
@@ -90,36 +105,45 @@ if newer-deps 'final' -i 'home'; then
 
   log 'symlinks'
   buildah run "$ctr" ln -st '.' \
-    '/data/downloads' \
     '/data/dotfiles' \
     '/data/documents' \
     '/data/hacks' \
-    '/data/movies' \
-    '/data/blinc'
+    '/extra/downloads' \
+    '/extra/pictures' \
+    '/extra/media' \
+    '/extra/blinc'
 
   symlinks=(
     '.mozilla/firefox' '/data/browser/firefox'
     '.config/chromium' '/data/browser/chromium'
 
-    '.zoom'                     '/data/zoom'
-    '.gnupg'                    '/data/gnupg'
-    '.password-store'           '/data/pass'
-    '.klei'                     '/data/games/klei'
-    '.multimc'                  '/data/games/multimc'
-    '.steam'                    '/data/games/steam/home'
-    '.Mathematica'              '/data/mathematica'
-    '.local/share/Steam'        '/data/games/steam/share'
-    '.local/share/UnrailedGame' '/data/games/unrailed'
-    '.config/unity3d'           '/data/games/unity3d'
-    '.local/share/containers'   '/data/containers/kshi'
-    '.cache/Tectonic'           '/data/tectonic'
+    '.gnupg'                       '/data/gnupg'
+    '.password-store'              '/data/pass'
+    '.Mathematica'                 '/data/mathematica'
+    '.cache/Tectonic'              '/data/tectonic'
+    '.local/share/zathura'         '/data/zathura'
+    '.local/share/TelegramDesktop' '/data/social/telegram'
+    '.klei'                        '/extra/games/klei'
+    '.multimc'                     '/extra/games/multimc'
+    '.minecraft'                   '/extra/games/minecraft'
+    '.steam'                       '/extra/games/steam/home'
+    '.local/share/Steam'           '/extra/games/steam/share'
+    '.local/share/UnrailedGame'    '/extra/games/unrailed'
+    '.config/unity3d'              '/extra/games/unity3d'
+    '.local/share/containers'      '/extra/containers/kshi'
+
+    '.netrc' '/data/login/netrc'
 
     '.config/gh/hosts.yml' '/data/github/hosts.yml'
     '.config/spotifyd'     '/data/spotify/daemon'
     '.config/spotify-tui'  '/data/spotify/tui'
     '.config/spotify'      '/data/spotify/desktop'
-    '.config/Signal'       '/data/signal'
-    '.config/Slack'        '/data/slack'
+    '.config/Signal'       '/data/social/signal'
+    '.config/Slack'        '/data/social/slack'
+    '.config/discord'      '/data/social/discord'
+    '.zoom'                '/data/social/zoom'
+    '.config/rmapi'        '/data/rmapi'
+    '.config/rmcl'         '/data/rmcl'
     '.config/tentactl'     '/data/tentactl'
   )
 
@@ -135,13 +159,20 @@ if newer-deps 'final' -i 'home'; then
     cli/pip
     cli/nvim
     cli/emacs
+    cli/pgcli
+    cli/glow
+    cli/ranger
+    desk/kitty
     desk/alacritty
+    desk/wezterm
     desk/picom
     desk/polybar
     desk/bspwm
     desk/sxhkd
     desk/autorandr
     desk/rofi
+    desk/conky
+    desk/zathura
   )
   xdg=()
   for path in "${paths[@]}"; do
@@ -150,12 +181,22 @@ if newer-deps 'final' -i 'home'; then
 
   buildah run "$ctr" ln -st '.config' "${xdg[@]}"
 
+  buildah run "$ctr" mkdir -p '.ipython/profile_default'
   buildah run "$ctr" ln -sT '/home/kshi/dotfiles/cli/ssh' '.ssh'
+  buildah run "$ctr" ln -sT '/home/kshi/dotfiles/cli/jupyter' '.jupyter'
+  buildah run "$ctr" ln -sT '/home/kshi/dotfiles/cli/ipython/startup' '.ipython/profile_default/startup'
   buildah run "$ctr" ln -sT '/home/kshi/dotfiles/cli/pass-git' '.config/pass-git-helper'
   buildah run "$ctr" ln -sT '/home/kshi/dotfiles/cli/bash/rc' '.bashrc'
   buildah run "$ctr" ln -sT '/home/kshi/dotfiles/cli/bash/profile' '.bash_profile'
+  buildah run "$ctr" ln -sT '/home/kshi/dotfiles/cli/cargo/config.toml' '.cargo/config.toml'
+  buildah run "$ctr" ln -sT '/home/kshi/dotfiles/cli/starship/starship.toml' '.config/starship.toml'
+  buildah run "$ctr" ln -sT '/home/kshi/dotfiles/cli/openscad' '.config/OpenSCAD'
   buildah run "$ctr" ln -sT '/home/kshi/dotfiles/desk/xournal/config' '.xournal/config'
-  buildah run "$ctr" ln -sT '/home/kshi/dotfiles/desk/conky/rc' '.conkyrc'
+  buildah run "$ctr" ln -sT '/home/kshi/dotfiles/desk/xprofile' '.xprofile'
+  buildah run "$ctr" ln -sT '/home/kshi/dotfiles/desk/fcitx/config' '.config/fcitx5'
+
+  buildah run "$ctr" -- mkdir -p '.local/share/fcitx5'
+  buildah run "$ctr" ln -sT '/home/kshi/dotfiles/desk/fcitx/theme' '.local/share/fcitx5/themes'
 
   buildah run "$ctr" xdg-user-dirs-update
 

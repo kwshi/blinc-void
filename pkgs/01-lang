@@ -4,6 +4,7 @@ openjdk
 # languages
 clang
 tectonic
+biber
 opam
 ghc stack cabal-install
 rustup rust-analyzer rust-doc
@@ -21,12 +22,25 @@ wasmtime wabt
 elm
 elvish nushell zsh fish-shell
 fsharp
+platformio
+
+zig
+nim
+
+lua lua-devel luarocks
 
 # language support tools
 clang clang-analyzer clang-tools-extra valgrind ccls
 gopls
 shellcheck
 ghc-doc hoogle
+texlab
+
+# serialization stuff
+flatbuffers
+protobuf
+capnproto
+go-capnproto2
 
 # extra libraries
 mpfr mpfr-devel
@@ -36,7 +50,7 @@ lapacke lapacke-devel
 cblas cblas-devel
 openblas openblas-devel
 zlib zlib-devel
-libressl libressl-devel
+# libressl libressl-devel # seems to conflict with openssl
 catch2 cgal
 
 # texlive kinda sucks

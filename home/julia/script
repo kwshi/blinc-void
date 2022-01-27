@@ -7,6 +7,8 @@ declare pkg_code pkg_syms
 pkgs=(
   'PackageCompiler'
 
+  'DataStructures'
+
   'DataFrames'
   'CSV'
   'SQLite'

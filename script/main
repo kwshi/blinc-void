@@ -1,8 +1,8 @@
 #!/bin/bash
 set -euo pipefail
 
-VOID_REPO_URL='https://alpha.us.repo.voidlinux.org/live/current'
-VOID_VERSION='20210218'
+VOID_VERSION='20210930'
+VOID_REPO_URL="https://alpha.us.repo.voidlinux.org/live/$VOID_VERSION"
 
 VOID_EXTRA_URL='https://api.github.com/repos/kwshi/void-extra/releases/tags/latest'
 
@@ -122,12 +122,13 @@ function newer-deps {
 function phase-download {
   log-phase 'download'
   if [[
-    -e "$DOWNLOAD_DIR/rootfs/$VOID_ROOTFS_FILENAME" &&
-    -e "$DOWNLOAD_DIR/rootfs/sha256sum.sig"
+    -e "$DOWNLOAD_DIR/rootfs/$VOID_ROOTFS_FILENAME"
+    # &&
+    # -e "$DOWNLOAD_DIR/rootfs/sha256sum.sig"
   ]]; then
     if [[ "$rebuild" == 'download' ]]; then
       log 'existing download files, overwriting'
-      "$ROOT_DIR/script/phase/download"
+      . "$ROOT_DIR/script/phase/download"
       fresh['download']=
     else log 'existing download files, skipping'; fi
   else
