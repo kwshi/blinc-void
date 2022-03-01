@@ -28,7 +28,7 @@ foomatic-db-nonfree
 
 # servers
 nginx lighttpd
-postgresql sqlite sqlite-devel
+postgresql14 sqlite sqlite-devel
 
 # container stuff
 docker docker-compose podman podman-compose buildah
@@ -61,7 +61,9 @@ nix
 ffmpeg gifski synfig
 signify
 efivar efibootmgr
-lsof htop transmission
+lsof htop
+iotop
+transmission
 golang-migrate litecli
 stripe
 neofetch
@@ -71,6 +73,8 @@ lazygit
 
 ranger
 ueberzug
+
+mkvtoolnix
 
 rmapi
 
@@ -85,6 +89,10 @@ wrk
 
 recode
 pup
+
+img2pdf
+
+rsync zsync
 
 # void-specific stuff
 xtools vpm vpsm

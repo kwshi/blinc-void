@@ -16,6 +16,8 @@ declare -a pkgs=(
   #'pyls-mypy'
   #'future' # needed by 'pyls-mypy'
   'pytest'
+  'pytest-benchmark'
+  'hypothesis'
 
   'matplotlib'
   'numpy'

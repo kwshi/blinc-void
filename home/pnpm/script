@@ -17,6 +17,9 @@ declare -a pkgs=(
   'svelte-language-server'
   'prettier-plugin-svelte'
 
+  'vls'
+  '@volar/server'
+
   'heroku' # TODO make into package
   'netlify-cli'
   'vercel'

@@ -4,6 +4,9 @@ set -eufo pipefail
 declare -a pkgs=(
   'penlight'
   'inspect'
+  'http'
+  'luasocket'
+  'htmlparser'
 )
 
 for pkg in "${pkgs[@]}"; do

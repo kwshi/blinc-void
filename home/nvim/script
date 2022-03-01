@@ -57,6 +57,12 @@ pkgs=(
   'psf/black'
 
   'chrisbra/unicode.vim'
+
+  'nvim-orgmode/orgmode'
+
+  'nvim-lua/plenary.nvim'
+
+  'rhysd/vim-clang-format'
 )
 
 buildah run "$1" -- mkdir -p "$autoload_dir" "$plug_dir"

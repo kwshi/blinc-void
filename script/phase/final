@@ -40,8 +40,8 @@ if newer-deps 'final' -i 'home'; then
   done
 
   # steam fonts patch, because ??????
-  buildah run "$ctr" -- rm '/usr/share/fonts/steam-fonts/.uuid'
-  buildah run "$ctr" -- mv '/usr/share/fonts/steam-fonts' '/usr/share/fonts/steam-bargage'
+  #buildah run "$ctr" -- rm '/usr/share/fonts/steam-fonts/.uuid'
+  #buildah run "$ctr" -- mv '/usr/share/fonts/steam-fonts' '/usr/share/fonts/steam-bargage'
 
   buildah run "$ctr" -- chown -R 'root:root' '/etc/sudoers.d'
 
@@ -173,6 +173,8 @@ if newer-deps 'final' -i 'home'; then
     desk/rofi
     desk/conky
     desk/zathura
+    desk/xdg
+    desk/mpv
   )
   xdg=()
   for path in "${paths[@]}"; do

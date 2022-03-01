@@ -47,6 +47,11 @@ pkgs=(
   'RowEchelon'
 )
 
+# TODO temporary hotfix; skip julia setup because it is broken
+buildah run "$1" -- mkdir '.julia'
+buildah run "$1" -- mkdir '.julia-sys'
+exit
+
 pkg_strs=''
 pkg_syms=''
 for pkg in "${pkgs[@]}"; do

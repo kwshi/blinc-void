@@ -7,3 +7,4 @@ PARTLABEL=data /data            ext4  rw,relatime 0 0
 PARTLABEL=big  /extra           ext4  rw,relatime 0 0
 /extra/blinc   /usr/share/blinc none  bind
 /extra/nix     /nix             none  bind
+tmpfs          /run             tmpfs size=48G
