@@ -1,0 +1,12 @@
+#!/bin/bash
+set -euo pipefail
+
+declare -a extensions=(
+  'ms-liveshare.vsliveshare-pack'
+  'tomphilbin.gruvbox-themes'
+  'asvetliakov.vscode-neovim'
+)
+
+for ext in "${extensions[@]}"; do
+  buildah run "$1" -- code-oss --install-extension "$ext"
+done
