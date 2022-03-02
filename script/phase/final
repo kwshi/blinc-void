@@ -103,54 +103,6 @@ if newer-deps 'final' -i 'home'; then
   buildah run "$ctr" mkdir -p "${dirs[@]}"
   buildah run "$ctr" rm '.bashrc' '.bash_profile'
 
-  log 'symlinks'
-  buildah run "$ctr" ln -st '.' \
-    '/data/dotfiles' \
-    '/data/documents' \
-    '/data/hacks' \
-    '/extra/downloads' \
-    '/extra/pictures' \
-    '/extra/media' \
-    '/extra/blinc'
-
-  symlinks=(
-    '.mozilla/firefox' '/data/browser/firefox'
-    '.config/chromium' '/data/browser/chromium'
-
-    '.gnupg'                       '/data/gnupg'
-    '.password-store'              '/data/pass'
-    '.Mathematica'                 '/data/mathematica'
-    '.cache/Tectonic'              '/data/tectonic'
-    '.local/share/zathura'         '/data/zathura'
-    '.local/share/TelegramDesktop' '/data/social/telegram'
-    '.klei'                        '/extra/games/klei'
-    '.multimc'                     '/extra/games/multimc'
-    '.minecraft'                   '/extra/games/minecraft'
-    '.steam'                       '/extra/games/steam/home'
-    '.local/share/Steam'           '/extra/games/steam/share'
-    '.local/share/UnrailedGame'    '/extra/games/unrailed'
-    '.config/unity3d'              '/extra/games/unity3d'
-    '.local/share/containers'      '/extra/containers/kshi'
-
-    '.netrc' '/data/login/netrc'
-
-    '.config/gh/hosts.yml' '/data/github/hosts.yml'
-    '.config/spotifyd'     '/data/spotify/daemon'
-    '.config/spotify-tui'  '/data/spotify/tui'
-    '.config/spotify'      '/data/spotify/desktop'
-    '.config/Signal'       '/data/social/signal'
-    '.config/Slack'        '/data/social/slack'
-    '.config/discord'      '/data/social/discord'
-    '.zoom'                '/data/social/zoom'
-    '.config/rmapi'        '/data/rmapi'
-    '.config/rmcl'         '/data/rmcl'
-    '.config/tentactl'     '/data/tentactl'
-  )
-
-  log 'more symlinks'
-  for (( i=0; i<${#symlinks[@]}; i+=2 )); do
-    buildah run "$ctr" -- ln -sT "${symlinks[i+1]}" "${symlinks[i]}"
-  done
 
   log 'xdg symlinks'
   paths=(

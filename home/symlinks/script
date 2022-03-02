@@ -1,0 +1,60 @@
+#!/bin/bash
+set -euo pipefail
+
+declare -A xdg_symlinks misc_symlinks
+
+xdg_symlinks=(
+  ['syncthing']='/data/syncthing'
+  ['chromium']='/data/browser/chromium'
+  ['unity3d']='/extra/games/unity3d'
+  ['gh/hosts.yml']='/data/github/hosts.yml'
+  ['spotifyd']='/data/spotify/daemon'
+  ['spotify-tui']='/data/spotify/tui'
+  ['spotify']='/data/spotify/desktop'
+  ['Signal']='/data/social/signal'
+  ['Slack']='/data/social/slack'
+  ['discord']='/data/social/discord'
+  ['rmapi']='/data/rmapi'
+  ['rmcl']='/data/rmcl'
+  ['tentactl']='/data/tentactl'
+)
+
+misc_symlinks=(
+  ['dotfiles']='/data/dotfiles'
+  ['documents']='/data/documents'
+  ['hacks']='/data/hacks'
+  ['downloads']='/extra/downloads'
+  ['pictures']='/extra/media/pictures'
+  ['videos']='/extra/media/videos'
+  ['music']='/extra/media/music'
+  ['blinc']='/extra/blinc'
+
+  ['.zoom']='/data/social/zoom'
+  ['.mozilla/firefox']='/data/browser/firefox'
+  ['.gnupg']='/data/gnupg'
+  ['.password-store']='/data/pass'
+  ['.Mathematica']='/data/mathematica'
+  ['.cache/Tectonic']='/data/tectonic'
+  ['.local/share/zathura']='/data/zathura'
+  ['.local/share/TelegramDesktop']='/data/social/telegram'
+
+  ['.klei']='/extra/games/klei'
+  ['.multimc']='/extra/games/multimc'
+  ['.steam']='/extra/games/steam/home'
+  ['.local/share/Steam']='/extra/games/steam/share'
+  ['.local/share/UnrailedGame']='/extra/games/unrailed'
+
+  ['.local/share/containers']='/extra/containers/kshi'
+
+  ['.netrc']='/data/login/netrc'
+)
+
+for link in "${!xdg_symlinks[@]}"; do
+  buildah run "$1" -- mkdir -p "$(dirname ".config/$link")"
+  buildah run "$1" -- ln -sT "${xdg_symlinks[$link]}" ".config/$link"
+done
+
+for link in "${!misc_symlinks[@]}"; do
+  buildah run "$1" -- mkdir -p "$(dirname "$link")"
+  buildah run "$1" -- ln -sT "${misc_symlinks[$link]}" "$link"
+done
