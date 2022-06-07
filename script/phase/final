@@ -76,6 +76,12 @@ if newer-deps 'final' -i 'home'; then
 
     # android debugger server
     'adb'
+
+    # iphone usb
+    'usbmuxd'
+
+    # nix
+    'nix-daemon'
   )
 
   for (( i=0; i<${#sv[@]}; ++i )); do
@@ -114,6 +120,7 @@ if newer-deps 'final' -i 'home'; then
     cli/pgcli
     cli/glow
     cli/ranger
+    cli/tree-sitter
     desk/kitty
     desk/alacritty
     desk/wezterm

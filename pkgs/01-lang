@@ -7,12 +7,17 @@ tectonic
 biber
 opam
 
+# compiler stuff
+cmake
+cross-x86_64-w64-mingw32
+
 # `ncurses-libtinfo-libs` is needed to provide a symlink from `libtinfo.so.*`
 # to `libncursesw.so.*`, whose existence stack relies on; see
 # - <https://docs.haskellstack.org/en/stable/faq/#how-do-i-install-ghc-in-stack-when-it-fails-with-the-error-missing-ghc-bindist-for-linux64-ncurses6>
 # - <https://github.com/commercialhaskell/stack/issues/4711>
 # - <https://github.com/void-linux/void-packages/pull/21409>
 ncurses-libtinfo-libs
+ncurses-libtinfo-devel
 ghcup
 #ghc stack cabal-install
 
@@ -41,7 +46,6 @@ lua lua-devel luarocks
 sagemath
 
 # language support tools
-haskell-language-server
 clang clang-analyzer clang-tools-extra valgrind ccls
 gopls
 shellcheck

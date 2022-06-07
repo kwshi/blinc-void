@@ -19,6 +19,12 @@ declare -a pkgs=(
   'pytest-benchmark'
   'hypothesis'
 
+  'taichi'
+
+  'flask'
+
+  'pyperclip'
+
   'matplotlib'
   'numpy'
   'scipy'
@@ -27,6 +33,7 @@ declare -a pkgs=(
   'mpmath'
 
   'pandas'
+  'pandas-stubs'
   'bokeh'
   'seaborn'
 

@@ -30,11 +30,22 @@ foomatic-db-nonfree
 nginx lighttpd
 postgresql14 sqlite sqlite-devel
 
+# phone interop
+android-tools
+usbmuxd
+ifuse
+
+# calendars (i can't decide)
+when
+gcal
+calcurse
+
 # container stuff
 docker docker-compose podman podman-compose buildah
 
 # environment setup
 starship
+zoxide
 
 # tools
 mosh
@@ -43,7 +54,7 @@ stow
 bash-completion
 jq pgcli
 postgresql-client
-redis zip exa bat hyperfine
+redis zip exa bat hyperfine delta
 redo
 yj
 github-cli grip git-cal ghi hub

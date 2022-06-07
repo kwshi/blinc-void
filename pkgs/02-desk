@@ -1,6 +1,9 @@
 # core
 xorg lightdm bspwm sxhkd
 
+dot-xsession
+libXinerama-devel libXrandr-devel libXScrnSaver-devel
+
 # daemons/services
 fcitx5
 fcitx5-qt5
@@ -40,6 +43,8 @@ scrot maim peek
 fswebcam cheese
 
 slock
+
+handbrake
 
 # calculator :D
 free42

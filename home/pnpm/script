@@ -5,6 +5,7 @@ declare -a pkgs=(
 
   'typescript'
   'ttypescript'
+  'ts-node'
 
   'prettier'
   'eslint'
@@ -18,7 +19,7 @@ declare -a pkgs=(
   'prettier-plugin-svelte'
 
   'vls'
-  '@volar/server'
+  '@volar/vue-language-server'
 
   'heroku' # TODO make into package
   'netlify-cli'

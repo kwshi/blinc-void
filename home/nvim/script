@@ -1,3 +1,6 @@
+#!/bin/bash
+set -euo pipefail
+
 # vi: ft=bash
 # shellcheck shell=bash
 
@@ -63,6 +66,12 @@ pkgs=(
   'nvim-lua/plenary.nvim'
 
   'rhysd/vim-clang-format'
+
+  'kyazdani42/nvim-web-devicons'
+  'tbastos/vim-lua'
+  'glacambre/firenvim'
+  'folke/trouble.nvim'
+
 )
 
 buildah run "$1" -- mkdir -p "$autoload_dir" "$plug_dir"
@@ -70,6 +79,10 @@ buildah run "$1" -- mkdir -p "$autoload_dir" "$plug_dir"
 buildah add "$1" \
   'https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim' \
   "$autoload_dir/plug.vim"
+
+buildah copy "$1" \
+  'home/nvim/file/firenvim-firefox.json' \
+  '.mozilla/native-messaging-hosts/firenvim.json'
 
 for repo in "${pkgs[@]}"; do
   buildah run "$1" git clone "https://github.com/$repo" "$plug_dir/${repo##*/}"

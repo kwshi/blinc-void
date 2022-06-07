@@ -19,7 +19,7 @@ viu # in-terminal image viewer, wezterm/kitty compatible
 sxiv
 vimiv
 fstl
-zathura zathura-pdf-mupdf zathura-ps
+zathura zathura-pdf-mupdf zathura-ps zathura-djvu
 mupdf
 apvlv
 
@@ -52,8 +52,7 @@ telegram-desktop
 discord
 slack-desktop
 zoom
-tandem
-parsec
+skype
 
 # android screen access
 scrcpy

@@ -17,6 +17,8 @@ xdg_symlinks=(
   ['rmapi']='/data/rmapi'
   ['rmcl']='/data/rmcl'
   ['tentactl']='/data/tentactl'
+
+  ['xmonad']='../dotfiles/desk/xmonad'
 )
 
 misc_symlinks=(
@@ -42,11 +44,15 @@ misc_symlinks=(
   ['.multimc']='/extra/games/multimc'
   ['.steam']='/extra/games/steam/home'
   ['.local/share/Steam']='/extra/games/steam/share'
+  ['.local/share/PolyMC']='/extra/games/polymc'
   ['.local/share/UnrailedGame']='/extra/games/unrailed'
 
   ['.local/share/containers']='/extra/containers/kshi'
 
   ['.netrc']='/data/login/netrc'
+
+  ['.xsession']='dotfiles/desk/xsession'
+
 )
 
 for link in "${!xdg_symlinks[@]}"; do

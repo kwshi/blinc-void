@@ -1,0 +1,7 @@
+#!/bin/bash
+set -euo pipefail
+
+# currently failing with "cannot create /nix/store/.links: permission denied"
+# TODO will also need to include /nix/store/.links in image? unclear
+#buildah run "$1" -- nix-channel --add 'https://channels.nixos.org/nixpkgs-unstable'
+#buildah run "$1" -- nix-channel --update
