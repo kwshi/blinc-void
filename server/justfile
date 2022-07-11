@@ -1,0 +1,5 @@
+set positional-arguments
+set dotenv-load
+
+run *args:
+  go run -- ./cmd/blinc-server "$@"

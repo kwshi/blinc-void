@@ -2,11 +2,13 @@ package main
 
 import (
 	"github.com/alecthomas/kong"
-	"log"
+	"github.com/containers/buildah"
+	"github.com/containers/storage/pkg/unshare"
+	"github.com/kwshi/blinc/server/internal/web"
 )
 
 type CLI struct {
-	Start CmdStart `kong:"cmd"`
+	Start CmdStart `cmd:""`
 }
 
 type CmdStart struct {
@@ -14,13 +16,20 @@ type CmdStart struct {
 }
 
 func (c *CmdStart) Run() error {
-	log.Printf("starting on :%d", c.Port)
-	return nil
+
+	return web.NewServer().Start(c.Port)
+
 }
 
 func main() {
 	cli := &CLI{}
 	ctx := kong.Parse(cli)
+
+	if buildah.InitReexec() {
+		return
+	}
+	unshare.MaybeReexecUsingUserNamespace(false)
+
 	err := ctx.Run()
 	ctx.FatalIfErrorf(err)
 
