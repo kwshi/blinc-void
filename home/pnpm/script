@@ -14,6 +14,7 @@ declare -a pkgs=(
   '@elm-tooling/elm-language-server'
   'elm-format'
   'elm-test'
+  'elm-live'
 
   'svelte-language-server'
   'prettier-plugin-svelte'

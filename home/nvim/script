@@ -11,6 +11,13 @@ plug_dir="$nvim_dir/plug"
 
 declare -a pkgs
 pkgs=(
+
+  'rktjmp/hotpot.nvim'
+  'bakpakin/fennel.vim'
+  'Olical/conjure'
+
+  'glepnir/lspsaga.nvim'
+
   'gruvbox-community/gruvbox'
 
   'preservim/nerdtree'
@@ -72,6 +79,8 @@ pkgs=(
   'glacambre/firenvim'
   'folke/trouble.nvim'
 
+  'L3MON4D3/LuaSnip'
+
 )
 
 buildah run "$1" -- mkdir -p "$autoload_dir" "$plug_dir"
@@ -83,6 +92,10 @@ buildah add "$1" \
 buildah copy "$1" \
   'home/nvim/file/firenvim-firefox.json' \
   '.mozilla/native-messaging-hosts/firenvim.json'
+
+buildah copy --chmod 744 "$1" \
+  'home/nvim/file/firenvim-script.sh' \
+  '.local/share/firenvim/firenvim'
 
 for repo in "${pkgs[@]}"; do
   buildah run "$1" git clone "https://github.com/$repo" "$plug_dir/${repo##*/}"

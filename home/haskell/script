@@ -17,6 +17,15 @@ buildah run "$1" ghcup set 'cabal'
 buildah run "$1" ghcup set 'hls'
 buildah run "$1" ghcup set 'stack'
 
+buildah config --env 'PATH=/home/kshi/.ghcup/bin:/usr/bin' "$1"
+buildah run "$1" cabal update
+
+# needed for xmonad and taffybar config to compile
+buildah run "$1" cabal install --lib 'xmonad' 'xmonad-contrib' \
+  'taffybar' 'dyre' 'gtk-strut' 'gi-gdk' 'gi-gtk' 'transformers' 'gtk-sni-tray'
+
+buildah run "$1" cabal install 'hpack' 'xmonad' 'taffybar' 'status-notifier-item'
+
 buildah run "$1" -- mkdir -p '.stack'
 buildah run "$1" -- hoogle generate
 

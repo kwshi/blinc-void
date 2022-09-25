@@ -1,3 +1,4 @@
 .ghcup
 .stack
 .hoogle
+.cabal

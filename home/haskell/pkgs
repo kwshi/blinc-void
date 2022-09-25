@@ -1,2 +1,11 @@
 ghcup
 hoogle
+
+gmp-devel
+
+# needed for xmonad
+libX11-devel
+libXinerama-devel
+libXrandr-devel
+libXScrnSaver-devel
+zlib-devel

@@ -1,8 +1,18 @@
 # core
 xorg lightdm bspwm sxhkd
 
+awesome
+
+xorg-server-xephyr
+
 dot-xsession
 libXinerama-devel libXrandr-devel libXScrnSaver-devel
+
+# needed for taffybar (haskell statusbar)
+gobject-introspection
+libdbusmenu-glib-devel
+libdbusmenu-gtk3-devel
+gtk+3-devel
 
 # daemons/services
 fcitx5
@@ -23,7 +33,7 @@ fcitx5-zhuyin
 fcitx5-chewing
 
 conky
-barrier
+barrier barrier-gui
 picom
 polybar
 stalonetray
@@ -34,7 +44,7 @@ redshift-gtk
 caffeine-ng
 pinentry-gtk
 
-talon
+#talon
 
 # tools
 rofi rofi-pass rofi-calc rofi-emoji rofi-blocks
@@ -56,3 +66,4 @@ mesa-vaapi mesa-vdpau mesa-vulkan-radeon
 pulseaudio bluez alsa-plugins-pulseaudio
 fontconfig fontconfig-32bit
 librnnoise-ladspa
+NoiseTorch

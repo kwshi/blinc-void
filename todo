@@ -60,3 +60,24 @@ from void recovery system:
 - update fstab of live system
 - move live partition up, consider resizing?
 - move data partition up
+
+
+----
+
+how does printer setup work:
+
+- need to install avahi & enable avahi-daemon service for auto-discovery of
+  network printers
+
+- follow these links to resolve `.local` hostname resolution (otherwise printing
+  gives "unable to locate printer"):
+  - https://wiki.archlinux.org/title/Avahi#Hostname_resolution
+  - https://wiki.archlinux.org/title/CUPS/Troubleshooting#Unable_to_locate_printer
+  - https://wiki.archlinux.org/title/CUPS#Network
+
+- miscellaneous printer drivers found in gutenprint, hplip, foomatic, etc.
+
+---
+
+put in xprofile??
+_JAVA_AWT_WM_NONREPARENTING=1

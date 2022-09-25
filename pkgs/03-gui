@@ -11,8 +11,15 @@ gtk2fontsel
 gifsicle
 pinentry-dmenu
 
+kicad
+Fritzing
+
 # terminals
 alacritty st kitty wezterm
+
+# normally i don't care, but it's the default terminal for so many WMs that it's
+# useful to have around in case something fails
+xterm
 
 # media viewers
 viu # in-terminal image viewer, wezterm/kitty compatible
@@ -24,11 +31,14 @@ mupdf
 apvlv
 
 # documents
-xournal xournalpp
+xournalpp
 libreoffice
 
 # browser
 firefox chromium browsh
+
+# email client
+thunderbird
 
 # graphical languages
 openscad factor octave
@@ -42,7 +52,7 @@ vlc mplayer mpv
 # art & modeling
 inkscape gimp krita darktable
 blender solvespace dust3d
-musescore lilypond
+audacity musescore lilypond
 openshot shotcut obs recordmydesktop synfigstudio
 
 # messengers
@@ -56,3 +66,4 @@ skype
 
 # android screen access
 scrcpy
+droidcam # using android as a webcam

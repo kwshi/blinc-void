@@ -27,8 +27,8 @@ if newer-deps 'base' -i 'rootfs'; then
   buildah copy -q "$ctr" 'src/xbps'   '/etc/xbps.d'
   buildah copy -q "$ctr" 'src/dracut' '/etc/dracut.conf.d'
 
-  log 'copying xbps cache'
-  buildah copy -q "$ctr" '/var/cache/xbps' '/var/cache/xbps'
+  #log 'copying xbps cache'
+  #buildah copy -q "$ctr" '/var/cache/xbps' '/var/cache/xbps'
 
   log 'installing base packages'
   buildah run "$ctr" -- xbps-install -Suy 'xbps' 'base-files'

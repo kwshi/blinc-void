@@ -34,11 +34,18 @@ postgresql14 sqlite sqlite-devel
 android-tools
 usbmuxd
 ifuse
+signal-backup-decode
+android-file-transfer-linux
+
 
 # calendars (i can't decide)
 when
 gcal
 calcurse
+
+# email clients
+neomutt
+himalaya
 
 # container stuff
 docker docker-compose podman podman-compose buildah
@@ -48,6 +55,7 @@ starship
 zoxide
 
 # tools
+httpie
 mosh
 exiftool
 stow
@@ -57,7 +65,7 @@ postgresql-client
 redis zip exa bat hyperfine delta
 redo
 yj
-github-cli grip git-cal ghi hub
+github-cli grip git-cal ghi hub gitui
 gitlab-runner
 tea
 inotify-tools
@@ -66,18 +74,20 @@ squashfs-tools squashfs-tools-ng
 fzf ripgrep the_silver_searcher
 irssi weechat
 pass pass-otp pass-import pass-update pass-git-helper
+xkcdpass diceware
 browserpass passff-host
 pandoc html-xml-utils mmark glow hugo
 nix
 ffmpeg gifski synfig
 signify
 efivar efibootmgr
-lsof htop
+lsof htop btop
 iotop
 transmission
 golang-migrate litecli
 stripe
 neofetch
+pfetch
 onefetch
 psmisc
 lazygit
@@ -88,6 +98,9 @@ ueberzug
 mkvtoolnix
 
 rmapi
+
+pdftk
+qpdf
 
 xsv # cli csv toolkit
 

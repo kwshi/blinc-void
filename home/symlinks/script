@@ -19,6 +19,25 @@ xdg_symlinks=(
   ['tentactl']='/data/tentactl'
 
   ['xmonad']='../dotfiles/desk/xmonad'
+  ['awesome']='../dotfiles/desk/awesome'
+  ['penrose']='../dotfiles/desk/penrose'
+  ['bspwm']='../dotfiles/desk/bspwm'
+  ['sxhkd']='../dotfiles/desk/sxhkd'
+
+  ['taffybar']='../dotfiles/desk/taffybar'
+  ['polybar']='../dotfiles/desk/polybar'
+
+  ['picom']='../dotfiles/desk/picom'
+  ['autorandr']='../dotfiles/desk/autorandr'
+  ['rofi']='../dotfiles/desk/rofi'
+  ['conky']='../dotfiles/desk/conky'
+  ['zathura']='../dotfiles/desk/zathura'
+
+  ['kitty']='../dotfiles/desk/kitty'
+  ['alacritty']='../dotfiles/desk/alacritty'
+  ['wezterm']='../dotfiles/desk/wezterm'
+  ['xdg']='../dotfiles/desk/xdg'
+  ['mpv']='../dotfiles/desk/mpv'
 )
 
 misc_symlinks=(
@@ -31,6 +50,7 @@ misc_symlinks=(
   ['music']='/extra/media/music'
   ['blinc']='/extra/blinc'
 
+  ['.thunderbird']='/data/social/thunderbird'
   ['.zoom']='/data/social/zoom'
   ['.mozilla/firefox']='/data/browser/firefox'
   ['.gnupg']='/data/gnupg'
@@ -39,6 +59,7 @@ misc_symlinks=(
   ['.cache/Tectonic']='/data/tectonic'
   ['.local/share/zathura']='/data/zathura'
   ['.local/share/TelegramDesktop']='/data/social/telegram'
+  ['.local/share/Celeste']='/extra/games/celeste'
 
   ['.klei']='/extra/games/klei'
   ['.multimc']='/extra/games/multimc'

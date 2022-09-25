@@ -31,6 +31,11 @@ if newer-deps 'final' -i 'home'; then
   # mathematica the machine hasn't changed)
   buildah copy -q "$ctr" '/var/lib/dbus/machine-id' '/var/lib/dbus/machine-id'
 
+  # copy android debugger auth key (adbkey) to persist "allow usb debugging"
+  # authorizations
+  buildah copy -q "$ctr" '/root/.android/adbkey' '/root/.android/adbkey'
+  buildah copy -q "$ctr" '/root/.android/adbkey.pub' '/root/.android/adbkey.pub'
+
   log 'copying config paths'
   readarray -t paths < <(find "$ROOT_DIR/cfg" -type 'f' -printf '%P\n')
   for path in "${paths[@]}"; do
@@ -92,7 +97,7 @@ if newer-deps 'final' -i 'home'; then
   buildah run "$ctr" -- mkdir '/data' '/efi' '/extra'
 
   buildah run "$ctr" -- groupadd -r 'autologin'
-  buildah run "$ctr" -- usermod -aG 'docker,audio,video,autologin,socklog,dialout,optical,cdrom' 'kshi'
+  buildah run "$ctr" -- usermod -aG 'docker,audio,video,autologin,socklog,dialout,optical,cdrom,kvm' 'kshi'
 
   log "running user config scripts"
   buildah config --workingdir '/home/kshi' -u 'kshi' "$ctr"
@@ -121,19 +126,6 @@ if newer-deps 'final' -i 'home'; then
     cli/glow
     cli/ranger
     cli/tree-sitter
-    desk/kitty
-    desk/alacritty
-    desk/wezterm
-    desk/picom
-    desk/polybar
-    desk/bspwm
-    desk/sxhkd
-    desk/autorandr
-    desk/rofi
-    desk/conky
-    desk/zathura
-    desk/xdg
-    desk/mpv
   )
   xdg=()
   for path in "${paths[@]}"; do
