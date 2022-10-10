@@ -1,22 +1,5 @@
 # vi: ft=bash
 
-#function build {
-#  buildah copy -q "$1" 'src/xbps'   '/etc/xbps.d'
-#  buildah copy -q "$1" 'src/dracut' '/etc/dracut.conf.d'
-#  buildah copy -q "$1" '/var/cache/xbps' '/var/cache/xbps'
-#  buildah run "$1" -- xbps-install -Suy 'xbps' 'base-files'
-#  buildah run "$1" -- xbps-install -uy
-#  buildah run "$1" -- xbps-install -y 'base-system' 'base-devel' 'curl' 'wget' 'git'
-#
-#  buildah run "$1" -- useradd -rb '/opt/blinc' -G 'wheel' 'vpkgs'
-#  buildah run "$1" -- useradd -G 'wheel' 'kshi'
-#  buildah run "$1" -- usermod -s '/bin/bash' 'root'
-#
-#  buildah config --cmd '/bin/bash' "$1"
-#}
-#
-#run-phase-img 'base' build 'rootfs'
-
 log-phase 'img/base'
 
 if newer-deps 'base' -i 'rootfs'; then
@@ -32,8 +15,8 @@ if newer-deps 'base' -i 'rootfs'; then
 
   log 'installing base packages'
   buildah run "$ctr" -- xbps-install -Suy 'xbps' 'base-files'
-  buildah run "$ctr" -- xbps-install -uy
-  buildah run "$ctr" -- xbps-install -y 'base-system' 'base-devel' 'curl' 'wget' 'git'
+  buildah run "$ctr" -- xbps-install -duy
+  buildah run "$ctr" -- xbps-install -dy 'base-system' 'base-devel' 'curl' 'wget' 'git'
 
   log 'setting up users'
   buildah run "$ctr" -- useradd -u 1000 -G 'wheel' 'kshi'

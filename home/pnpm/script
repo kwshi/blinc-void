@@ -30,6 +30,9 @@ declare -a pkgs=(
 
   'neovim'
 
+  '@astrojs/language-server'
+  'prettier-plugin-astro'
+
 )
 
 buildah run "$1" -- pnpm add -C '.pnpm-global' "${pkgs[@]}"

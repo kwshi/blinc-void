@@ -81,6 +81,8 @@ pkgs=(
 
   'L3MON4D3/LuaSnip'
 
+  'wuelnerdotexe/vim-astro'
+
 )
 
 buildah run "$1" -- mkdir -p "$autoload_dir" "$plug_dir"

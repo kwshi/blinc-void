@@ -4,7 +4,10 @@ set -euo pipefail
 declare -a extensions=(
   'ms-vsliveshare.vsliveshare-pack'
   'tomphilbin.gruvbox-themes'
-  'asvetliakov.vscode-neovim'
+  #'asvetliakov.vscode-neovim'
+  #'vscode-'
+
+  'astro-build.astro-vscode'
 )
 
 for ext in "${extensions[@]}"; do

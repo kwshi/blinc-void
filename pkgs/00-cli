@@ -74,7 +74,7 @@ squashfs-tools squashfs-tools-ng
 fzf ripgrep the_silver_searcher
 irssi weechat
 pass pass-otp pass-import pass-update pass-git-helper
-xkcdpass diceware
+xkcdpass rusty-diceware
 browserpass passff-host
 pandoc html-xml-utils mmark glow hugo
 nix
