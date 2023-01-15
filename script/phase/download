@@ -1,0 +1,12 @@
+mkdir -p "$DOWNLOAD_DIR/rootfs"
+cd "$DOWNLOAD_DIR/rootfs"
+
+curl -fLo "$VOID_ROOTFS_FILENAME" \
+  "$VOID_RELEASE_URL/$VOID_ROOTFS_FILENAME"
+
+curl -fLo 'sha256sum.sig' \
+  "$VOID_RELEASE_URL/sha256sum.sig"
+
+signify -Cp "$ROOT_DIR/$VOID_SIGNIFY_KEY" \
+  -x 'sha256sum.sig' \
+  "$VOID_ROOTFS_FILENAME"

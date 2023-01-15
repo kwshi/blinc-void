@@ -3,7 +3,7 @@ set -euo pipefail
 
 . 'script/lib'
 
-VOID_VERSION='20210930'
+VOID_VERSION='20221001'
 VOID_REPO_URL="https://alpha.us.repo.voidlinux.org/live/$VOID_VERSION"
 
 VOID_EXTRA_URL='https://api.github.com/repos/kwshi/void-extra/releases/tags/latest'
@@ -16,7 +16,9 @@ TMP_DIR='/tmp/blinc'
 BUILD_DIR="$ROOT_DIR/build"
 DOWNLOAD_DIR="$BUILD_DIR/download"
 
+VOID_RELEASE_URL="https://repo-default.voidlinux.org/live/$VOID_VERSION"
 VOID_ROOTFS_FILENAME="void-x86_64-ROOTFS-$VOID_VERSION.tar.xz"
+VOID_SIGNIFY_KEY="sigs/void-release-$VOID_VERSION.pub"
 
 declare -iA stamps
 declare -A fresh
@@ -121,11 +123,11 @@ function phase-download {
   ]]; then
     if [[ "$rebuild" == 'download' ]]; then
       log 'existing download files, overwriting'
-      . "$ROOT_DIR/script/phase/download"
+      ( . "$ROOT_DIR/script/phase/download"; )
       fresh['download']=
     else log 'existing download files, skipping'; fi
   else
-    . "$ROOT_DIR/script/phase/download"
+    ( . "$ROOT_DIR/script/phase/download"; )
     fresh['download']=
   fi
   log-done 'download'
