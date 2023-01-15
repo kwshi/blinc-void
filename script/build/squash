@@ -1,0 +1,6 @@
+#!/bin/bash
+. 'script/lib'
+
+mnt="$(buildah mount "$1")"
+mksquashfs "$mnt" "$2" -noappend
+buildah umount "$1" > '/dev/null'

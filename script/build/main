@@ -1,0 +1,86 @@
+#!/bin/bash
+. 'script/lib'
+
+name="$1"
+out="$BUILD_DIR/out/$1"
+
+function main {
+  #if [[ -e "$out" ]]; then
+  #  read -r img img_stamp < <(query_img_meta 'final')
+  #  out_stamp="$(recursive_mtime "$out")"
+  #  if [[ img_stamp -gt out_stamp ]]; then
+  #    log "existing output, but image ${img@Q} is newer, overwriting"
+  #  else
+  #    log "existing output is up-to-date, skipping"
+  #    exit
+  #  fi
+  #fi
+
+  local img img_stamp squash_stamp
+  read -r img img_stamp < <(query_img_meta 'final')
+
+  mkdir -p "$out" "$out/linux"
+
+  log 'initializing installation container'
+  ctr="$(create_ctr 'build' "$BUILDAH_NAME_PREFIX/final")"
+  buildah config -u 'root' "$ctr"
+
+  if [[ -e "$out/squash.img" ]]; then
+    squash_stamp="$(stat -c '%Y' "$out/squash.img")"
+    if [[ img_stamp -gt squash_stamp ]]; then
+      log "existing squashfs, newer image ${img@Q}, overwriting"
+      build_squash "$ctr" "$out/squash.img"
+    else
+      log "existing squashfs is up-to-date, skipping"
+    fi
+  else
+    build_squash "$ctr" "$out/squash.img"
+  fi
+
+  log 'detecting kernel version'
+  read -r ver < <(
+    buildah run "$ctr" -- find '/boot' -name 'vmlinuz-*' -printf '%f\n' \
+      | sed 's/^vmlinuz-\(.*\)$/\1/g' \
+      | sort -V | tail -n 1
+  )
+  log "detected kernel version ${ver@Q}"
+
+  extract_linux "$ctr" "$ver" "$out/linux"
+  gen_conf "$name" "$ver" "$out/boot.conf"
+
+  log 'cleaning up'
+  buildah umount "$ctr" > '/dev/null'
+  buildah rm "$ctr" > '/dev/null'
+}
+
+function build_squash {
+  log 'injecting /etc/shadow passwords'
+  sudo sed -n '/kshi\|root/ s/^\([^:]\+\):\(.*\)$/\1 \2/g p' '/etc/shadow' \
+    | './script/build/shadow' "$1"
+    #| buildah unshare './script/build/shadow' "$1"
+
+  log 'writing hostname & building squashfs'
+  buildah copy -q "$1" '/etc/hostname' '/etc/hostname'
+  #buildah unshare './script/build/squash' "$1" "$2"
+  './script/build/squash' "$1" "$2"
+}
+
+function extract_linux {
+  local f
+  log 'extracting linux boot files'
+  for f in "initramfs-$2.img" "vmlinuz-$2"; do
+    buildah run "$1" -- cat "/boot/$f" > "$3/$f"
+  done
+}
+
+function gen_conf {
+  log 'writing boot configuration'
+  sed \
+    -e ':a; /\\$/N; s/\\\n\s*//; t a' \
+    -e "s/{STAMP}/$1/g" \
+    -e "s/{KERNEL}/$2/g" \
+    "$ROOT_DIR/install/boot.conf" \
+    > "$3"
+}
+
+main
