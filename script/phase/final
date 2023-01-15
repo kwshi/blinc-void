@@ -61,6 +61,7 @@ if newer-deps 'final' -i 'home'; then
   buildah run "$ctr" -- ln -sT '/data/iwd' '/var/lib/iwd'
 
   buildah run "$ctr" -- ln -sT '/data/connman' '/var/lib/connman'
+  buildah run "$ctr" -- ln -sT '/extra/lib/waydroid' '/var/lib/waydroid'
 
   buildah run "$ctr" -- xbps-alternatives -s 'pinentry-gtk'
 

@@ -14,13 +14,14 @@ VPKGS_DIR="$BUILD_DIR/download"
 
 VOID_ROOTFS_FILENAME="void-x86_64-ROOTFS-$VOID_VERSION.tar.xz"
 
-function _log_with_prefix {
+function log-with-prefix {
   echo $'\e[2m[blinc '"$(date +'%F %T %Z')"$']\e[m \e['"$1m""$2"$'\e[m' >&2
 }
-function log_phase { _log_with_prefix '96;1' "PHASE: $1";     }
-function log_done  { _log_with_prefix '32;1' "DONE: $1"$'\n'; }
-function log_err   { _log_with_prefix '91;1' "ERR: $1";       }
-function log       { _log_with_prefix '36'   "$1";            }
+
+function log-phase { log-with-prefix '96;1' "PHASE: $1";     }
+function log-done  { log-with-prefix '32;1' "DONE: $1"$'\n'; }
+function log-err   { log-with-prefix '91;1' "ERR: $1";       }
+function log       { log-with-prefix '36'   "$1";            }
 
 function query_img_meta {
   local img date time offset
@@ -51,18 +52,9 @@ function phase_img {
   if [[ "${3+_}" == '_' ]]; then from="$BUILDAH_NAME_PREFIX/$3"
   else from='scratch'; fi
 
-  log 'creating container'
-  ctr="$(create_ctr "$1" "$from")"
-  log "created container ${ctr@Q}"
-
-  "$2" "$ctr"
-
-  log 'committing container'
-  buildah commit --rm "$ctr" "$BUILDAH_NAME_PREFIX/$1"
-
-  log_done "img/$1"
 }
 
+# UNUSED
 function fetch_opt {
   local out="$DOWNLOAD_DIR/opt/$1/$3"
   mkdir -p "$DOWNLOAD_DIR/opt/$1"
@@ -93,15 +85,19 @@ function parse_args {
 }
 
 function recursive-mtime {
-  local f
   local -i curr latest
+  local -a paths
+  local path
   latest="$(stat -c '%Y' "$1")"
-  while read -r f; do
-    curr="$(stat -c '%Y' "$f")"
-    if [[ curr -gt latest ]]; then latest=curr; fi
-  done < <(find "$1")
+  readarray -t paths < <(find "$1")
+  for path in "${paths[@]}"; do
+    curr="$(stat -c '%Y' "$path")"
+    if (( curr > latest )); then latest=curr; fi
+  done
   echo "$latest"
 }
+
+
 
 function list_dir {
   for f in "$1"/*; do
@@ -122,4 +118,4 @@ function init {
   parse_args "$@"
 }
 
-init "$@"
+#init "$@"

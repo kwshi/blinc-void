@@ -14,6 +14,7 @@ xdg_symlinks=(
   ['Signal']='/data/social/signal'
   ['Slack']='/data/social/slack'
   ['discord']='/data/social/discord'
+  ['cargo-aoc']='/data/social/cargo-aoc'
   ['rmapi']='/data/rmapi'
   ['rmcl']='/data/rmcl'
   ['tentactl']='/data/tentactl'
@@ -68,11 +69,16 @@ misc_symlinks=(
   ['.local/share/PolyMC']='/extra/games/polymc'
   ['.local/share/UnrailedGame']='/extra/games/unrailed'
 
+  ['.local/share/lutris']='/extra/games/lutris/share'
+  ['.config/lutris']='/extra/games/lutris/config'
+
   ['.local/share/containers']='/extra/containers/kshi'
 
   ['.netrc']='/data/login/netrc'
 
   ['.xsession']='dotfiles/desk/xsession'
+
+  # TODO nix stuff: .nix-channels .nix-profile .nix-defexpr
 
 )
 

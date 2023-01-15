@@ -1,6 +1,8 @@
 #!/bin/bash
 set -euo pipefail
 
+. 'script/lib'
+
 VOID_VERSION='20210930'
 VOID_REPO_URL="https://alpha.us.repo.voidlinux.org/live/$VOID_VERSION"
 
@@ -25,6 +27,8 @@ if [[ ! -v 1 ]]; then
   echo 'missing build arg' >&2
   exit 1
 fi
+
+echo "ARGS ${@@Q}"
 
 declare rebuild
 rebuild=
@@ -58,19 +62,6 @@ function newer-img-parents {
   for pname in "${newer[@]}"; do echo "$pname"; done
 }
 
-function recursive-mtime {
-  local -i curr latest
-  local -a paths
-  local path
-  latest="$(stat -c '%Y' "$1")"
-  readarray -t paths < <(find "$1")
-  for path in "${paths[@]}"; do
-    curr="$(stat -c '%Y' "$path")"
-    if (( curr > latest )); then latest=curr; fi
-  done
-  echo "$latest"
-}
-
 # TODO unify this with run-phase-img framework?
 function newer-deps {
   local current=$1
@@ -84,6 +75,8 @@ function newer-deps {
       *);;
     esac
   done
+
+  echo "TESTING NEWER DEPS rebuild=${rebuild@Q}, current=${current@Q}"
 
   if [[ ! -v stamps["$current"] ]]; then return 0; fi
 
@@ -138,46 +131,6 @@ function phase-download {
   log-done 'download'
 }
 
-function run-phase-img-bare {
-  local -i build pstamp
-  local name fn pimg pphase phase ctr
-  name=$1
-  fn=$2
-  pimg=$3
-  pphase=$4
-  pstamp=$5
-  phase="img/$name"
-
-  log-phase "$phase"
-
-  if [[ -v stamps["$name"] ]]; then
-    echo "FRESH is ${!fresh[*]}, pphase $pphase, pimg $pimg"
-    if [[ stamps[$name] -le pstamp ]]; then
-      build=1
-      # TODO distinguish between manually given timestamp and parent image stamp
-      log 'existing image, newer parent, rebuilding'
-    elif [[ -v fresh["$pphase"] ]]; then
-      build=1
-      log 'existing image, newer parent, rebuilding'
-    elif [[ "$rebuild" == "$phase" ]]; then
-      build=1
-      log 'existing image, got `-r '"$phase"'`, rebuilding'
-    else
-      build=0
-      log 'existing image, skipping'
-    fi
-  else build=1; fi
-
-  if (( build == 1 )); then
-    ctr="$(buildah from "$pimg")"
-    "$fn" "$ctr"
-    buildah commit --rm "$ctr" "$BUILDAH_NAME_PREFIX/$1"
-    fresh[$phase]=
-  fi
-
-  log-done "$phase"
-}
-
 function from {
   log "initializing container from ${2@Q}"
   # TODO log existing
@@ -191,23 +144,6 @@ function commit {
   log "committing to image"
   buildah commit --rm "$2" "$BUILDAH_NAME_PREFIX/$1"
   fresh["img/$1"]=
-}
-
-function run-phase-img {
-  local name fn pname
-  local -i pstamp
-  name=$1
-  fn=$2
-  pname=$3
-  pstamp=${4-0}
-
-  local -a newer
-  readarray -t newer < <(newer-img-parents "$name" "$pname")
-
-  if (( stamps[$3] > pstamp )); then pstamp=stamps["$pname"]; fi
-
-  run-phase-img-bare \
-    "$name" "$fn" "$BUILDAH_NAME_PREFIX/$pname" "img/$pname" "$pstamp"
 }
 
 function phase-img-rootfs { phase-download;   . 'script/phase/rootfs'; }

@@ -1,0 +1,12 @@
+#!/bin/bash
+set -euo pipefail
+
+nvm_version='0.39.2'
+nvm_digest='3168f6503038bbb068389d966fc810b54808384ab247e13d8f4f642e14ce1079'
+
+curl "https://github.com/nvm-sh/nvm/archive/refs/tags/v$nvm_version.tar.gz"
+
+buildah add "$1" 'https://github.com/nvm-sh/nvm/archive/refs/tags/v0.39.2.tar.gz' '/tmp/nvm.tar.gz'
+#buildah run "$1" tar xzf ''
+
+buildah run "$1" mkdir '.nvm'

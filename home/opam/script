@@ -8,6 +8,7 @@ declare -a pkgs=(
   'odig'
 
   'containers'
+  'iter'
   'linenoise'
   'fmt'
   'ppx_deriving'

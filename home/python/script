@@ -19,9 +19,12 @@ declare -a pkgs=(
   'pytest-benchmark'
   'hypothesis'
 
-  'taichi'
+  #'taichi'
 
   'flask'
+  'beautifulsoup4'
+  'requests'
+  'aiohttp'
 
   'pyperclip'
 
@@ -46,6 +49,7 @@ declare -a pkgs=(
   'ipython'
   'pyside2' # needed by qtconsole, but weirdly not installed as dep
   'qtconsole'
+
 
   'pynvim'
 )

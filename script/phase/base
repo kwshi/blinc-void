@@ -15,8 +15,8 @@ if newer-deps 'base' -i 'rootfs'; then
 
   log 'installing base packages'
   buildah run "$ctr" -- xbps-install -Suy 'xbps' 'base-files'
-  buildah run "$ctr" -- xbps-install -duy
-  buildah run "$ctr" -- xbps-install -dy 'base-system' 'base-devel' 'curl' 'wget' 'git'
+  buildah run "$ctr" -- xbps-install -uy
+  buildah run "$ctr" -- xbps-install -y 'base-system' 'base-devel' 'curl' 'wget' 'git'
 
   log 'setting up users'
   buildah run "$ctr" -- useradd -u 1000 -G 'wheel' 'kshi'

@@ -71,6 +71,9 @@ pkgs=(
   'nvim-orgmode/orgmode'
 
   'nvim-lua/plenary.nvim'
+  'jose-elias-alvarez/null-ls.nvim'
+  'jose-elias-alvarez/typescript.nvim'
+  'MunifTanjim/eslint.nvim'
 
   'rhysd/vim-clang-format'
 
@@ -92,11 +95,11 @@ buildah add "$1" \
   "$autoload_dir/plug.vim"
 
 buildah copy "$1" \
-  'home/nvim/file/firenvim-firefox.json' \
+  'home/neovim/file/firenvim-firefox.json' \
   '.mozilla/native-messaging-hosts/firenvim.json'
 
 buildah copy --chmod 744 "$1" \
-  'home/nvim/file/firenvim-script.sh' \
+  'home/neovim/file/firenvim-script.sh' \
   '.local/share/firenvim/firenvim'
 
 for repo in "${pkgs[@]}"; do

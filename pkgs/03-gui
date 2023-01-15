@@ -41,7 +41,7 @@ firefox chromium browsh
 thunderbird
 
 # graphical languages
-openscad factor octave
+openscad factor octave gnuplot gnuplot-qt gnuplot-wx
 
 # media players
 spotifyd spotify-tui spotify-adblock-linux

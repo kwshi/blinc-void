@@ -13,8 +13,11 @@ rebuild:
 retry:
   script/main 'img/final'
 
+main *args:
+  script/main "$@"
+
 pack name:
-  script/build/main {{name}}
+  sudo script/build/main {{name}}
 
 install name:
   sudo ./script/install {{name}}
