@@ -45,7 +45,7 @@ openscad factor octave gnuplot gnuplot-qt gnuplot-wx
 
 # media players
 spotifyd spotify-tui spotify-adblock-linux
-# spotify
+spotify
 playerctl
 vlc mplayer mpv
 

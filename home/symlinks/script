@@ -18,6 +18,7 @@ xdg_symlinks=(
   ['rmapi']='/data/rmapi'
   ['rmcl']='/data/rmcl'
   ['tentactl']='/data/tentactl'
+  ['khal']='/data/khal'
 
   ['xmonad']='../dotfiles/desk/xmonad'
   ['awesome']='../dotfiles/desk/awesome'
@@ -33,6 +34,7 @@ xdg_symlinks=(
   ['rofi']='../dotfiles/desk/rofi'
   ['conky']='../dotfiles/desk/conky'
   ['zathura']='../dotfiles/desk/zathura'
+  ['xournalpp']='../dotfiles/desk/xournalpp'
 
   ['kitty']='../dotfiles/desk/kitty'
   ['alacritty']='../dotfiles/desk/alacritty'

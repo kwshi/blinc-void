@@ -88,12 +88,20 @@ pkgs=(
 
 )
 
-buildah run "$1" -- mkdir -p "$autoload_dir" "$plug_dir"
+#buildah run "$1" -- mkdir -p "$autoload_dir" # "$plug_dir"
+#
 
-buildah add "$1" \
-  'https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim' \
-  "$autoload_dir/plug.vim"
 
+buildah run "$1" -- git clone --branch 'v0.5.3' 'https://github.com/rktjmp/hotpot.nvim' \
+  '.local/share/nvim/lazy/hotpot.nvim'
+
+buildah run "$1" -- git clone --branch 'v9.5.0' 'https://github.com/folke/lazy.nvim' \
+  '.local/share/nvim/lazy/lazy.nvim'
+
+#buildah add "$1" \
+#  'https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim' \
+#  "$autoload_dir/plug.vim"
+#
 buildah copy "$1" \
   'home/neovim/file/firenvim-firefox.json' \
   '.mozilla/native-messaging-hosts/firenvim.json'
@@ -101,9 +109,11 @@ buildah copy "$1" \
 buildah copy --chmod 744 "$1" \
   'home/neovim/file/firenvim-script.sh' \
   '.local/share/firenvim/firenvim'
-
-for repo in "${pkgs[@]}"; do
-  buildah run "$1" git clone "https://github.com/$repo" "$plug_dir/${repo##*/}"
-done
-
-buildah run "$1" make -C "$plug_dir/vim-hexokinase" hexokinase
+#
+#for repo in "${pkgs[@]}"; do
+#  buildah run "$1" git clone "https://github.com/$repo" "$plug_dir/${repo##*/}"
+#done
+#
+#buildah run "$1" make -C "$plug_dir/vim-hexokinase" hexokinase
+#
+#

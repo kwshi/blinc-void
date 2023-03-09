@@ -8,6 +8,7 @@ declare -a pkgs=(
   'ts-node'
 
   'prettier'
+  '@fsouza/prettierd'
   'eslint'
   'typescript-language-server'
 
@@ -32,6 +33,8 @@ declare -a pkgs=(
 
   '@astrojs/language-server'
   'prettier-plugin-astro'
+
+  'alex'
 
 )
 

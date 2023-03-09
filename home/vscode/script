@@ -2,10 +2,9 @@
 set -euo pipefail
 
 declare -a extensions=(
-  'ms-vsliveshare.vsliveshare-pack'
+  'ms-vsliveshare.vsliveshare'
   'tomphilbin.gruvbox-themes'
   #'asvetliakov.vscode-neovim'
-  #'vscode-'
 
   'astro-build.astro-vscode'
 )

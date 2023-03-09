@@ -3,9 +3,9 @@
 log-phase 'download'
 
 (
-  mkdir -p "$TMP_DIR/download"
+  mkdir -p "$TMP_DIR/download/rootfs"
 
-  cd "$TMP_DIR/download"
+  cd "$TMP_DIR/download/rootfs"
 
   log 'downloading rootfs'
   curl -fLO "$VOID_REPO_URL/$VOID_ROOTFS_FILENAME"
@@ -19,7 +19,7 @@ log-phase 'download'
     -x 'sha256sum.sig' \
     "$VOID_ROOTFS_FILENAME"
 
-  mkdir -p "$DOWNLOAD_DIR"
+  mkdir -p "$DOWNLOAD_DIR/rootfs"
   cp --no-preserve 'mode' -t "$DOWNLOAD_DIR/rootfs" \
     "$VOID_ROOTFS_FILENAME" 'sha256sum.sig'
 )

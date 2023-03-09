@@ -44,6 +44,9 @@ if newer-deps 'final' -i 'home'; then
     buildah run "$ctr" -- ln -sf "/usr/share/blinc/cfg/$path" "/$path"
   done
 
+  # TODO put this somewhere better?
+  buildah run "$ctr" -- /opt/texlive/2022/bin/x86_64-linux/tlmgr install 'scheme-full'
+
   # steam fonts patch, because ??????
   #buildah run "$ctr" -- rm '/usr/share/fonts/steam-fonts/.uuid'
   #buildah run "$ctr" -- mv '/usr/share/fonts/steam-fonts' '/usr/share/fonts/steam-bargage'

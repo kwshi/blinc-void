@@ -9,6 +9,8 @@ opam
 
 # compiler stuff
 cmake
+meson
+Bear
 cross-x86_64-w64-mingw32
 
 # `ncurses-libtinfo-libs` is needed to provide a symlink from `libtinfo.so.*`
@@ -24,6 +26,7 @@ ghcup
 rustup rust-analyzer rust-doc
 go
 python3-pip python3-tkinter python3-setuptools poetry black
+fnlfmt
 nodejs yarn pnpm
 #julia
 clojure
@@ -72,5 +75,10 @@ zlib zlib-devel
 catch2 cgal cxxopts
 
 # texlive kinda sucks
-texlive-full
+#texlive-full
+texlive-bin
 #texlive
+
+# stuff needed for `latexindent` (which comes with `texlive`)
+perl-YAML-Tiny
+perl-File-HomeDir

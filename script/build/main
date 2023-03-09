@@ -56,13 +56,13 @@ function main {
 function build_squash {
   log 'injecting /etc/shadow passwords'
   sudo sed -n '/kshi\|root/ s/^\([^:]\+\):\(.*\)$/\1 \2/g p' '/etc/shadow' \
-    | './script/build/shadow' "$1"
-    #| buildah unshare './script/build/shadow' "$1"
+    | buildah unshare './script/build/shadow' "$1"
+    #| './script/build/shadow' "$1"
 
   log 'writing hostname & building squashfs'
   buildah copy -q "$1" '/etc/hostname' '/etc/hostname'
-  #buildah unshare './script/build/squash' "$1" "$2"
-  './script/build/squash' "$1" "$2"
+  buildah unshare './script/build/squash' "$1" "$2"
+  #'./script/build/squash' "$1" "$2"
 }
 
 function extract_linux {

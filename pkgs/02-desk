@@ -1,5 +1,6 @@
 # core
 xorg lightdm bspwm sxhkd
+lightdm-mini-greeter
 
 awesome
 
