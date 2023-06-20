@@ -41,6 +41,9 @@ xdg_symlinks=(
   ['wezterm']='../dotfiles/desk/wezterm'
   ['xdg']='../dotfiles/desk/xdg'
   ['mpv']='../dotfiles/desk/mpv'
+
+  ['spotify-player']='../dotfiles/common/spotify-player'
+  ['nix']='../dotfiles/common/nix'
 )
 
 misc_symlinks=(
@@ -68,7 +71,7 @@ misc_symlinks=(
   ['.multimc']='/extra/games/multimc'
   ['.steam']='/extra/games/steam/home'
   ['.local/share/Steam']='/extra/games/steam/share'
-  ['.local/share/PolyMC']='/extra/games/polymc'
+  ['.local/share/PrismLauncher']='/extra/games/prism-mc'
   ['.local/share/UnrailedGame']='/extra/games/unrailed'
 
   ['.local/share/lutris']='/extra/games/lutris/share'
