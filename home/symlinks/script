@@ -26,6 +26,13 @@ xdg_symlinks=(
   ['bspwm']='../dotfiles/desk/bspwm'
   ['sxhkd']='../dotfiles/desk/sxhkd'
 
+  ['river']='../dotfiles/common/river'
+  ['foot']='../dotfiles/common/foot'
+  ['waybar']='../dotfiles/common/waybar'
+  ['kanshi']='../dotfiles/boi/kanshi'
+
+  ['nix']='../dotfiles/common/nix'
+
   ['taffybar']='../dotfiles/desk/taffybar'
   ['polybar']='../dotfiles/desk/polybar'
 
@@ -43,7 +50,6 @@ xdg_symlinks=(
   ['mpv']='../dotfiles/desk/mpv'
 
   ['spotify-player']='../dotfiles/common/spotify-player'
-  ['nix']='../dotfiles/common/nix'
 )
 
 misc_symlinks=(
