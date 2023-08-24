@@ -20,7 +20,7 @@ pack name:
   script/build/main {{name}}
 
 install name:
-  ./script/install {{name}}
+  sudo ./script/install {{name}}
 
 
 # https://www.reddit.com/r/voidlinux/comments/aefcn5/how_to_increase_open_files_limit/

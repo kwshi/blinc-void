@@ -11,11 +11,19 @@ declare -a pkgs=(
   'iter'
   'linenoise'
   'fmt'
-  'ppx_deriving'
   'angstrom'
-  'alcotest'
   'lwt'
   'cmdliner'
+
+  'alcotest'
+  'qcheck-alcotest'
+
+  're'
+  'tyre'
+
+  'ppx_regexp'
+  'ppx_tyre'
+  'ppx_deriving'
 
   'menhir'
   'sedlex'

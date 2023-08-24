@@ -17,6 +17,8 @@ Fritzing
 # terminals
 alacritty st kitty wezterm
 
+foot
+
 # normally i don't care, but it's the default terminal for so many WMs that it's
 # useful to have around in case something fails
 xterm
@@ -29,6 +31,9 @@ fstl
 zathura zathura-pdf-mupdf zathura-ps zathura-djvu
 mupdf
 apvlv
+
+imv
+swayimg
 
 # documents
 xournalpp

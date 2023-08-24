@@ -7,15 +7,19 @@ declare -a pkgs=(
   'QuickCheck'
 )
 
-buildah run "$1" ghcup install 'ghc'
-buildah run "$1" ghcup install 'cabal'
-buildah run "$1" ghcup install 'hls'
-buildah run "$1" ghcup install 'stack'
+declare platform='x86_64-unknown-linux'
 
-buildah run "$1" ghcup set 'ghc'
-buildah run "$1" ghcup set 'cabal'
-buildah run "$1" ghcup set 'hls'
-buildah run "$1" ghcup set 'stack'
+buildah run "$1" -- ghcup --version
+
+buildah run "$1" -- ghcup --platform "$platform" install 'ghc'
+buildah run "$1" -- ghcup --platform "$platform" install 'cabal'
+buildah run "$1" -- ghcup --platform "$platform" install 'hls'
+buildah run "$1" -- ghcup --platform "$platform" install 'stack'
+
+buildah run "$1" ghcup --platform "$platform" set 'ghc'
+buildah run "$1" ghcup --platform "$platform" set 'cabal'
+buildah run "$1" ghcup --platform "$platform" set 'hls'
+buildah run "$1" ghcup --platform "$platform" set 'stack'
 
 buildah config --env 'PATH=/home/kshi/.ghcup/bin:/usr/bin' "$1"
 buildah run "$1" cabal update

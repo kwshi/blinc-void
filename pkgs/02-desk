@@ -9,6 +9,11 @@ xorg-server-xephyr
 dot-xsession
 libXinerama-devel libXrandr-devel libXScrnSaver-devel
 
+greetd
+river
+Waybar
+wl-clipboard
+
 # needed for taffybar (haskell statusbar)
 gobject-introspection
 libdbusmenu-glib-devel

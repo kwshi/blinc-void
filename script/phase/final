@@ -33,8 +33,8 @@ if newer-deps 'final' -i 'home'; then
 
   # copy android debugger auth key (adbkey) to persist "allow usb debugging"
   # authorizations
-  buildah copy -q "$ctr" '/root/.android/adbkey' '/root/.android/adbkey'
-  buildah copy -q "$ctr" '/root/.android/adbkey.pub' '/root/.android/adbkey.pub'
+  #buildah copy -q "$ctr" '/root/.android/adbkey' '/root/.android/adbkey'
+  #buildah copy -q "$ctr" '/root/.android/adbkey.pub' '/root/.android/adbkey.pub'
 
   log 'copying config paths'
   readarray -t paths < <(find "$ROOT_DIR/cfg" -type 'f' -printf '%P\n')
@@ -45,7 +45,7 @@ if newer-deps 'final' -i 'home'; then
   done
 
   # TODO put this somewhere better?
-  buildah run "$ctr" -- /opt/texlive/2022/bin/x86_64-linux/tlmgr install 'scheme-full'
+  buildah run "$ctr" -- /opt/texlive/2023/bin/x86_64-linux/tlmgr install 'scheme-full'
 
   # steam fonts patch, because ??????
   #buildah run "$ctr" -- rm '/usr/share/fonts/steam-fonts/.uuid'
