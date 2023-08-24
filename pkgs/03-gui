@@ -17,7 +17,7 @@ Fritzing
 # terminals
 alacritty st kitty wezterm
 
-foot
+foot # wayland
 
 # normally i don't care, but it's the default terminal for so many WMs that it's
 # useful to have around in case something fails
@@ -32,9 +32,15 @@ zathura zathura-pdf-mupdf zathura-ps zathura-djvu
 mupdf
 apvlv
 
+<<<<<<< HEAD
 imv
 swayimg
 
+||||||| 550fad0
+=======
+swayimg imv
+
+>>>>>>> refs/remotes/origin/main
 # documents
 xournalpp
 libreoffice
@@ -72,3 +78,6 @@ skype
 # android screen access
 scrcpy
 droidcam # using android as a webcam
+
+# ???
+safeeyes

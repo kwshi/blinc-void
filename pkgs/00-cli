@@ -67,8 +67,7 @@ postgresql-client
 redis zip exa bat hyperfine delta
 redo
 yj
-github-cli grip git-cal ghi hub gitui git-crypt
-glab
+github-cli grip git-cal ghi hub gitui git-crypt glab gitoxide
 gitlab-runner
 tea
 inotify-tools

@@ -37,5 +37,6 @@ if [[ -e ~/'.opam/download-cache' ]]; then
   buildah copy -q --chown 'kshi:kshi' "$1" ~/'.opam/download-cache' '.opam/download-cache'
 fi
 
+buildah config --env OPAMSOLVERTIMEOUT=300 "$1"
 buildah run "$1" opam init -yn
 buildah run "$1" opam install -y "${pkgs[@]}"

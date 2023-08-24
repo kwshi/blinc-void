@@ -33,8 +33,9 @@ if newer-deps 'final' -i 'home'; then
 
   # copy android debugger auth key (adbkey) to persist "allow usb debugging"
   # authorizations
-  #buildah copy -q "$ctr" '/root/.android/adbkey' '/root/.android/adbkey'
-  #buildah copy -q "$ctr" '/root/.android/adbkey.pub' '/root/.android/adbkey.pub'
+  buildah copy -q "$ctr" '/root/.android/adbkey' '/root/.android/adbkey'
+  buildah copy -q "$ctr" '/root/.android/adbkey.pub' '/root/.android/adbkey.pub'
+  buildah run "$ctr" chown 'root:wheel' '/root' '/root/.android' '/root/.android/adbkey'
 
   log 'copying config paths'
   readarray -t paths < <(find "$ROOT_DIR/cfg" -type 'f' -printf '%P\n')
@@ -73,9 +74,12 @@ if newer-deps 'final' -i 'home'; then
     'docker'
     # 'iwd'
     'connmand'
-    'lightdm'
     'bluetoothd'
     'chronyd'
+
+    # enable greetd for wayland; lightdm for x11
+    'greetd'
+    #'lightdm'
 
     'cupsd'
 

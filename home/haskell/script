@@ -6,10 +6,7 @@ declare -a pkgs=(
   'hspec-discover'
   'QuickCheck'
 )
-
 declare platform='x86_64-unknown-linux'
-
-buildah run "$1" -- ghcup --version
 
 buildah run "$1" -- ghcup --platform "$platform" install 'ghc'
 buildah run "$1" -- ghcup --platform "$platform" install 'cabal'
@@ -25,10 +22,10 @@ buildah config --env 'PATH=/home/kshi/.ghcup/bin:/usr/bin' "$1"
 buildah run "$1" cabal update
 
 # needed for xmonad and taffybar config to compile
-buildah run "$1" cabal install --lib 'xmonad' 'xmonad-contrib' \
+#buildah run "$1" cabal install --lib 'xmonad' 'xmonad-contrib' \
   #'taffybar' 'dyre' 'gtk-strut' 'gi-gdk' 'gi-gtk' 'transformers' 'gtk-sni-tray'
 
-buildah run "$1" cabal install 'hpack' 'xmonad' # 'taffybar' 'status-notifier-item'
+buildah run "$1" cabal install 'hpack' # 'xmonad' # 'taffybar' 'status-notifier-item'
 
 buildah run "$1" -- mkdir -p '.stack'
 buildah run "$1" -- hoogle generate
