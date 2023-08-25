@@ -40,6 +40,8 @@ declare -a pkgs=(
   'bokeh'
   'seaborn'
 
+  'opencv-python'
+
   # 'torch==1.9.1'
   'scikit-learn'
   #'scikit-image'
