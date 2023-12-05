@@ -76,8 +76,11 @@ catch2 cgal cxxopts
 
 # texlive kinda sucks
 #texlive-full
-texlive-bin
+texlive2023-bin
 #texlive
+
+typst
+typst-lsp
 
 # stuff needed for `latexindent` (which comes with `texlive`)
 perl-YAML-Tiny

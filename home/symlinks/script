@@ -20,6 +20,7 @@ xdg_symlinks=(
   ['tentactl']='/data/tentactl'
   ['khal']='/data/khal'
 
+  ['spotify-player']='../dotfiles/vic/spotify-player'
   ['xmonad']='../dotfiles/desk/xmonad'
   ['awesome']='../dotfiles/desk/awesome'
   ['penrose']='../dotfiles/desk/penrose'

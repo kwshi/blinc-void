@@ -32,8 +32,15 @@ zathura zathura-pdf-mupdf zathura-ps zathura-djvu
 mupdf
 apvlv
 
+<<<<<<< HEAD
+imv
+swayimg
+
+||||||| 550fad0
+=======
 swayimg imv
 
+>>>>>>> refs/remotes/origin/main
 # documents
 xournalpp
 libreoffice

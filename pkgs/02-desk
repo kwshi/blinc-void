@@ -10,6 +10,7 @@ dot-xsession
 libXinerama-devel libXrandr-devel libXScrnSaver-devel
 
 greetd
+
 xorg-server-xwayland
 Waybar
 river
