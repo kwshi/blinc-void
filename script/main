@@ -3,7 +3,7 @@ set -euo pipefail
 
 . 'script/lib'
 
-VOID_VERSION='20221001'
+VOID_VERSION='20230628'
 VOID_REPO_URL="https://repo-default.voidlinux.org/live/$VOID_VERSION"
 
 VOID_EXTRA_URL='https://api.github.com/repos/kwshi/void-extra/releases/tags/latest'

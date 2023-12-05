@@ -24,7 +24,7 @@ declare -a pkgs=(
   'flask'
   'beautifulsoup4'
   'requests'
-  'aiohttp'
+  #'aiohttp' # 3.12 build broken
 
   'pyperclip'
 
@@ -49,6 +49,8 @@ declare -a pkgs=(
   'ipython'
   'pyside2' # needed by qtconsole, but weirdly not installed as dep
   'qtconsole'
+
+  'hy'
 
 
   'pynvim'

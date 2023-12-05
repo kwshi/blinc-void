@@ -28,7 +28,7 @@ foomatic-db-nonfree
 
 # servers
 nginx lighttpd
-postgresql14 sqlite sqlite-devel
+postgresql sqlite sqlite-devel
 
 # phone interop
 android-tools
@@ -48,6 +48,10 @@ khal
 # email clients
 neomutt
 himalaya
+
+# finance
+ledger
+hledger
 
 # container stuff
 docker docker-compose podman podman-compose buildah
@@ -102,7 +106,7 @@ mkvtoolnix
 
 rmapi
 
-pdftk
+#pdftk # requires `libgcj`, which for whatever reason is only in the bootstrap void repo
 qpdf
 
 xsv # cli csv toolkit

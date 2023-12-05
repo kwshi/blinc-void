@@ -83,6 +83,8 @@ misc_symlinks=(
   ['.local/share/lutris']='/extra/games/lutris/share'
   ['.config/lutris']='/extra/games/lutris/config'
 
+  ['.config/JetBrains']='/extra/config/jetbrains'
+
   ['.local/share/containers']='/extra/containers/kshi'
 
   ['.netrc']='/data/login/netrc'

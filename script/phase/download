@@ -13,11 +13,15 @@ log-phase 'download'
   log 'downloading sha256sum.sig'
   curl -fLO "$VOID_REPO_URL/sha256sum.sig"
 
+  log 'downloading sha256sum.txt'
+  curl -fLO "$VOID_REPO_URL/sha256sum.txt"
+
   log 'verify signature and checksum...'
-  signify -Cq \
-    -p "$ROOT_DIR/sigs/void-release-$VOID_VERSION.pub" \
+  minisign -V \
+    -p "/usr/share/void-release-keys/void-release-$VOID_VERSION.pub" \
     -x 'sha256sum.sig' \
-    "$VOID_ROOTFS_FILENAME"
+    -m 'sha256sum.txt'
+  sha256 -C 'sha256sum.txt' "$VOID_ROOTFS_FILENAME"
 
   mkdir -p "$DOWNLOAD_DIR/rootfs"
   cp --no-preserve 'mode' -t "$DOWNLOAD_DIR/rootfs" \

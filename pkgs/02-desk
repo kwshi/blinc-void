@@ -9,6 +9,7 @@ xorg-server-xephyr
 dot-xsession
 libXinerama-devel libXrandr-devel libXScrnSaver-devel
 
+greetd
 xorg-server-xwayland
 Waybar
 river
@@ -16,8 +17,13 @@ wl-clipboard
 wlsunset
 gammastep
 
+xdg-desktop-portal-wlr
+
 wlr-randr
 kanshi
+
+grim
+slurp
 
 # needed for taffybar (haskell statusbar)
 gobject-introspection
@@ -74,7 +80,11 @@ free42
 mesa-vaapi mesa-vdpau mesa-vulkan-radeon
 
 # audio
-pulseaudio bluez alsa-plugins-pulseaudio
+#pulseaudio bluez alsa-plugins-pulseaudio
+bluez
 fontconfig fontconfig-32bit
 librnnoise-ladspa
 NoiseTorch
+
+pipewire
+wireplumber

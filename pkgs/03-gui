@@ -47,6 +47,11 @@ thunderbird
 # graphical languages
 openscad factor octave gnuplot gnuplot-qt gnuplot-wx
 
+# finance
+hledger-ui hledger-web
+gnucash
+homebank
+
 # media players
 spotifyd spotify-tui spotify-adblock-linux
 spotify
