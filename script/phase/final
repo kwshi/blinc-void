@@ -46,7 +46,12 @@ if newer-deps 'final' -i 'home'; then
   done
 
   # TODO put this somewhere better?
+  buildah config --workingdir "/opt/texlive2023-installer" "$ctr"
+  buildah run "$ctr" -- /opt/texlive2023-installer/install-tl \
+    -profile '/opt/texlive2023-installer/void.profile' \
+    -repository 'https://ftp.math.utah.edu/pub/tex/historic/systems/texlive/2023/tlnet-final'
   buildah run "$ctr" -- /opt/texlive/2023/bin/x86_64-linux/tlmgr install 'scheme-full'
+  buildah config --workingdir '/' "$ctr"
 
   # steam fonts patch, because ??????
   #buildah run "$ctr" -- rm '/usr/share/fonts/steam-fonts/.uuid'

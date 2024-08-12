@@ -28,15 +28,22 @@ declare -a pkgs=(
   'menhir'
   'sedlex'
 
-  'google-drive-ocamlfuse'
+  #'google-drive-ocamlfuse'
   'ocaml-lsp-server'
   'ocamlformat'
 )
+
+declare -i chunk_size=4
 
 if [[ -e ~/'.opam/download-cache' ]]; then
   buildah copy -q --chown 'kshi:kshi' "$1" ~/'.opam/download-cache' '.opam/download-cache'
 fi
 
-buildah config --env OPAMSOLVERTIMEOUT=300 "$1"
+buildah config --env OPAMSOLVERTIMEOUT=1200 "$1"
 buildah run "$1" opam init -yn
-buildah run "$1" opam install -y "${pkgs[@]}"
+
+for ((i=0; i<${#pkgs[@]}; i+=chunk_size)); do
+  chunk=("${pkgs[@]:i:chunk_size}")
+  echo "installing ${chunk[*]@Q}"
+  buildah run "$1" opam install -y "${chunk[@]}"
+done

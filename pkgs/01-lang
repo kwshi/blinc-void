@@ -25,7 +25,7 @@ ghcup
 
 rustup rust-analyzer rust-doc
 go
-python3-pip python3-tkinter python3-setuptools poetry black
+python3-pip python3-tkinter python3-setuptools black
 fnlfmt
 nodejs yarn pnpm
 #julia
@@ -80,6 +80,7 @@ texlive2023-bin
 #texlive
 
 typst
+typstfmt
 typst-lsp
 
 # stuff needed for `latexindent` (which comes with `texlive`)

@@ -32,15 +32,9 @@ zathura zathura-pdf-mupdf zathura-ps zathura-djvu
 mupdf
 apvlv
 
-<<<<<<< HEAD
 imv
 swayimg
 
-||||||| 550fad0
-=======
-swayimg imv
-
->>>>>>> refs/remotes/origin/main
 # documents
 xournalpp
 libreoffice
@@ -60,7 +54,7 @@ gnucash
 homebank
 
 # media players
-spotifyd spotify-tui spotify-adblock-linux
+spotifyd spotify-tui #spotify-adblock-linux
 spotify
 playerctl
 vlc mplayer mpv

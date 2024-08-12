@@ -30,6 +30,6 @@ buildah run "$1" cabal install 'hpack' # 'xmonad' # 'taffybar' 'status-notifier-
 buildah run "$1" -- mkdir -p '.stack'
 buildah run "$1" -- hoogle generate
 
-buildah run "$1" -- ln -s '../dotfiles/cli/stack/config.yaml'
+buildah run "$1" -- ln -s '../dotfiles/cli/stack/config.yaml' '.stack'
 
 #buildah run "$1" cabal install --lib "${pkgs[@]}"

@@ -92,10 +92,10 @@ pkgs=(
 #
 
 
-buildah run "$1" -- git clone --branch 'v0.5.3' 'https://github.com/rktjmp/hotpot.nvim' \
+buildah run "$1" -- git clone --branch 'v0.12.0' 'https://github.com/rktjmp/hotpot.nvim' \
   '.local/share/nvim/lazy/hotpot.nvim'
 
-buildah run "$1" -- git clone --branch 'v9.5.0' 'https://github.com/folke/lazy.nvim' \
+buildah run "$1" -- git clone --branch 'v10.20.4' 'https://github.com/folke/lazy.nvim' \
   '.local/share/nvim/lazy/lazy.nvim'
 
 #buildah add "$1" \

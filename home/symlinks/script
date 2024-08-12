@@ -86,6 +86,9 @@ misc_symlinks=(
 
   ['.config/JetBrains']='/extra/config/jetbrains'
 
+  ['.config/hut']='/data/hut'
+  ['.local/share/.berg-cli']='/data/login/codeberg'
+
   ['.local/share/containers']='/extra/containers/kshi'
 
   ['.netrc']='/data/login/netrc'

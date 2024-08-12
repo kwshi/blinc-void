@@ -1,4 +1,4 @@
 .ghcup
 .stack
 .hoogle
-.cabal
+.local
